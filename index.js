@@ -10,5 +10,5 @@ app.listen(puerto, console.log('Servidor en puerto: ', puerto));
 ///////////////////////////////////////////////
 
 app.get('/', async (req, res) => {
-    res.send('Luz, cámara, acción!!!');
+    res.send('Luz, cámara, codigo!!!');
 });
