@@ -61,6 +61,12 @@ body {
     background-color: rgb(243, 180, 134);   
 }
 
+/* navbar */
+nav {
+    color: #ffffff;
+    font-weight: bold;
+}
+
 #cabecera {
     background-image: url("../uploads/banner.jpg");
     background-repeat: no-repeat;
@@ -71,6 +77,12 @@ body {
     padding: 20px;
     /* float: left; */
     box-sizing: border-box;
+}
+
+/* formulario-buscador */
+
+#formulario-buscador {
+    
 }
 
 /* partials */
