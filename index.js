@@ -35,5 +35,26 @@ app.listen(puerto, console.log('Servidor en puerto: ', puerto));
 ///////////////////////////////////////////////
 
 app.get('/', async (req, res) => {
-    res.send('Luz, cámara, codigo!!!');
+    res.render('index');
 });
+
+app.get('/inicio', async (req, res) => {
+    res.render('inicioSesion');
+});
+
+app.get('/perfil', async (req, res) => {
+    res.render('perfil');
+});
+
+app.get('/inventario', async (req, res) => {
+    res.render('tuInventario');
+});
+
+app.get('/productosDisponibles', async (req, res) => {
+    res.render('productosDisponibles');
+});
+
+app.get('/listaVendedores', async (req, res) => {
+    res.render('listaVendedores');
+});
+
