@@ -1,12 +1,9 @@
-<div class="container-fluid">
-  <style>#cabecera { width: 100%;}</style>
+<div class="container-fluid">  
 
   <div class="fondo pb-5 px-5">
     <div class="row">
-    <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1> 
-    <div class="col-5"> 
-      {{> cardInventario }}     
-    </div> 
+    <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1>   
+    {{> cardInventario }}    
     
     <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">      
       <h1>Inventario</h1><br>
@@ -20,7 +17,7 @@
           </div>
           <div class="form-group pt-5"> 
              <label for="nombre">Precio</label><br>        
-            <input type="text" name="cedula_de_identidad" placeholder="21.990" class="form-control w-50 m-auto" />
+            <input type="text" name="precio" placeholder="21.990" class="form-control w-50 m-auto" />
           </div>          
           <div class="form-group pt-4">
             <label for="nombre">Marca</label><br>         
@@ -28,11 +25,11 @@
           </div>     
           <div class="form-group pt-4">
             <label for="nombre">Stock</label><br>         
-            <input type="text" name="password" placeholder="2" class="form-control w-50 m-auto">
+            <input type="text" name="stock" placeholder="2" class="form-control w-50 m-auto">
           </div>          
         </div>
-        <label class="pt-4 rounded" for="nombre">Descripción del producto</label><br>
-        <textarea name="textarea"  rows="4" cols="50">Write something here</textarea>
+        <label class="pt-4" for="nombre">Descripción del producto</label><br>
+        <textarea class="rounded" name="textarea"  rows="4" cols="46">Descripcion</textarea>
        
         <div class="form-group col-12 col-sm-12">
           <p class="text-white pb-3">Sube tu foto de perfil</p><br>            
