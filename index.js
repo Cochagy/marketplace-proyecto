@@ -38,12 +38,24 @@ app.get('/', async (req, res) => {
     res.render('index');
 });
 
+app.get('/registro', async (req, res) => {
+    res.render('registro');
+});
+
+app.get('/contacto', async (req, res) => {
+    res.render('contacto');
+});
+
 app.get('/inicio', async (req, res) => {
     res.render('inicioSesion');
 });
 
 app.get('/perfil', async (req, res) => {
     res.render('perfil');
+});
+
+app.get('/registroProductos', async (req, res) => {
+    res.render('registroProductos');
 });
 
 app.get('/inventario', async (req, res) => {
