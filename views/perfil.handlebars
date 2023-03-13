@@ -1,3 +1,7 @@
+{{> navbarUsuario }}
+
+{{> buscador }}
+
 <div class="container-fluid">
   <style>
     #cabecera {
@@ -105,12 +109,9 @@
       <div class="text-center mt-3">
         <a href="./">Página principal</a>
       </div>
-
     </div>
 
-
     <script>
-
       const autorizar = async (cedula_de_identidad, e) => {
         const seleccion = e.checked
         console.log(cedula_de_identidad, seleccion);
@@ -127,11 +128,11 @@
           alert(error)
         }
       }
-
     </script>
-
   </section>
 </div>
+
+{{> footer}}
 
 <script>
 

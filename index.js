@@ -42,6 +42,10 @@ app.get('/registro', async (req, res) => {
     res.render('registro');
 });
 
+app.get('/contacto', async (req, res) => {
+    res.render('contacto');
+});
+
 app.get('/inicio', async (req, res) => {
     res.render('inicioSesion');
 });
