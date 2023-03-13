@@ -1,0 +1,61 @@
+<div class="container-fluid">
+
+    <div class="fondo pb-5 px-5" style="background: aliceblue;">
+    <div class="row" style="background: aliceblue;">
+    <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
+        <div class="container responsivo col-6 mt-5 py-5 text-center rounded-left" style="background: rgb(192, 190, 190);">
+            {{> cardEncontrado }}
+        </div>
+        <div class="container responsivo col-6 mt-5 py-5 rounded-right" style="background: rgb(192, 190, 190);">
+            <section class="mt-5">
+                <h1>Natura</h1>
+                <h1>Ekos frescor</h1>
+                <h1>Pitanga eau de toilette 150ml.</h1>             
+            </section>
+            <h2>para ver detalles inicia sesion</h2><br>            
+            <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Inicia sesión</button>
+            <h2>Aun no estas registrado?</h2>
+        </div>    
+    </div>
+  </div>
+  
+    <div class="container">
+        <h1 class="text-center mt-5 pb-4" style="color: green;">Contacto</h1>
+        <div class="row" style="background: green;">    
+
+    <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">
+      {{!-- <h1>Bienvenida Jimena{{this.nombre}}!!</h1>       --}}
+      <h1>Queremos saber tu opinion</h1>
+      <br>
+
+      <form action="/perfil" method="POST" enctype="multipart/form-data">      
+    
+        <div class="form-group">
+          <div class="form-group"> 
+            <label for="nombre">Nombre</label><br>              
+            <input type="text"  name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+          </div>          
+          <div class="form-group pt-4">
+            <label for="nombre">Asunto</label><br>         
+            <input type="text" name="email" placeholder="nombre@gmail.com" class="form-control w-50 m-auto">
+          </div>
+          <label class="pt-4" for="nombre">Mensaje</label><br>
+          <textarea class="rounded" name="textarea"  rows="4" cols="32">Deja tu mensaje aqui</textarea>          
+        </div><br><br>
+        <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Ingresar</button><br>
+        
+      </form>
+    </div>
+    <div class="responsivo col-5 py-5"> 
+      {{> cardContacto }}      
+    </div> 
+  </div>
+
+    </div>
+  
+  
+
+</div>
+
+
+
