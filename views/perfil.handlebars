@@ -1,132 +1,146 @@
+{{> navbarUsuario }}
+
+{{> buscador }}
+
 <div class="container-fluid">
-  <style>#cabecera { width: 100%;}</style>
+//<<<<<<< ramapedro REVISAR
+  <style>
+    #cabecera {
+      width: 100%;
+    }
+  </style>
 
   <div class="row" style="background: green;">
-    <div class="col-5"> 
+    <div class="col-5">
+      {{> cardUsuario }}
+    </div>
+=======
+  
+  <div class="row" style="background: green;">    
+    <div class="responsivo col-5"> 
       {{> cardUsuario }}      
     </div>    
+//>>>>>>> main REVISAR
 
     <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">
-      <h1>Bienvenida{{this.nombre}}!!</h1>
+      <h1>Bienvenida Jimena{{this.nombre}}!!</h1>      
       <h2>Completa tu perfil</h2>
       <br>
 
-      <form action="/perfil" method="POST" enctype="multipart/form-data">      
-    
+      <form action="/perfil" method="POST" enctype="multipart/form-data">
+
         <div class="form-group">
-          <div class="form-group"> 
-            <label for="nombre">Nombre</label><br>              
-            <input type="text"  name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
-          </div>          
-          <div class="form-group pt-4">
-            <label for="nombre">Email</label><br>         
-            <input type="text" name="email" placeholder="nombre@gmail.com" class="form-control w-50 m-auto">
-          </div>     
-          <div class="form-group pt-4">
-            <label for="nombre">Password</label><br>         
-            <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto">
-          </div>          
-          <div class="form-group pt-4"> 
-            <label for="nombre">Repite password</label><br>        
-            <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto">
+          <div class="form-group">
+            <label for="nombre">Nombre</label><br>
+            <input type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
-          <div class="form-group pt-5"> 
-            <label for="nombre">Telefono</label><br>       
+          <div class="form-group pt-4">
+            <label for="nombre">Email</label><br>
+            <input type="text" name="email" placeholder="nombre@gmail.com" class="form-control w-50 m-auto">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Password</label><br>
+            <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Repite password</label><br>
+            <input type="password" name="repita_password" placeholder="***********" class="form-control w-50 m-auto">
+          </div>
+          <div class="form-group pt-5">
+            <label for="nombre">Telefono</label><br>
             <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
-            <label for="nombre">Direccion</label><br>         
+            <label for="nombre">Direccion</label><br>
             <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto">
-          </div>         
+          </div>
         </div>
         <label for="nombre">Comuna/Sector</label><br>
-        <select class="form-select mb-3 w-50 m-auto" name="comuna/sector" aria-label="Default select example">          
+        <select class="form-select mb-3 w-50 m-auto" name="comuna/sector" aria-label="Default select example">
           {{!-- <option value="maipu">Maipu</option>
           <option value="santiago">Santiago</option>
           <option value="vitacura">Vitacura</option> --}}
         </select>
 
         <div class="form-group col-12 col-sm-12">
-          <p class="text-white pb-3">Sube tu foto de perfil</p><br>            
-          <input type="file" name="foto" onchange="previewFile()"><br>          
+          <p class="text-white pb-3">Sube tu foto de perfil</p><br>
+          <input type="file" name="foto" onchange="previewFile()"><br>
         </div>
 
         <button class="btn btn-primary my-3 py- w-50 m-auto">Modificar</button>
         <button class="btn btn-danger my-3 py- w-50 m-auto">Eliminar</button>
         <br>
-        <p>Registrar inventario<a href="./registrarInventario"></a></p>   
+        <p>Registrar inventario<a href="./registrarInventario"></a></p>
       </form>
     </div>
   </div>
 
-  <section>
+  <section id="inventario" class="container-fluid">
     <h1 class="text-center mt-5" style="color: green;">Tu inventario</h1>
-    <div class="py-4">  
-  <hr class="w-100"/>
+    <div class="py-4">
+      <hr class="w-100" />
 
-  <table class="table w-80 m-auto" style="background: green; height: 60px">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Foto</th>
-        <th scope="col">Nombre</th>        
-        <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Descripción</th>                     
-      </tr>
-    </thead>
+      <table class="table w-80 m-auto" style="background: green; height: 60px">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Foto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Descripción</th>
+          </tr>
+        </thead>
 
-    <tbody> 
-           
-      {{#each productos}}
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">                
-          </div>
-        </td>
-        <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
+        <tbody>
 
-        <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>   
-               
-        {{!-- <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.d}}, this)"></td>    --}}
-        
-      </tr>  
-      {{/each}} 
-      
-    </tbody>
-  </table>
-  <div class="text-center mt-3">    
-    <a  href="./">Página principal</a>
-  </div>
-    
-</div>
+          {{#each productos}}
+          <tr>
+            <td>{{@index}}</td>
+            <td>
+              <div>
+                <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">
+              </div>
+            </td>
+            <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
 
+            <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>
 
-<script>
+            {{!-- <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}}
+                onclick="autorizar({{this.d}}, this)"></td> --}}
 
-  const autorizar = async (cedula_de_identidad, e) => {    
-    const seleccion = e.checked
-    console.log(cedula_de_identidad, seleccion);
-    try {
-      await axios.put('/seleccion_especialista', {
-        cedula_de_identidad,
-        seleccion
-      })
-      alert(seleccion ? 'Especialista seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
+          </tr>
+          {{/each}}
 
+        </tbody>
+      </table>
+      <div class="text-center mt-3">
+        <a href="./">Página principal</a>
+      </div>
+    </div>
+
+    <script>
+      const autorizar = async (cedula_de_identidad, e) => {
+        const seleccion = e.checked
+        console.log(cedula_de_identidad, seleccion);
+        try {
+          await axios.put('/seleccion_especialista', {
+            cedula_de_identidad,
+            seleccion
+          })
+          alert(seleccion ? 'Especialista seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');
+        }
+        catch ({ respuesta }) {
+          const { data } = respuesta
+          const { error } = data
+          alert(error)
+        }
+      }
+    </script>
   </section>
 </div>
+
+{{> footer}}
 
 <script>
 
@@ -143,7 +157,5 @@
       reader.readAsDataURL(file);
     }
   }
-  
+
 </script>
-
-
