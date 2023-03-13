@@ -1,4 +1,25 @@
 <div class="container-fluid">
+//<<<<<<< ramapedro REVISAR!!!
+  <style>
+    #cabecera {
+      width: 100%;
+    }
+  </style>
+
+  <div class="row">
+    <h1 class="text-center mt-5" style="color: green;">Inicia sesión</h1>
+    <div class="col-5">
+      {{> cardLogo }}
+    </div>
+
+    <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">
+      <h1>Inicia sesión</h1><br>
+
+      <form action="/inicioSesion" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <div class="form-group pt-4">
+            <Label>Nombre</Label> <br>
+
     
   <div class="row">
     <h1 class="text-center mt-5" style="color: green;">Inicia sesion</h1> 
@@ -11,17 +32,18 @@
         <div class="form-group">             
           <div class="form-group pt-4"> 
             <Label>Nombre</Label> <br>      
+//>>>>>>> main REVISAR!!!
             <input type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
-            <Label>Password</Label> <br>         
+            <Label>Password</Label> <br>
             <input type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
           </div><br>
-        </div>  
-        <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Ingresar</button><br>             
+        </div>
+        <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Ingresar</button><br>
         <p>¿No estás registrado? <a href="./registro">Crea tu cuenta</a></p>
       </form>
-      
+
     </div>
   </div>
 </div>
