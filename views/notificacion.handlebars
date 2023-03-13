@@ -1,0 +1,89 @@
+<div class="container-fluid">
+   
+  <section>
+    <h1 class="text-center mt-5" style="color: green;">Hola Magdalena!!!</h1>
+    {{> cardNotificacion }}
+    <h2 class="text-center mt-5" style="color: greenyellow;">Tienes una solicitud de compra</h2>
+    <div class="py-4">  
+      <hr class="w-100"/>
+
+  <table class="table w-80 m-auto" style="background: green; height: 60px">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Imagen</th>
+        <th scope="col">Nombre</th>        
+        <th scope="col">Producto</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Aceptar</th>                     
+      </tr>
+    </thead>
+
+    <tbody> 
+           
+      {{#each comprador}}
+      <tr>
+        <td>{{@index}}</td>
+        <td>
+          <div>                
+            <img class="rounded-circle" src="../public/uploads/jimena.jpeg" height="55" Width="75">                
+          </div>
+        </td>
+        <td>{{this.nombre}}<br>{{this.producto}}<br>{{this.cantidad}}<br></td>
+                       
+        <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.id}}, this)"></td>   
+        
+      </tr>  
+      {{/each}} 
+      
+    </tbody>
+  </table>
+  <div class="text-center mt-3"> 
+    <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Confirmar solicitud</button> <br>   
+    <a  href="./">Página principal</a>
+  </div>
+    
+</div>
+
+
+<script>
+
+  const autorizar = async (id, e) => {    
+    const seleccion = e.checked
+    console.log(id, seleccion);
+    try {
+      await axios.put('/seleccion', {
+        id,
+        seleccion
+      })
+      alert(seleccion ? 'Venta sera confirmada' : 'Ha ocurrido un error, intente más tarde');      
+    }
+    catch ({ respuesta }) {
+      const { data } = respuesta
+      const { error } = data
+      alert(error)
+    }    
+  }
+  
+</script>  
+
+  </section>
+</div>
+
+<script>
+
+  function previewFile() {
+    const preview = document.getElementById('pw');
+    const file = document.querySelector('input[type=file').files[0];
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      preview.src = reader.result;
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+  
+</script>

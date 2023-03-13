@@ -70,3 +70,6 @@ app.get('/listaVendedores', async (req, res) => {
     res.render('listaVendedores');
 });
 
+app.get('/notificacion', async (req, res) => {
+    res.render('notificacion');
+});
