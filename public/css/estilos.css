@@ -110,6 +110,16 @@ nav {
     width: 500px;
 }
 
+#ppContacto {
+    height: 500px;
+    width: 500px;
+}
+
+#ppRegistro {
+    height: 700px;
+    width: 600px;
+}
+
 
 .fondo {
     background-color: aliceblue;
@@ -159,6 +169,10 @@ th {
     
     #ppUsuario {
         height: auto;
+        width: 100%;
+    }
+    #ppContacto {
+        height: 350px;
         width: 100%;
     }
     textarea {
