@@ -50,6 +50,10 @@ app.get('/perfil', async (req, res) => {
     res.render('perfil');
 });
 
+app.get('/registroProductos', async (req, res) => {
+    res.render('registroProductos');
+});
+
 app.get('/inventario', async (req, res) => {
     res.render('tuInventario');
 });
