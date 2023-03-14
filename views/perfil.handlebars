@@ -1,13 +1,15 @@
 <div class="container-fluid">
   {{!-- {{> navbarUsuario ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
     
-  <div class="row" style="background: green;">    
-    <div class="responsivo col-5"> 
-      {{> cardUsuario }}      
+  <div class="biombo row">    
+    <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green"> 
+      {{> cardUsuario }}
+      {{!-- <h2 class="text-center py-5">Usuaria activa</h2> 
+      <h4 class="text-center">Responde a tiempo</h4>      --}}
     </div>    
 
-    <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">
-      <h1>Bienvenida Jimena{{this.nombre}}!!</h1>      
+    <div class="responsivo col-7 mt-1 mb-1 py-5 text-center rounded-end" style="background: green;">
+      <h1 style="color: aliceblue;">Bienvenida Jimena{{this.nombre}}!!</h1>      
       <h2>Completa tu perfil</h2>
       <br>
 
@@ -64,7 +66,7 @@
     <div class="py-4">  
   <hr class="w-100"/>
 
-  <table class="table w-80 m-auto" style="background: green; height: 60px">
+  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
         <th scope="col">#</th>
