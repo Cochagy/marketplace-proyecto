@@ -1,14 +1,15 @@
 <div class="container-fluid"> 
   {{!-- {{> navbarUsuario }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS--}}
  
-  <div class="fondo pb-5 px-5">
-    <div class="row">
-    <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1>   
+  <div class="biombo pt-5 pb-5 px-5">
+    <h1 class="text-center pb-5" style="color: green;">Registra tus productos aquí</h1> 
+    <div class="row rounded px-5" style="background: aliceblue;">
+    {{!-- <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1>    --}}
     {{> cardInventario }}    
     
-    <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">      
-      <h1>Inventario</h1><br>
-      
+    <div class="responsivo col-7 mt-5 mb-5 py-5 text-center rounded" style="background: green;">      
+      <h1 style="color: aliceblue;">Inventario</h1><br>
+      {{!-- <form class="form-action-control responsivo" action="/tuInventario" method="POST" enctype="multipart/form-data"> --}}
       <form action="/tuInventario" method="POST" enctype="multipart/form-data">      
     
         <div class="form-group">
@@ -51,7 +52,7 @@
     <div class="py-4">  
   <hr class="w-100"/>
 
-  <table class="table w-80 m-auto" style="background: green; height: 60px">
+  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
         <th scope="col">#</th>
