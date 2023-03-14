@@ -1,32 +1,11 @@
 <div class="container-fluid">
-  
-    <div class="fondo pb-5 px-5" style="background: aliceblue;">
-    <div class="row" style="background: aliceblue;">
-    <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
-        <div class="container responsivo col-6 mt-5 py-5 text-center rounded-left" style="background: rgb(192, 190, 190);">
-            {{> cardEncontrado }}
-        </div>
-        <div class="container responsivo col-6 mt-5 py-5 rounded-right" style="background: rgb(192, 190, 190);">
-            <section class="mt-5">
-                <h1>Natura</h1>
-                <h1>Ekos frescor</h1>
-                <h1>Pitanga eau de toilette 150ml.</h1>             
-            </section>
-            <h2>para ver detalles inicia sesion</h2><br>            
-            <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Inicia sesión</button>
-            <h2>Aun no estas registrado?</h2>
-        </div>    
-        </div>
-    </div>
-</div> 
-
-<div class="container-fluid">
+  {{!-- {{> navbarInicio ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
     
   <div class="row">
     <h1 class="text-center mt-5" style="color: green;">Registrate aqui</h1> 
     {{> cardRegistro }}    
     
-    <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">      
+    <div class="responsivo col-7 mt-5 py-5 mb-5 text-center rounded" style="background: green;">      
       <h1>Registro</h1><br>     
       
       <form action="/inicioSesion" method="POST" enctype="multipart/form-data">      
@@ -56,7 +35,7 @@
         <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Registrar</button><br>             
         <href="./perfil">Completa tu perfil</a></p>
       </form>
-      
-    </div>
+    </div>  
   </div>
 </div>
+
