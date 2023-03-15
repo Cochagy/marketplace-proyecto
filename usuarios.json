@@ -7,7 +7,9 @@
       "RUT": "12.345.678-9",
       "contraseña": "1234",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 1",
+      "telefono": "99991"
     },
     {
       "Comuna": "Providencia",
@@ -16,7 +18,9 @@
       "RUT": "22.987.654-3",
       "contraseña": "Zn9$pXaGh2",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 2",
+      "telefono": "99993"
     },
     {
       "Comuna": "Las Condes",
@@ -25,7 +29,9 @@
       "RUT": "16.789.012-5",
       "contraseña": "bD8@nQf7Kt3",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 3",
+      "telefono": "99994"
     },
     {
       "Comuna": "Ñuñoa",
@@ -34,7 +40,9 @@
       "RUT": "9.876.543-2",
       "contraseña": "Ew6%mJy8Lp4",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 4",
+      "telefono": "99995"
     },
     {
       "Comuna": "Santiago Centro",
@@ -43,7 +51,9 @@
       "RUT": "18.765.432-1",
       "contraseña": "Fg2#nHt5Pq9",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 5",
+      "telefono": "99997"
     },
     {
       "Comuna": "Estación Central",
@@ -52,7 +62,9 @@
       "RUT": "21.654.987-4",
       "contraseña": "Vx7&rTs1Bf6",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 6",
+      "telefono": "99990"
     },
     {
       "Comuna": "Ñuñoa",
@@ -61,15 +73,19 @@
       "RUT": "11.223.344-5",
       "contraseña": "Nh5$yRc2Kl8",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 7",
+      "telefono": "99999"
     },
     {
       "Comuna": "Providencia",
-      "nombre": "Gabriel Ruiz",
+      "nombre": "0..............00",
       "Email": "gabriel.ruiz@example.com",
       "RUT": "15.432.109-8",
       "contraseña": "Dm6%pXz9",
       "Rol": "Usuario",
-      "Estado": "Activo"
+      "Estado": "Activo",
+      "direccion": "calle 8",
+      "telefono": "99699"
     }]
 }
