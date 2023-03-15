@@ -1,0 +1,36 @@
+{
+    "orden_compra": [
+      {
+        "solicitante": "Carlos García",
+        "solicitado": "Ana Torres",
+        "codigo_producto": "2",
+        "fecha": "22-02-2023",
+        "duracion": "30",
+        "estado": "pendiente"
+      },
+      {
+        "solicitante": "Juan Pérez",
+        "solicitado": "Laura Fernández",
+        "codigo_producto": "3",
+        "fecha": "11-03-2023",
+        "duracion": "10",
+        "estado": "pendiente"
+      },
+      {
+        "solicitante": "Manuel Ortiz",
+        "solicitado": "Carmen Sánchez",
+        "codigo_producto": "4",
+        "fecha": "10-01-2023",
+        "duracion": "3",
+        "estado": "entregado"
+      },
+      {
+        "solicitante": "Gabriel Ruiz",
+        "solicitado": "Sofía Rodríguez",
+        "codigo_producto": "5",
+        "fecha": "10-03-2023",
+        "duracion": "5",
+        "estado": "cancelado"
+      }
+    ]
+  }
