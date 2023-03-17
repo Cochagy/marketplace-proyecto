@@ -8,6 +8,12 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const axios = require('axios');
 
+//Llamar al archivo productos.json
+const productosJSON = require('./productos.json');
+
+//Lamar al archivo inventario.json
+const inventarioJSON = require('./inventario.json');
+
 const app = express();
 
 // Middlewares

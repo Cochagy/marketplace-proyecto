@@ -8,4 +8,20 @@
 
 <script>
 
+  //Función que ejecuta la redirección a la vista productosDisponibles
+
+  const buscarProducto = () => {
+    const productoBuscado = document.getElementById('nombreProducto').value;
+    try {
+      alert(`Buscando producto ${productoBuscado}`);
+      window.location.href = '/productosDisponibles';
+    }  catch ({ response }) {
+      const { data } = response;
+      const { error } = data;
+      alert(error);
+    }
+  };
+
+  buscarProducto();
+
 </script>
