@@ -66,7 +66,7 @@
 
     <tbody> 
            
-      {{#each producto}}
+      {{#each productos}}
       <tr>
         <td>{{@index}}</td>
         <td>
@@ -103,6 +103,16 @@
     if (file) {
       reader.readAsDataURL(file);
     }
-  }
+  };
+
+  //Función para obtener los datos de los productos del archivo productos.json y el inventario del archivo inventario.json
+  const obtenerInventarios = async () => {
+    const {
+      productos, inventarios
+    } = await axios.get('http://localhost:4000/productosDisponibles');
+    const producto = JSON.stringify(productos);
+    const inventario = JSON.stringify(inventarios);
+  };
+  obtenerInventarios();
   
 </script>

@@ -90,7 +90,16 @@ app.get("/registroProductos", async (req, res) => {
 });
 
 app.get("/inventario", async (req, res) => {
-  res.render("tuInventario");
+    try {
+        const productos = await productosJSON;
+        const inventarios = await inventarioJSON;
+        res.render("tuInventario", { productos, inventarios });
+    } catch (e) {
+        res.status(500).send({
+            error: `Algo salió mal... ${e}`,
+            code: 500
+        });
+    };
 });
 
 app.get("/productosDisponibles", async (req, res) => {

@@ -111,8 +111,8 @@
   const obtenerProductos = async () => {
     const {
       productos
-    } = await axios.get('http://localhost:4000/productosDisponibles');
-    const usuario = JSON.stringify(usuarios);
+    } = await axios.get('http://localhost:4000/inventario');
+    const producto = JSON.stringify(productos);
   };
   obtenerProductos();
 </script>
