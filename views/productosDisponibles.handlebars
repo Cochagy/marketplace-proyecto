@@ -1,97 +1,79 @@
 <div class="container-fluid">
-  {{!-- {{> navbarUsuario }}  --}}
-  {{> buscador }}
+  {{!-- {{> navbarUsuario }} --}}
+
   <div class="biombo pb-5 px-5">
     <div class="biombo row">
-      
-      <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
-        <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
-            {{> cardEncontrado }}
-        </div>
-        
-          <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: rgb(205, 107, 107);">
-            <div>
-              <section class="mt-5 ms-5 pt-5">
-                <h1>{{this.marca}} </h1><br>
-                <h1>{{this.nombre}}</h1>
-                <h1>{{this.sexo}}</h1><br>
-                <h1>{{this.precio}}</h1>
-                <h2>
-Esika Hidratante es una crema hidratante suave, formulada con aceites naturales, que proporciona una hidratación profunda y duradera para la piel. Esta crema nutritiva contiene antioxidantes y vitaminas para ayudar a proteger la piel de los daños del medio ambiente. Su fórmula ligera se absorbe rápidamente para dejar la piel con un toque cómodo y sedoso. Esta crema hidratante es ideal para todo tipo de pieles, especialmente para pieles secas y deshidratadas. Esta botella de 250 ml ofrece una hidratación duradera que ayuda a mantener la piel saludable y con un aspecto juvenil.</h2>            
-            </section>   
 
-            </div>
-                     
-        </div> 
-        
-        
-        
-      
+      <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>
+      <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
+        {{> cardEncontrado }}
+      </div>
+
+      <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: rgb(205, 107, 107);">
+        <div>
+          <section class="mt-5 ms-5 pt-5">
+            <h1>{{this.marca}} </h1><br>
+            <h1>{{this.nombre}}</h1>
+            <h1>{{this.sexo}}</h1><br>
+            <h1>{{this.precio}}</h1>
+            <h2>
+              "Esika Hidratante es una crema hidratante suave, formulada con aceites naturales, que proporciona una
+              hidratación profunda y duradera para la piel. Esta crema nutritiva contiene antioxidantes y vitaminas para
+              ayudar a proteger la piel de los daños del medio ambiente. Su fórmula ligera se absorbe rápidamente para
+              dejar la piel con un toque cómodo y sedoso. Esta crema hidratante es ideal para todo tipo de pieles,
+              especialmente para pieles secas y deshidratadas."</h2>
+          </section>
+
+        </div>
+
+      </div>
+
+
+
+
     </div>
   </div>
 
   <section>
     <h1 class="text-center mt-5" style="color: green;">Productos disponibles</h1>
-    <div class="py-4">  
-  <hr class="w-100"/>
+    <div class="py-4">
+      <hr class="w-100" />
 
-  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Imagen</th>
-        <th scope="col">Marca</th>        
-        <th scope="col">Nombre</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Descripción</th>
-        <th scope="col">Vendedores</th>                     
-      </tr>
-    </thead>
+      <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imagen</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Vendedores</th>
+          </tr>
+        </thead>
 
-    <tbody> 
-      
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" Width="75">                
-          </div>
-        </td>
-        <td>{{this.marca}}</td>
-        <td>{{this.nombre}}<br></td>
-        <td>{{this.precio}}</td>
-        <td>{{this.sexo}}</td>        
-        <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./listaVendedores">selccionar</a></td>
-      </tr>  
-      
-    </tbody>
-  </table>
-  <div class="text-center mt-3">    
-    <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./">Ir al buscador</a>
-  </div>
-    
+        <tbody>
+
+          <tr>
+            <td>{{@index}}</td>
+            <td>
+              <div>
+                <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" Width="75">
+              </div>
+            </td>
+            <td>{{this.marca}}</td>
+            <td>{{this.nombre}}<br></td>
+            <td>{{this.precio}}</td>
+            <td>{{this.sexo}}</td>
+            <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./listaVendedores">selccionar</a></td>
+          </tr>
+
+        </tbody>
+      </table>
+      <div class="text-center mt-3">
+        <a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./">Ir al buscador</a>
+      </div>
+
+    </div>
+  </section>
 </div>
-</section>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
