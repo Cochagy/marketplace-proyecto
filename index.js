@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const fs = require("fs");
 
 const app = express();
 
@@ -56,20 +57,106 @@ app.engine(
 const puerto = process.env.PORT || 4000;
 app.listen(puerto, console.log("Servidor en puerto: ", puerto));
 
-///////////////////////////////////////////////
-
+//////////////nuevo/////////////////////////////////
+//LLAMA AL BUSCADOR
 app.get("/", async (req, res) => {
   res.render("index");
 });
+
+////////////////////////RUTAS/////////////////////////////////////////////////
+
+//LLAMA AL BUSCADOR
+app.get("/", async (req, res) => {
+  res.render("index");
+});
+
+//BUSCA PRODUCTO//////////////////////////////////////////////////////////////////
+app.post('/', (req, res) => {
+  const busquedaInput = req.body['busqueda-input'];
+
+  // console.log(busquedaInput);
+  const productos = JSON.parse(fs.readFileSync('./productos.json'));
+
+  const productoBuscado = productos.productos.find(p => p.nombre === busquedaInput);
+
+  if (!productoBuscado) {
+    // Renderizar vista de error o redirigir a otra página
+    res.redirect('/');
+    return
+
+  }
+  res.render('productosDisponibles', {
+    codigo: productoBuscado.codigo_p,
+    marca : productoBuscado.marca,
+    nombre: productoBuscado.nombre,
+    precio: productoBuscado.precio,
+    sexo: productoBuscado.sexo
+  });
+  // console.log(productoBuscado.nombre);
+  if (busquedaInput === productoBuscado.nombre) {
+    productoBuscado.codigo_p;
+    // console.log(productos);
+  }
+  
+});
+
+//TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
+app.get("/inicio", async (req, res) => {
+  console.log(req.body);
+  res.render("inicioSesion");
+});
+
+//TRAE PERFIL////////////////////////////////////////////////////////////////////
+const usuarios = require('./usuarios.json');
+
+app.get('/perfil', (req, res) => {
+  // Aquí obtenemos los datos del usuario logeado
+  const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
+  // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
+  
+  if (!usuario) {
+    res.redirect('/login');
+    return;
+  }
+
+  // Renderizamos el HTML con los datos del usuario
+  res.render('perfil', {
+    nombre: usuario.nombre,
+    email: usuario.Email,
+    contraseña: usuario.contraseña,
+    telefono: usuario.telefono,
+    direccion: usuario.direccion,
+    comuna: usuario.Comuna.trim(),
+    
+  });
+
+});
+
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 app.get("/registro", async (req, res) => {
   res.render("registro");
 });
 
+//nuevo//
+app.post("/registro", async (req, res) => {
+  console.log(req.body);
+  res.send(req.body);
+});
+//nuevo//
+
 app.get("/contacto", async (req, res) => {
   res.render("contacto");
 });
 
+// nuevo//
+app.post("/contacto", (req,res) => {
+  console.log(req.body);
+  res.send(req.body);
+})
+// nuevo//
 app.get("/inicio", async (req, res) => {
   res.render("inicioSesion");
 });
@@ -96,6 +183,10 @@ app.get("/listaVendedores", async (req, res) => {
 
 app.get("/notificacion", async (req, res) => {
   res.render("notificacion");
+});
+
+app.get("/transacciones", async (req, res) => {
+  res.render("transacciones");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,31 +228,31 @@ app.delete('/productos/:codigo_p', (req, res) => {
   });
   
 
-  // llamar datos perfil
-  const usuarios = require('./usuarios.json');
+  // // llamar datos perfil
+  // const usuarios = require('./usuarios.json');
 
-  app.get('/perfil', (req, res) => {
-    // Aquí obtenemos los datos del usuario logeado
-    const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
-    // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
+  // app.get('/perfil', (req, res) => {
+  //   // Aquí obtenemos los datos del usuario logeado
+  //   const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
+  //   // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
     
-    if (!usuario) {
-      res.redirect('/login');
-      return;
-    }
+  //   if (!usuario) {
+  //     res.redirect('/login');
+  //     return;
+  //   }
   
-    // Renderizamos el HTML con los datos del usuario
-    res.render('perfil', {
-      nombre: usuario.nombre,
-      email: usuario.Email,
-      contraseña: usuario.contraseña,
-      telefono: usuario.telefono,
-      direccion: usuario.direccion,
-      comuna: usuario.Comuna.trim(),
+  //   // Renderizamos el HTML con los datos del usuario
+  //   res.render('perfil', {
+  //     nombre: usuario.nombre,
+  //     email: usuario.Email,
+  //     contraseña: usuario.contraseña,
+  //     telefono: usuario.telefono,
+  //     direccion: usuario.direccion,
+  //     comuna: usuario.Comuna.trim(),
       
-    });
+  //   });
 
-  });
+  // });
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

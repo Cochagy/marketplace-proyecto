@@ -129,7 +129,11 @@ nav {
     height: 700px;
     width: 600px;
 }
-
+#ppVededores {
+    height: 500px;
+    width: 600px; 
+    /* background-color: grey;    */
+}
 
 .fondo {
     background-color: aliceblue;
@@ -185,6 +189,15 @@ th {
         height: 350px;
         width: 100%;
     }
+    #ppVendedores {
+        height: auto;
+        width: 100%; 
+        /* background-color: grey;    */
+    } 
+    #movimientos {
+        width: 1800px;
+    }
+   
     textarea {
         height: auto;
         width: 100%;

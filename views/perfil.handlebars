@@ -1,11 +1,24 @@
 <div class="container-fluid">
-  {{!-- {{> navbarUsuario ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
-    
+  {{!-- {{> navbarUsuario }} --}}
+  {{> buscador }}  
   <div class="biombo row">    
     <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green"> 
       {{> cardUsuario }}
-      {{!-- <h2 class="text-center py-5">Usuaria activa</h2> 
-      <h4 class="text-center">Responde a tiempo</h4>      --}}
+      <div class="container col-5 text-center">
+        <h2 class="text-center py-5">Ultimos movimientos</h2> 
+
+
+        <div id="movimientos" class="d-flex justify-content-between">
+          <div>
+            <a class="btn btn-primary mx-auto" href="./transacciones">Transacciones</a>
+          </div>
+          <div>
+            <a class="btn btn-danger mx-auto" href="./notificacion">Notificaciones</a>
+          </div>  
+        </div>
+        
+      </div>
+         
     </div>    
 
     <div class="responsivo col-7 mt-1 mb-1 py-5 text-center rounded-end" style="background: green;">
@@ -19,27 +32,27 @@
   <div class="form-group">
     <div class="form-group"> 
       <label for="nombre">Nombre</label><br>              
-      <input type="text"  name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto" value="{{#if this.nombre}}{{this.nombre}}{{/if}}" />
+      <input type="text"  name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto" value="{{this.nombre}}" />
     </div>          
     <div class="form-group pt-4">
       <label for="nombre">Email</label><br>         
-      <input type="text" name="email" placeholder="no funciona" class="form-control w-50 m-auto" value="{{#if this.email}}{{this.email}}{{/if}}">
+      <input type="text" name="email" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto" value="{{this.email}}">
     </div>     
     <div class="form-group pt-4">
       <label for="nombre">Password</label><br>         
-      <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto" value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
+      <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto" value="{{this.contraseña}}">
     </div>          
     <div class="form-group pt-4"> 
       <label for="nombre">Repite password</label><br>        
-      <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto" value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
+      <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto" value="{{this.contraseña}}">
     </div>
     <div class="form-group pt-5"> 
       <label for="nombre">Telefono</label><br>       
-      <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto" value="{{#if this.telefono}}{{this.telefono}}{{/if}}" />
+      <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto" value="{{this.telefono}}" />
     </div>
     <div class="form-group py-4">
       <label for="nombre">Direccion</label><br>         
-      <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto" value="{{#if this.direccion}}{{this.direccion}}{{/if}}">
+      <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto" value="{{this.direccion}}">
     </div>         
   </div>
 
@@ -53,26 +66,26 @@
     <option value="Las Condes">Las Condes</option>
 </select>
 
-
-
-
-
         <div class="form-group col-12 col-sm-12">
           <p class="text-white pb-3">Sube tu foto de perfil</p><br>            
           <input type="file" name="foto" onchange="previewFile()"><br>          
         </div>
 
-        <button class="btn btn-primary my-3 py- w-50 m-auto">Modificar</button>
-        <button class="btn btn-danger my-3 py- w-50 m-auto">Eliminar</button>
       </form>
+     
+      <input class="btn btn-primary my-3 py- w-50 m-auto" type="button" value="modificar" onClick="modificar()">
+      <input class="btn btn-danger my-3 py- w-50 m-auto" type="button" value="eliminar" onClick="eliminar()">
 
-      {{#if this._id}}
-        <script>
-          document.querySelector('button.btn-danger').addEventListener('click', function(e) {
-            e.preventDefault(); 
-          });
-        </script>
-      {{/if}}
+      <script>
+        function modificar() {
+          window.alert("Tus datos han sido modificados");
+        }
+        function eliminar() {
+          window.alert("Tus perfil ha sido borrado");
+        }
+      </script>
+
+       <p><a href="./inventario">Gestiona tu inventario</a></p>      
 
     </div>
   </div>
@@ -94,62 +107,35 @@
       </tr>
     </thead>
 
-    <tbody> 
-           
-      {{#each productos}}
+    <tbody>            
+      
       <tr>
         <td>{{@index}}</td>
         <td>
           <div>                
-            <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">                
+            <img class="rounded-circle" src="/uploads/pitanga.jpg"  height="55" Width="75">                
           </div>
         </td>
-        <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
-
-        <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>   
-               
-        {{!-- <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.d}}, this)"></td>    --}}
         
+        <td>Perfume Pitanga</td>
+        <td>54.990</td>
+        <td>18</td>
+        <td>Masculino</td>
       </tr>  
-      {{/each}} 
-      
+            
     </tbody>
   </table>
-  <div class="text-center mt-3">    
-    <a  href="./">Página principal</a>
-  </div>
-    
+    <div class="text-center mt-3">  
+      <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Cerrar sesion</a></th>     
+    </div>    
 </div>
-
-
-<script>
-
-  const autorizar = async (cedula_de_identidad, e) => {    
-    const seleccion = e.checked
-    console.log(cedula_de_identidad, seleccion);
-    try {
-      await axios.put('/seleccion_especialista', {
-        cedula_de_identidad,
-        seleccion
-      })
-      alert(seleccion ? 'Especialista seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
-
-  </section>
+</section>
 </div>
 
 <script>
 
   function previewFile() {
-    const preview = document.getElementById('pw');
+    const preview = document.getElementById('ppUsuario');
     const file = document.querySelector('input[type=file').files[0];
     const reader = new FileReader();
 
