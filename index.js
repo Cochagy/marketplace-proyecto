@@ -101,7 +101,7 @@ app.post('/', (req, res) => {
 });
 
 //TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
-app.get("/inicio", async (req, res) => {
+app.get("/inicio", (req, res) => {
   console.log(req.body);
   res.render("inicioSesion");
 });
@@ -157,9 +157,9 @@ app.post("/contacto", (req,res) => {
   res.send(req.body);
 })
 // nuevo//
-app.get("/inicio", async (req, res) => {
-  res.render("inicioSesion");
-});
+// app.get("/inicio", async (req, res) => {
+//   res.render("inicioSesion");
+// });
 
 //app.get("/perfil", async (req, res) => {
   //res.render("perfil");
