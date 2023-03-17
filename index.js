@@ -100,14 +100,41 @@ app.post('/', (req, res) => {
   
 });
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-app.post("/inicioSesion", async (req, res) => {
+//TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
+app.get("/inicio", async (req, res) => {
   console.log(req.body);
-  res.send(req.body);
+  res.render("inicioSesion");
 });
 
-/////nuevo///
+//TRAE PERFIL////////////////////////////////////////////////////////////////////
+const usuarios = require('./usuarios.json');
+
+app.get('/perfil', (req, res) => {
+  // Aquí obtenemos los datos del usuario logeado
+  const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
+  // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
+  
+  if (!usuario) {
+    res.redirect('/login');
+    return;
+  }
+
+  // Renderizamos el HTML con los datos del usuario
+  res.render('perfil', {
+    nombre: usuario.nombre,
+    email: usuario.Email,
+    contraseña: usuario.contraseña,
+    telefono: usuario.telefono,
+    direccion: usuario.direccion,
+    comuna: usuario.Comuna.trim(),
+    
+  });
+
+});
+
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 app.get("/registro", async (req, res) => {
   res.render("registro");
@@ -197,31 +224,31 @@ app.delete('/productos/:codigo_p', (req, res) => {
   });
   
 
-  // llamar datos perfil
-  const usuarios = require('./usuarios.json');
+  // // llamar datos perfil
+  // const usuarios = require('./usuarios.json');
 
-  app.get('/perfil', (req, res) => {
-    // Aquí obtenemos los datos del usuario logeado
-    const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
-    // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
+  // app.get('/perfil', (req, res) => {
+  //   // Aquí obtenemos los datos del usuario logeado
+  //   const usuario = usuarios.usuarios.find(u => u.Email === 'carlos.garcia@example.com');
+  //   // Si no se encuentra el usuario, redirigimos a la página de inicio de sesión
     
-    if (!usuario) {
-      res.redirect('/login');
-      return;
-    }
+  //   if (!usuario) {
+  //     res.redirect('/login');
+  //     return;
+  //   }
   
-    // Renderizamos el HTML con los datos del usuario
-    res.render('perfil', {
-      nombre: usuario.nombre,
-      email: usuario.Email,
-      contraseña: usuario.contraseña,
-      telefono: usuario.telefono,
-      direccion: usuario.direccion,
-      comuna: usuario.Comuna.trim(),
+  //   // Renderizamos el HTML con los datos del usuario
+  //   res.render('perfil', {
+  //     nombre: usuario.nombre,
+  //     email: usuario.Email,
+  //     contraseña: usuario.contraseña,
+  //     telefono: usuario.telefono,
+  //     direccion: usuario.direccion,
+  //     comuna: usuario.Comuna.trim(),
       
-    });
+  //   });
 
-  });
+  // });
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
