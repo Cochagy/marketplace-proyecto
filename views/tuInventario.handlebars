@@ -1,93 +1,122 @@
-<div class="container-fluid"> 
-  {{!-- {{> navbarUsuario }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS--}}
- 
-  <div class="biombo pt-5 pb-5 px-5">
-    <h1 class="text-center pb-5" style="color: green;">Registra tus productos aquí</h1> 
-    <div class="row rounded px-5" style="background: aliceblue;">
-    {{!-- <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1>    --}}
-    {{> cardInventario }}    
-    
-    <div class="responsivo col-7 mt-5 mb-5 py-5 text-center rounded" style="background: green;">      
-      <h1 style="color: aliceblue;">Inventario</h1><br>
-      {{!-- <form class="form-action-control responsivo" action="/tuInventario" method="POST" enctype="multipart/form-data"> --}}
-      <form action="/tuInventario" method="POST" enctype="multipart/form-data">      
-    
-        <div class="form-group">
-           <div class="form-group"> 
-            <label for="nombre">Nombre producto</label><br>              
-            <input type="text"  name="nombre" placeholder="Pitanga" class="form-control w-50 m-auto" />
-          </div>
-          <div class="form-group pt-5"> 
-             <label for="nombre">Precio</label><br>        
-            <input type="text" name="precio" placeholder="21.990" class="form-control w-50 m-auto" />
-          </div>          
-          <div class="form-group pt-4">
-            <label for="nombre">Marca</label><br>         
-            <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
-          </div>     
-          <div class="form-group pt-4">
-            <label for="nombre">Stock</label><br>         
-            <input type="text" name="stock" placeholder="2" class="form-control w-50 m-auto">
-          </div>          
-        </div>
-        <label class="pt-4" for="nombre">Descripción del producto</label><br>
-        <textarea class="rounded" name="textarea"  rows="4" cols="46">Descripcion</textarea>
-       
-        <div class="form-group col-12 col-sm-12">
-          <p class="text-white pb-3">Sube tu foto de perfil</p><br>            
-          <input type="file" name="foto" onchange="previewFile()"><br>          
-        </div>
+<div class="container-fluid">
+  {{!-- {{> navbarUsuario }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR
+  COMODIDAD PARA LAS PRUEBAS--}}
 
-        <button class="btn btn-primary my-3 py- w-50 m-auto">Modificar</button>
-        <button class="btn btn-danger my-3 py- w-50 m-auto">Eliminar</button>
-        <br>
-        <p>Registrar inventario<a href="./registrarInventario"></a></p>   
-      </form>
+  <div class="biombo pt-5 pb-5 px-5">
+    <h1 class="text-center pb-5" style="color: green;">Registra tus productos aquí</h1>
+    <div class="row rounded px-5" style="background: aliceblue;">
+      {{!-- <h1 class="text-center mt-5" style="color: green;">Registra tus productos aquí</h1> --}}
+      {{> cardInventario }}
+
+      <div class="responsivo col-7 mt-5 mb-5 py-5 text-center rounded" style="background: green;">
+        <h1 style="color: aliceblue;">Inventario</h1><br>
+        {{!-- <form class="form-action-control responsivo" action="/tuInventario" method="POST"
+          enctype="multipart/form-data"> --}}
+          <form action="/tuInventario" method="POST" enctype="multipart/form-data">
+
+            <div class="form-group">
+              <div class="form-group">
+                <label for="nombre">Nombre producto</label><br>
+                <input type="text" name="nombre" placeholder="Pitanga" class="form-control w-50 m-auto" />
+              </div>
+              <div class="form-group pt-5">
+                <label for="nombre">Precio</label><br>
+                <input type="text" name="precio" placeholder="21.990" class="form-control w-50 m-auto" />
+              </div>
+              <div class="form-group pt-4">
+                <label for="nombre">Marca</label><br>
+                <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
+              </div>
+              <div class="form-group pt-4">
+                <label for="nombre">Stock</label><br>
+                <input type="text" name="stock" placeholder="2" class="form-control w-50 m-auto">
+              </div>
+            </div>
+            <label class="pt-4" for="nombre">Descripción del producto</label><br>
+            <textarea class="rounded" name="textarea" rows="4" cols="46">Descripcion</textarea>
+
+            <div class="form-group col-12 col-sm-12">
+              <p class="text-white pb-3">Sube tu foto de perfil</p><br>
+              <input type="file" name="foto" onchange="previewFile()"><br>
+            </div>
+
+            <button class="btn btn-primary my-3 py- w-50 m-auto">Modificar</button>
+            <button class="btn btn-danger my-3 py- w-50 m-auto">Eliminar</button>
+            <br>
+            <p>Registrar inventario<a href="./registrarInventario"></a></p>
+          </form>
+      </div>
     </div>
-  </div>
   </div>
 
   <section>
     <h1 class="text-center mt-5" style="color: green;">Tu inventario</h1>
-    <div class="py-4">  
-  <hr class="w-100"/>
+    <div class="py-4">
+      <hr class="w-100" />
 
-  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Foto</th>
-        <th scope="col">Nombre</th>        
-        <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Descripción</th>                     
-      </tr>
-    </thead>
+      <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Foto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Descripción</th>
+          </tr>
+        </thead>
 
-    <tbody> 
-           
-      {{#each productos}}
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">                
-          </div>
-        </td>
-        <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
+        <tbody>
 
-        <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>              
-      </tr>  
-      {{/each}} 
-      
-    </tbody>
-  </table>
-  <div class="text-center mt-3">    
-    <a  href="./">Página principal</a>
-  </div>
+          {{#each productos}}
+          <tr>
+            <td>{{@index}}</td>
+            <td>
+              <div>
+                <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">
+              </div>
+            </td>
+            <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
+
+            <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>
+            
+            
+            <!-- Button trigger modal -->
+            {{!-- <th><a class="btn btn-primary" style="margin: 20px" data-bs-toggle="modal" data-bs-target="#staticBackdrop" href="inicio" role="button">Inicia sesión</a></th>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+              Launch static backdrop modal
+            </button> --}}
+
+          </tr>
+          {{/each}}
+
+        </tbody>
+      </table>
+      <div class="text-center mt-3">
+        <a href="./">Página principal</a>
+      </div>
 
   </section>
 </div>
+
+{{!-- Pop-up que muestra la información de los productos --}}
+
+<!-- Scrollable modal -->
+{{!-- <div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h1 class="modal-title fs-5" id="staticBackdropLabel">Información del producto</h1>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorum quibusdam perspiciatis reprehenderit fugit magnam at odit distinctio illo, iusto minus rerum impedit libero reiciendis minima quae nam veritatis expedita suscipit?
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary">Comprar</button>
+    </div>
+  </div>
+</div> --}}
 
 <script>
 
@@ -114,5 +143,7 @@
     const inventario = JSON.stringify(inventarios);
   };
   obtenerInventarios();
-  
+
+
+
 </script>
