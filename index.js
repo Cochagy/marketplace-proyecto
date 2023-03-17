@@ -94,7 +94,15 @@ app.get("/inventario", async (req, res) => {
 });
 
 app.get("/productosDisponibles", async (req, res) => {
-  res.render("productosDisponibles");
+    try {
+        const productos = await productosJSON;
+        res.render("productosDisponibles", { productos });
+    } catch (e) {
+        res.status(500).send({
+            error: `Algo salió mal... ${e}`,
+            code: 500
+        });
+    };
 });
 
 app.get("/listaVendedores", async (req, res) => {

@@ -107,4 +107,12 @@
     }
   }
   
+  //Función para obtener los datos de los productos del archivo productos.json
+  const obtenerProductos = async () => {
+    const {
+      productos
+    } = await axios.get('http://localhost:4000/productosDisponibles');
+    const usuario = JSON.stringify(usuarios);
+  };
+  obtenerProductos();
 </script>
