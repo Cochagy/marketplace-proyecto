@@ -1,22 +1,32 @@
 <div class="container-fluid">
-  {{!-- {{> navbarInicio ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
-  
+  {{!-- {{> navbarUsuario }}  --}}
+  {{> buscador }}
   <div class="biombo pb-5 px-5">
     <div class="biombo row">
-    <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
+      
+      <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
         <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
             {{> cardEncontrado }}
         </div>
-        <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
-            <section class="mt-5">
-                <h1>Natura</h1>
-                <h1>Ekos frescor</h1>
-                <h1>Pitanga eau de toilette 150ml.</h1>             
-            </section>
-            <h2>para ver detalles inicia sesion</h2><br>            
-            <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Inicia sesión</button>
-            <h2>Aun no estas registrado?</h2>
-        </div>    
+        
+          <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: rgb(205, 107, 107);">
+            <div>
+              <section class="mt-5 ms-5 pt-5">
+                <h1>{{this.marca}} </h1><br>
+                <h1>{{this.nombre}}</h1>
+                <h1>{{this.sexo}}</h1><br>
+                <h1>{{this.precio}}</h1>
+                <h2>
+Esika Hidratante es una crema hidratante suave, formulada con aceites naturales, que proporciona una hidratación profunda y duradera para la piel. Esta crema nutritiva contiene antioxidantes y vitaminas para ayudar a proteger la piel de los daños del medio ambiente. Su fórmula ligera se absorbe rápidamente para dejar la piel con un toque cómodo y sedoso. Esta crema hidratante es ideal para todo tipo de pieles, especialmente para pieles secas y deshidratadas. Esta botella de 250 ml ofrece una hidratación duradera que ayuda a mantener la piel saludable y con un aspecto juvenil.</h2>            
+            </section>   
+
+            </div>
+                     
+        </div> 
+        
+        
+        
+      
     </div>
   </div>
 
@@ -30,81 +40,58 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Imagen</th>
-        <th scope="col">Nombre</th>        
+        <th scope="col">Marca</th>        
+        <th scope="col">Nombre</th>
         <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Descripción</th>                     
+        <th scope="col">Descripción</th>
+        <th scope="col">Vendedores</th>                     
       </tr>
     </thead>
 
     <tbody> 
-           
-      {{#each productos}}
+      
       <tr>
         <td>{{@index}}</td>
         <td>
           <div>                
-            <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">                
+            <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" Width="75">                
           </div>
         </td>
-        <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
-
-        <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>   
-               
-        {{!-- <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.id}}, this)"></td>    --}}
-        
+        <td>{{this.marca}}</td>
+        <td>{{this.nombre}}<br></td>
+        <td>{{this.precio}}</td>
+        <td>{{this.sexo}}</td>        
+        <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./listaVendedores">selccionar</a></td>
       </tr>  
-      {{/each}} 
       
     </tbody>
   </table>
-  <div class="text-center mt-3">
-    <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Ir al buscador</button><br>  
-
-    <a  href="./">Página principal</a>
+  <div class="text-center mt-3">    
+    <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./">Ir al buscador</a>
   </div>
     
 </div>
-
-
-<script>
-
-  const autorizar = async (id, e) => {    
-    const seleccion = e.checked
-    console.log(id, seleccion);
-    try {
-      await axios.put('/seleccion', {
-        id,
-        seleccion
-      })
-      alert(seleccion ? 'Producto seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
-
-  </section>
+</section>
 </div>
 
-<script>
 
-  function previewFile() {
-    const preview = document.getElementById('pw');
-    const file = document.querySelector('input[type=file').files[0];
-    const reader = new FileReader();
 
-    reader.addEventListener("load", () => {
-      preview.src = reader.result;
-    }, false);
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
-  
-</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

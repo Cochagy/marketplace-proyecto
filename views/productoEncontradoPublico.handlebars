@@ -1,0 +1,33 @@
+<div class="container-fluid">
+ {{!-- {{> navbarInicio }}  --}}
+  {{> buscador }}
+  <div class="biombo pb-5 px-5">
+    <div class="biombo row">
+      
+      <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
+        <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
+            {{> cardEncontrado }}
+        </div>
+        
+        <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
+            <section class="mt-5">
+                <h1>{{this.marca}}</h1>
+                <h1>{{this.nombre}}</h1>
+                <h1>{{this.sexo}}</h1>             
+            </section>
+            <h2>para ver detalles inicia sesion</h2><br>            
+            <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./inicio">Inicia sesion</a>
+            <h2>Aun no estas registrado?</h2>
+        </div> 
+      
+    </div>
+  </div>  
+</div>
+
+
+
+
+
+
+
+

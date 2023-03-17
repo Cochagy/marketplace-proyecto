@@ -1,0 +1,43 @@
+<div class="container-fluid">
+  {{!-- {{> navbarUsuario }} --}}
+   
+  <section class="biombo">
+    <h1 class="text-center pt-5" style="color: green;">Tu historial de transacciones</h1>
+    {{> cardNotificacion }}
+    {{!-- <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una solicitud de compra</h1> --}}
+    <div class="py-4">  
+      <hr class="w-100"/>
+  </section>
+  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Compra/venta</th>
+        <th scope="col">Producto</th>        
+        <th scope="col">Precio</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Vendedor</th>                     
+      </tr>
+    </thead>
+
+    <tbody> 
+      
+      <tr>
+        <td>{{@index}}</td>
+        <td>
+          <div>                
+            <img class="rounded-circle" src="/uploads/gasto3.jpg" height="55" Width="75">                
+          </div>
+        </td>
+        <td>Perfume pitanga</td>
+        <td>49.900<br></td>
+        <td>1</td>             
+        <td>Catalina Sanchez</td>
+      </tr>  
+      
+    </tbody>
+
+
+  </table>  
+</div> 
+</div>
