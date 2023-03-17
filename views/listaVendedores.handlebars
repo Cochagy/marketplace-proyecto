@@ -73,45 +73,5 @@
     
 </div>
 
-
-<script>
-
-  const autorizar = async (id, e) => {    
-    const seleccion = e.checked
-    console.log(id, seleccion);
-    try {
-      await axios.put('/seleccion', {
-        id,
-        seleccion
-      })
-      alert(seleccion ? 'Vendedor seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
-
   </section>
 </div>
-
-<script>
-
-  function previewFile() {
-    const preview = document.getElementById('pw');
-    const file = document.querySelector('input[type=file').files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      preview.src = reader.result;
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
-  
-</script>

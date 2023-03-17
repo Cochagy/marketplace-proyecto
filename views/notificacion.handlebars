@@ -2,7 +2,7 @@
   {{!-- {{> navbarUsuario ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
    
   <section class="biombo">
-    <h1 class="text-center pt-5" style="color: green;">Hola Magdalena!!!</h1>
+    <h1 class="text-center pt-5" style="color: green;">Hola Carlos!!!</h1>
     {{> cardNotificacion }}
     <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una solicitud de compra</h1>
     <div class="py-4">  
@@ -21,70 +21,39 @@
     </thead>
 
     <tbody> 
-           
-      {{#each comprador}}
+      
       <tr>
         <td>{{@index}}</td>
         <td>
           <div>                
-            <img class="rounded-circle" src="../public/uploads/jimena.jpeg" height="55" Width="75">                
+            <img class="rounded-circle" src="/uploads/Susana.jpg" height="55" Width="75">                
           </div>
         </td>
-        <td>{{this.nombre}}<br>{{this.producto}}<br>{{this.cantidad}}<br></td>
-                       
-        <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.id}}, this)"></td>   
-        
+        <td>Susana Mora</td>
+        <td>Crema hidratante<br></td>
+        <td>5</td>             
+        <td> <input class="btn btn-primary m-auto" type="button" value="Seleccionar" onClick="seleccionar()"></td>
       </tr>  
-      {{/each}} 
       
     </tbody>
+
+
   </table>
-  <div class="text-center mt-3"> 
-    <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Confirmar solicitud</button> <br>   
-    <a  href="./">Página principal</a>
+
+  <div class="text-center mt-3">   
+    <input class="btn btn-primary m-auto" type="button" value="Confirmar solicitud" onClick="enviar()">
+
+      <script> 
+        function seleccionar() {
+          window.alert("Solicitud de compra seleccionada");
+        }       
+        function enviar() {
+          window.alert("Orden de compra confirmada");
+        }
+      </script>    
   </div>
     
+</div> 
 </div>
 
 
-<script>
-
-  const autorizar = async (id, e) => {    
-    const seleccion = e.checked
-    console.log(id, seleccion);
-    try {
-      await axios.put('/seleccion', {
-        id,
-        seleccion
-      })
-      alert(seleccion ? 'Venta sera confirmada' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
-
-  {{!-- </section> --}}
-</div>
-
-<script>
-
-  function previewFile() {
-    const preview = document.getElementById('pw');
-    const file = document.querySelector('input[type=file').files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      preview.src = reader.result;
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
-  
-</script>

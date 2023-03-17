@@ -4,8 +4,21 @@
   <div class="biombo row">    
     <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green"> 
       {{> cardUsuario }}
-      {{!-- <h2 class="text-center py-5">Usuaria activa</h2> 
-      <h4 class="text-center">Responde a tiempo</h4>      --}}
+      <div class="container col-5 text-center">
+        <h2 class="text-center py-5">Ultimos movimientos</h2> 
+
+
+        <div id="movimientos" class="d-flex justify-content-between">
+          <div>
+            <a class="btn btn-primary mx-auto" href="./transacciones">Transacciones</a>
+          </div>
+          <div>
+            <a class="btn btn-danger mx-auto" href="./notificacion">Notificaciones</a>
+          </div>  
+        </div>
+        
+      </div>
+         
     </div>    
 
     <div class="responsivo col-7 mt-1 mb-1 py-5 text-center rounded-end" style="background: green;">
@@ -58,8 +71,6 @@
           <input type="file" name="foto" onchange="previewFile()"><br>          
         </div>
 
-        {{!-- <button class="btn btn-primary my-3 py- w-50 m-auto">Modificar</button> --}}
-        {{!-- <button class="btn btn-danger my-3 py- w-50 m-auto">Eliminar</button> --}}
       </form>
      
       <input class="btn btn-primary my-3 py- w-50 m-auto" type="button" value="modificar" onClick="modificar()">

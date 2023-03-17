@@ -195,6 +195,9 @@ th {
         width: 100%; 
         /* background-color: grey;    */
     } 
+    #movimientos {
+        width: 1800px;
+    }
     textarea {
         height: auto;
         width: 100%;
