@@ -3,19 +3,18 @@
   
   <div class="biombo pb-5 px-5">
     <div class="row">
-      <h1 class="text-center mt-5">Producto encontrado</h1>     
+      <h1 class="text-center mt-5">Producto seleccionado</h1>     
         <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
-          {{> cardEncontrado }}
+          {{> cardVendedores }}
         </div>
         <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
             <div class="mt-5">
-                <h1>Natura</h1>
-                <h1>Ekos frescor</h1>
+                <h1>esika</h1>
+                <h1>Crema hidratante</h1>
+                <h1>Femenino</h1> 
                 <h1>Pitanga eau de toilette 150ml.</h1>             
-            </div>
-            <h2>para ver detalles inicia sesion</h2><br>            
-            <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Inicia sesión</button>
-            <h2>Aun no estas registrado?</h2>
+            </div><br>
+            <h2>Ya casi es tuyo!!</h2>             
         </div>     
     </div>
   </div>
@@ -31,36 +30,45 @@
         <th scope="col">#</th>
         <th scope="col">Imagen</th>
         <th scope="col">Nombre</th>        
-        <th scope="col">Precio</th>
+        <th scope="col">Precio producto</th>
         <th scope="col">Stock</th>
+        <th scope="col">Comuna/sector</th>
         <th scope="col">Contactar</th>                     
       </tr>
     </thead>
 
-    <tbody> 
-           
-      {{#each vendedor}}
+     <tbody> 
+      
       <tr>
         <td>{{@index}}</td>
         <td>
           <div>                
-            <img class="rounded-circle" src="../public/uploads/jimena.jpeg" height="55" Width="75">                
+            <img class="rounded-circle" src="/uploads/Susana.jpg" height="55" Width="75">                
           </div>
         </td>
-        <td>{{this.imagen}}<br>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br></td>
-
-        {{!-- <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>    --}}
-               
-        <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.cedula_de_identidad}}, this)"></td>   
-        
+        <td>Susana Mora</td>
+        <td>49.990<br></td>
+        <td>7</td>
+        <td>Providencia</td>             
+        <td> <input class="btn btn-primary m-auto" type="button" value="Seleccionar" onClick="seleccionar()"></td>
       </tr>  
-      {{/each}} 
       
     </tbody>
+
+
+
   </table>
-  <div class="text-center mt-3"> 
-    <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Enviar correo</button> <br>   
-    <a  href="./">Página principal</a>
+  <div class="text-center mt-3">   
+    <input class="btn btn-primary m-auto" type="button" value="Enviar" onClick="enviar()">
+
+      <script> 
+        function seleccionar() {
+          window.alert("Revisa los datos de tu solicitud y confirma con enviar");
+        }       
+        function enviar() {
+          window.alert("Tu solicitud de compra fue enviada");
+        }
+      </script>    
   </div>
     
 </div>
