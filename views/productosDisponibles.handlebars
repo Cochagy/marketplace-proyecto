@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  {{!-- {{> navbarInicio }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
+  {{!-- {{> navbarUsuario }}  --}}
   {{> buscador }}
   <div class="biombo pb-5 px-5">
     <div class="biombo row">
@@ -9,16 +9,23 @@
             {{> cardEncontrado }}
         </div>
         
-        <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
-            <section class="mt-5">
-                <h1>{{this.marca}}</h1>
+          <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: rgb(205, 107, 107);">
+            <div>
+              <section class="mt-5 ms-5 pt-5">
+                <h1>{{this.marca}} </h1><br>
                 <h1>{{this.nombre}}</h1>
-                <h1>{{this.sexo}}</h1>             
-            </section>
-            <h2>para ver detalles inicia sesion</h2><br>            
-            <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./inicio">Inicia sesion</a>
-            <h2>Aun no estas registrado?</h2>
+                <h1>{{this.sexo}}</h1><br>
+                <h1>{{this.precio}}</h1>
+                <h2>
+Esika Hidratante es una crema hidratante suave, formulada con aceites naturales, que proporciona una hidratación profunda y duradera para la piel. Esta crema nutritiva contiene antioxidantes y vitaminas para ayudar a proteger la piel de los daños del medio ambiente. Su fórmula ligera se absorbe rápidamente para dejar la piel con un toque cómodo y sedoso. Esta crema hidratante es ideal para todo tipo de pieles, especialmente para pieles secas y deshidratadas. Esta botella de 250 ml ofrece una hidratación duradera que ayuda a mantener la piel saludable y con un aspecto juvenil.</h2>            
+            </section>   
+
+            </div>
+                     
         </div> 
+        
+        
+        
       
     </div>
   </div>

@@ -135,7 +135,6 @@ nav {
     /* background-color: grey;    */
 }
 
-
 .fondo {
     background-color: aliceblue;
 }
@@ -198,6 +197,7 @@ th {
     #movimientos {
         width: 1800px;
     }
+   
     textarea {
         height: auto;
         width: 100%;

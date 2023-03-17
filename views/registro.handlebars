@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  {{!-- {{> navbarInicio ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
+  {{!-- {{> navbarInicio }} --}}
     
   <div class="biombo row px-5">
     <h1 class="text-center mt-5" style="color: green;">Registrate aqui</h1> 
@@ -32,10 +32,35 @@
           </div>
         
         </div> <br><br> 
-        <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Registrar</button><br>             
-        <href="./perfil">Completa tu perfil</a></p>
+        <input class="btn btn-primary" type="button" value="Registrar" onClick="registrar()">            
+          
       </form>
+      <p><a href="./perfil">Completa tu perfil</a></p>
     </div>  
   </div>
 </div>
+ <script>           
+        function registrar() {
+          window.alert("Usuario registrado");
+        }
+</script>  
+
+
+<script>
+
+  function previewFile() {
+    const preview = document.getElementById('ppRegistro');
+    const file = document.querySelector('input[type=file').files[0];
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      preview.src = reader.result;
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+  
+</script>
 
