@@ -1,8 +1,28 @@
 <div class="biombo pt-5 container-fluid">
   {{!-- {{> navbarInicio }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS--}}
-    
+  
+  <div class="pb-5 px-5">
+    <div class="row">
+      
+      <h1 class="text-center mt-5" style="color: green;">Lo sentimos mucho!!!!</h1>    
+        <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
+            {{> cardNoEncontrado }}
+        </div>
+        
+        <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
+            
+            <h1>No encontramos el producto que buscas</h1> 
+            <h2>Intenta con otro</h2><br> 
+            <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./">Ir al buscador</a>           
+            
+            <h2>Aun no estas registrado?</h2>
+            <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./registro">Crea tu cuenta aqui</a>
+        </div> 
+      
+    </div>
+  </div> 
   <div class="container">
-        <h1 class="text-center mb-5 pb-4" style="color: green;">Contacto</h1>
+                
         <div class="row mb-5 rounded" style="background: green;">    
 
     <div class="responsivo col-7 mt-5 py-5 text-center rounded" style="background: green;">      
@@ -17,13 +37,14 @@
             <input type="text"  name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>          
           <div class="form-group pt-4">
-            <label for="nombre">Asunto</label><br>         
+            <label for="nombre">Email</label><br>         
             <input type="text" name="email" placeholder="nombre@gmail.com" class="form-control w-50 m-auto">
           </div>
           <label class="pt-4" for="nombre">Mensaje</label><br>
           <textarea class="rounded" name="textarea"  rows="4" cols="32">Deja tu mensaje aqui</textarea>          
         </div><br><br>
-        <button class="btn btn-primary mb-4 py-2 w-50 m-auto">Ingresar</button><br>
+        <input class="btn btn-primary" type="button" value="Enviar" onClick="enviar()">
+        
         
       </form>
     </div>
@@ -32,7 +53,14 @@
     </div> 
   </div>  
 
-</div>
+</div>   
 
+      <script>           
+        function enviar() {
+          window.alert("Tu mensaje fue enviado, gracias por compartir!!!");
+        }
+      </script>    
+
+    
 
 
