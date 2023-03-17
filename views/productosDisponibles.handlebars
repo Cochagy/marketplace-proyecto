@@ -1,22 +1,25 @@
 <div class="container-fluid">
-  {{!-- {{> navbarInicio ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
-  
+  {{!-- {{> navbarInicio }} ESTA ES EL NAVBAR QUE LE CORRESPONDE, PERO MIENTRAS DESARROLLAMOS ESTARA COMENTADO POR COMODIDAD PARA LAS PRUEBAS}} --}}
+  {{> buscador }}
   <div class="biombo pb-5 px-5">
     <div class="biombo row">
-    <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
+      
+      <h1 class="text-center mt-5" style="color: green;">Producto encontrado</h1>    
         <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
             {{> cardEncontrado }}
         </div>
+        
         <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
             <section class="mt-5">
-                <h1>Natura</h1>
-                <h1>Ekos frescor</h1>
-                <h1>Pitanga eau de toilette 150ml.</h1>             
+                <h1>{{this.marca}}</h1>
+                <h1>{{this.nombre}}</h1>
+                <h1>{{this.sexo}}</h1>             
             </section>
             <h2>para ver detalles inicia sesion</h2><br>            
-            <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Inicia sesión</button>
+            <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./inicio">Inicia sesion</a>
             <h2>Aun no estas registrado?</h2>
-        </div>    
+        </div> 
+      
     </div>
   </div>
 
@@ -30,38 +33,35 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Imagen</th>
-        <th scope="col">Nombre</th>        
+        <th scope="col">Marca</th>        
+        <th scope="col">Nombre</th>
         <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
         <th scope="col">Descripción</th>                     
       </tr>
     </thead>
 
     <tbody> 
-           
-      {{#each productos}}
+      
       <tr>
         <td>{{@index}}</td>
         <td>
           <div>                
-            <img class="rounded-circle" src="../public/uploads/humor.jpeg" height="55" Width="75">                
+            <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" Width="75">                
           </div>
         </td>
-        <td>{{this.nombre}}<br>{{this.precio}}<br>{{this.stock}}<br>{{this.descripcion}}<br></td>
+        <td>{{this.marca}}</td>
+        <td>{{this.nombre}}<br></td>
+        <td>{{this.precio}}</td>
+        <td>{{this.sexo}}</td>
 
-        <th><a class="btn btn-primary" style="margin: 20px" href="inicio" role="button">Inicia sesión</a></th>   
-               
-        {{!-- <td><input type="radio" name="seleccion" {{#if false }} checked {{/if}} onclick="autorizar({{this.id}}, this)"></td>    --}}
+        
         
       </tr>  
-      {{/each}} 
       
     </tbody>
   </table>
-  <div class="text-center mt-3">
-    <button class="btn btn-primary mb-4 py-2 w-40 m-auto">Ir al buscador</button><br>  
-
-    <a  href="./">Página principal</a>
+  <div class="text-center mt-3">    
+    <a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./">Ir al buscador</a>
   </div>
     
 </div>
@@ -108,3 +108,23 @@
   }
   
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
