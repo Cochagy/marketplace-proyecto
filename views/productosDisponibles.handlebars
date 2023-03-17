@@ -36,7 +36,8 @@
         <th scope="col">Marca</th>        
         <th scope="col">Nombre</th>
         <th scope="col">Precio</th>
-        <th scope="col">Descripción</th>                     
+        <th scope="col">Descripción</th>
+        <th scope="col">Vendedores</th>                     
       </tr>
     </thead>
 
@@ -52,10 +53,8 @@
         <td>{{this.marca}}</td>
         <td>{{this.nombre}}<br></td>
         <td>{{this.precio}}</td>
-        <td>{{this.sexo}}</td>
-
-        
-        
+        <td>{{this.sexo}}</td>        
+        <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto"  href="./listaVendedores">selccionar</a></td>
       </tr>  
       
     </tbody>
@@ -65,49 +64,10 @@
   </div>
     
 </div>
-
-
-<script>
-
-  const autorizar = async (id, e) => {    
-    const seleccion = e.checked
-    console.log(id, seleccion);
-    try {
-      await axios.put('/seleccion', {
-        id,
-        seleccion
-      })
-      alert(seleccion ? 'Producto seleccionado, por favor confirme seleccion' : 'Ha ocurrido un error, intente más tarde');      
-    }
-    catch ({ respuesta }) {
-      const { data } = respuesta
-      const { error } = data
-      alert(error)
-    }    
-  }
-  
-</script>  
-
-  </section>
+</section>
 </div>
 
-<script>
 
-  function previewFile() {
-    const preview = document.getElementById('pw');
-    const file = document.querySelector('input[type=file').files[0];
-    const reader = new FileReader();
-
-    reader.addEventListener("load", () => {
-      preview.src = reader.result;
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
-  
-</script>
 
 
 
