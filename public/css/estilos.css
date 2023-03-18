@@ -212,7 +212,9 @@ th {
         height: 100vh;
     } 
     .cardEncontrado {
-        display: none;
+        display:none;
+      
+  
     }
           
 }
