@@ -129,6 +129,17 @@ nav {
     height: 700px;
     width: 600px;
 }
+#ppVededores {
+    height: 500px;
+    width: 600px; 
+    /* background-color: grey;    */
+}
+#favicon {
+    height: 60px;
+    width: 90px; 
+    /* background-color: grey;    */
+}
+
 
 
 .fondo {
@@ -185,6 +196,15 @@ th {
         height: 350px;
         width: 100%;
     }
+    #ppVendedores {
+        height: auto;
+        width: 100%; 
+        /* background-color: grey;    */
+    } 
+    #movimientos {
+        width: 1800px;
+    }
+   
     textarea {
         height: auto;
         width: 100%;
@@ -199,7 +219,9 @@ th {
         height: 100vh;
     } 
     .cardEncontrado {
-        display: none;
+        display:none;
+      
+  
     }
           
 }
