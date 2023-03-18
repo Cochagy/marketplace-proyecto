@@ -72,16 +72,16 @@ app.get("/", async (req, res) => {
 
 //BUSCA PRODUCTO//////////////////////////////////////////////////////////////////
 app.post('/', (req, res) => {
-  const busquedaInput = req.body['busqueda-input'];
+  const busquedaInput = req.body['busqueda-input'];  
 
   // console.log(busquedaInput);
   const productos = JSON.parse(fs.readFileSync('./productos.json'));
 
   const productoBuscado = productos.productos.find(p => p.nombre === busquedaInput);
-
+  
   if (!productoBuscado) {
     // Renderizar vista de error o redirigir a otra página
-    res.redirect('/');
+    res.redirect('/contacto');
     return
 
   }
