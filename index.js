@@ -65,7 +65,7 @@ app.post("/", (req, res) => {
   );
 
   if (!productoBuscado) {
-    res.redirect("/");
+    res.redirect("/contacto");
     return;
   }
   res.render("productosDisponibles", {
