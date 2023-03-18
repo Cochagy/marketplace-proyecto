@@ -1,12 +1,19 @@
 <div class="container-fluid">
   {{!-- {{> navbarUsuario }} --}}
+<<<<<<< HEAD
   {{> buscador }}
  
   <div class="biombo row">    
     <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green"> 
+=======
+  {{> buscadorPrivado }}
+
+  <div class="biombo row">
+    <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green">
+>>>>>>> ff38346e8eff02e877fc32a61ea892cbb49cdf10
       {{> cardUsuario }}
       <div class="container col-5 text-center">
-        <h2 class="text-center py-5">Ultimos movimientos</h2> 
+        <h2 class="text-center py-5">Ultimos movimientos</h2>
 
 
         <div id="movimientos" class="d-flex justify-content-between">
@@ -15,65 +22,71 @@
           </div>
           <div>
             <a class="btn btn-danger mx-auto" href="./notificacion">Notificaciones</a>
-          </div>  
+          </div>
         </div>
-        
+
       </div>
-         
-    </div>    
+
+    </div>
 
     <div class="responsivo col-7 mt-1 mb-1 py-5 text-center rounded-end" style="background: green;">
-      <h1 style="color: aliceblue;">{{this.nombre}}!!</h1>      
+      <h1 style="color: aliceblue;">{{this.nombre}}!!</h1>
       <h2>Completa tu perfil</h2>
       <br>
 
 
-<form action="/perfil" method="GET" enctype="multipart/form-data">      
-    
-  <div class="form-group">
-    <div class="form-group"> 
-      <label for="nombre">Nombre</label><br>              
-      <input type="text"  name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto" value="{{this.nombre}}" />
-    </div>          
-    <div class="form-group pt-4">
-      <label for="nombre">Email</label><br>         
-      <input type="text" name="email" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto" value="{{this.email}}">
-    </div>     
-    <div class="form-group pt-4">
-      <label for="nombre">Password</label><br>         
-      <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto" value="{{this.contraseña}}">
-    </div>          
-    <div class="form-group pt-4"> 
-      <label for="nombre">Repite password</label><br>        
-      <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto" value="{{this.contraseña}}">
-    </div>
-    <div class="form-group pt-5"> 
-      <label for="nombre">Telefono</label><br>       
-      <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto" value="{{this.telefono}}" />
-    </div>
-    <div class="form-group py-4">
-      <label for="nombre">Direccion</label><br>         
-      <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto" value="{{this.direccion}}">
-    </div>         
-  </div>
+     <form action="/perfil" method="GET" enctype="multipart/form-data">
 
-<label for="comuna">Comuna/Sector</label><br>
-<select class="form-select mb-3 w-50 m-auto" name="comuna" aria-label="Default select example">
-    <option selected>Selecciona una comuna</option>
-    <option value="Ñuñoa">Ñuñoa</option>
-    <option value="Providencia">Providencia</option>
-    <option value="Estación Central">Estación Central</option>
-    <option value="Santiago Centro">Santiago Centro</option>
-    <option value="Las Condes">Las Condes</option>
-</select>
+        <div class="form-group">
+          <div class="form-group">
+            <label for="nombre">Nombre</label><br>
+            <input type="text" name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto"
+              value="{{#if this.nombre}}{{this.nombre}}{{/if}}" />
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Email</label><br>
+            <input type="text" name="email" placeholder="no funciona" class="form-control w-50 m-auto"
+              value="{{#if this.email}}{{this.email}}{{/if}}">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Password</label><br>
+            <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto"
+              value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Repite password</label><br>
+            <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto"
+              value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
+          </div>
+          <div class="form-group pt-5">
+            <label for="nombre">Telefono</label><br>
+            <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto"
+              value="{{#if this.telefono}}{{this.telefono}}{{/if}}" />
+          </div>
+          <div class="form-group py-4">
+            <label for="nombre">Direccion</label><br>
+            <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto"
+              value="{{#if this.direccion}}{{this.direccion}}{{/if}}">
+          </div>
+        </div>
+
+        <label for="comuna">Comuna/Sector</label><br>
+        <select class="form-select mb-3 w-50 m-auto" name="comuna" aria-label="Default select example">
+          <option selected>Selecciona una comuna</option>
+          <option value="Ñuñoa">Ñuñoa</option>
+          <option value="Providencia">Providencia</option>
+          <option value="Estación Central">Estación Central</option>
+          <option value="Santiago Centro">Santiago Centro</option>
+          <option value="Las Condes">Las Condes</option>
+        </select>
 
         <div class="form-group col-12 col-sm-12">
-          <p class="text-white pb-3">Sube tu foto de perfil</p><br>            
-          <input type="file" name="foto" onchange="previewFile()"><br>          
+          <p class="text-white pb-3">Sube tu foto de perfil</p><br>
+          <input type="file" name="foto" onchange="previewFile()"><br>
         </div>
 
       </form>
-     
+
       <input class="btn btn-primary my-3 py- w-50 m-auto" type="button" value="modificar" onClick="modificar()">
       <input class="btn btn-danger my-3 py- w-50 m-auto" type="button" value="eliminar" onClick="eliminar()">
 
@@ -86,51 +99,51 @@
         }
       </script>
 
-       <p><a href="./inventario">Gestiona tu inventario</a></p>      
+      <p><a href="./inventario">Gestiona tu inventario</a></p>
 
     </div>
   </div>
 
   <section>
     <h1 class="text-center mt-5" style="color: green;">Tu inventario</h1>
-    <div class="py-4">  
-  <hr class="w-100"/>
+    <div class="py-4">
+      <hr class="w-100" />
 
-  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Foto</th>
-        <th scope="col">Nombre</th>        
-        <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Descripción</th>                     
-      </tr>
-    </thead>
+      <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Foto</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Descripción</th>
+          </tr>
+        </thead>
 
-    <tbody>            
-      
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/pitanga.jpg"  height="55" Width="75">                
-          </div>
-        </td>
-        
-        <td>Perfume Pitanga</td>
-        <td>54.990</td>
-        <td>18</td>
-        <td>Masculino</td>
-      </tr>  
-            
-    </tbody>
-  </table>
-    <div class="text-center mt-3">  
-      <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Cerrar sesion</a></th>     
-    </div>    
-</div>
-</section>
+        <tbody>
+
+          <tr>
+            <td>{{@index}}</td>
+            <td>
+              <div>
+                <img class="rounded-circle" src="/uploads/pitanga.jpg" height="55" Width="75">
+              </div>
+            </td>
+
+            <td>Perfume Pitanga</td>
+            <td>54.990</td>
+            <td>18</td>
+            <td>Masculino</td>
+          </tr>
+
+        </tbody>
+      </table>
+      <div class="text-center mt-3">
+        <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Cerrar sesion</a></th>
+      </div>
+    </div>
+  </section>
 </div>
 
 <script>
@@ -148,7 +161,5 @@
       reader.readAsDataURL(file);
     }
   }
-  
+
 </script>
-
-
