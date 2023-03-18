@@ -134,6 +134,13 @@ nav {
     width: 600px; 
     /* background-color: grey;    */
 }
+#favicon {
+    height: 60px;
+    width: 90px; 
+    /* background-color: grey;    */
+}
+
+
 
 .fondo {
     background-color: aliceblue;
