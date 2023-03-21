@@ -11,9 +11,17 @@ h4 {
     text-align: center;
 }
 
+p {
+    color: #ffffff;    
+}
+
+a {
+    color: #ffffff;
+}
+
 label {
     color: #ffffff;
-    text-align: center;
+    text-align: center;       
 }
 
 /* footer */
@@ -33,18 +41,21 @@ h3 {
     font-weight: 500;
 }
 
+i {
+    color: aliceblue;
+}
+
 .iconos{  
     background-color: green; 
     padding: 30px;  
     display: flex;
     text-align: center;
-    justify-content: center;  
+    justify-content: center;     
 }
 
 body {    
     background-color: rgb(243, 180, 134);   
-    color: #4a4a4a;
-    text-shadow: 0px 0px 1px black;
+    color: aliceblue;    
     font-family: sans-serif;    
 }
 
@@ -52,9 +63,7 @@ body {
     background-color: rgb(243, 180, 134);  
     background-image: url("../uploads/banner.jpg");
     background-repeat: no-repeat;
-    background-size: cover;
-    color: #4a4a4a;
-    text-shadow: 0px 0px 1px black;
+    background-size: cover;   
     font-family: sans-serif;    
 }
 
@@ -75,7 +84,6 @@ body {
 
 /* navbar */
 nav {
-    color: #ffffff;
     font-weight: bold;
 }
 
@@ -105,14 +113,12 @@ nav {
 
 #ppInventario {
     height: 1000px;
-    width: 600px; 
-    /* background-color: aliceblue;    */
+    width: 600px;    
 }
 
 #ppEncontrado {
     height: 500px;
-    width: 600px; 
-    /* background-color: grey;    */
+    width: 600px;    
 }
 
 #ppNotificacion {
@@ -131,16 +137,12 @@ nav {
 }
 #ppVededores {
     height: 500px;
-    width: 600px; 
-    /* background-color: grey;    */
+    width: 600px;    
 }
 #favicon {
     height: 60px;
-    width: 90px; 
-    /* background-color: grey;    */
+    width: 90px;    
 }
-
-
 
 .fondo {
     background-color: aliceblue;
@@ -175,19 +177,16 @@ th {
     }
     #ppEncontrado {
         height: auto;
-        width: 100%; 
-        /* background-color: grey;    */
+        width: 100%;        
     } 
     #ppInventario {
         height: auto;
-        width: 100%; 
-        /* background-color: aliceblue;    */
+        width: 100%;       
     }
     #ppLogo {
         height: auto;
         width: 100%;    
-    }
-    
+    }    
     #ppUsuario {
         height: auto;
         width: 100%;
@@ -198,8 +197,7 @@ th {
     }
     #ppVendedores {
         height: auto;
-        width: 100%; 
-        /* background-color: grey;    */
+        width: 100%;        
     } 
     #movimientos {
         width: 1800px;
@@ -219,9 +217,7 @@ th {
         height: 100vh;
     } 
     .cardEncontrado {
-        display:none;
-      
-  
+        display:none;  
     }
           
 }
