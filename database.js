@@ -27,4 +27,13 @@ async function muestra_inventario() {
     return resultado.rows;
 }
 
-module.exports = { getDate, muestra_usuarios, muestra_inventario };
+async function encuentra_producto(busquedaInput) {
+    const consulta = {
+        text: 'SELECT * FROM productos WHERE nombrep = $1',
+        values: [busquedaInput]
+    };
+    const result = await pool.query(consulta);    
+    return result.rows[0];
+}
+
+module.exports = { getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
