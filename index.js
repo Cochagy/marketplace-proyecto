@@ -4,7 +4,11 @@ const fs = require("fs");
 const { Pool } = require('pg');
 
 //////////////////////////////////////////////////////
-const { getDate, muestra_usuarios, muestra_inventario} = require("./database");
+const { getDate,
+  muestra_usuarios, 
+  muestra_inventario, 
+  encuentra_producto
+} = require("./database");
 
 ////////////////////////RUTAS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,35 +63,57 @@ app.get("/transacciones", async (req, res) => {
 });
 ////////////////////////////////////////////////////
 
-getDate();
-muestra_usuarios();
-muestra_inventario();
+// getDate();
+// muestra_usuarios();
+// muestra_inventario();
 
 
 //////////////////////////////////////////////////////////////////BUSCA PRODUCTO//////////////////////////////////////////////////////////////////
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
+  // console.log(req.body);
+  // const productoBuscado = req.body;
+  // console.log(productoBuscado);
   const busquedaInput = req.body["busqueda-input"];
-
-  const productos = JSON.parse(fs.readFileSync("./productos.json"));
-
-  const productoBuscado = productos.productos.find(
-    (p) => p.nombre === busquedaInput
-  );
-
-  if (!productoBuscado) {
-    res.redirect("/contacto");
-    return;
-  }
+  console.log(busquedaInput);
+  const productoBuscado = await encuentra_producto(busquedaInput); 
+  console.log(productoBuscado);
   res.render("productosDisponibles", {
-    codigo: productoBuscado.codigo_p,
-    marca: productoBuscado.marca,
-    nombre: productoBuscado.nombre,
+    codigo: productoBuscado.id_codigo,
+    marca: productoBuscado.id_marca,
+    nombre: productoBuscado.nombrep,
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
-  });
-  if (busquedaInput === productoBuscado.nombre) {
-    productoBuscado.codigo_p;
-  }
+  });   
+  
+  // res.render("productoEncontradoPublico", {
+  //   codigo: productoBuscado.id_codigo,
+  //   marca: productoBuscado.id_marca,
+  //   nombre: productoBuscado.nombrep,
+  //   precio: productoBuscado.precio,
+  //   sexo: productoBuscado.sexo,
+  // });
+
+  /////////////////////////////////////////////////////lo de abajo es del hito 2//////////////////////////////
+
+  // const productos = JSON.parse(fs.readFileSync("./productos.json"));
+
+  // const productoBuscado = productos.productos.find(
+  //   (p) => p.nombre === busquedaInput
+  // );
+  // if (!productoBuscado) {
+  //   res.redirect("/contacto");
+  //   return;
+  // }
+  // res.render("productosDisponibles", {
+  //   codigo: productoBuscado.codigo_p,
+  //   marca: productoBuscado.marca,
+  //   nombre: productoBuscado.nombre,
+  //   precio: productoBuscado.precio,
+  //   sexo: productoBuscado.sexo,
+  // });
+  // if (busquedaInput === productoBuscado.nombre) {
+  //   productoBuscado.codigo_p;
+  // }
 });
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
