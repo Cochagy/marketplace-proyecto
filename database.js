@@ -36,4 +36,31 @@ async function encuentra_producto(busquedaInput) {
     return result.rows[0];
 }
 
-module.exports = { getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
+async function trae_usuario(email, password) {
+    const consulta = {
+        text: 'SELECT * FROM usuarios WHERE email = $1 AND password = $2',
+        values: [email, password]
+    };
+    const result = await pool.query(consulta);
+    console.log(consulta);
+    console.log(result);
+    return result.rows[0];
+}
+
+// async function trae_contrasena_encriptada(email) {
+//     const consulta = {
+//         text: 'SELECT * FROM usuario WHERE email = $1',
+//         values: [email]
+//     };
+//     const result = await pool.query(consulta);
+//     return result.rows[0];
+// }
+
+module.exports = { 
+    getDate, 
+    muestra_usuarios, 
+    muestra_inventario, 
+    encuentra_producto,
+    trae_usuario,
+    // trae_contrasena_encriptada
+ };
