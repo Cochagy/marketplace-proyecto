@@ -10,7 +10,7 @@
         <div class="form-group">             
           <div class="form-group pt-4"> 
             <Label>Nombre</Label> <br>      
-            <input type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+            <input id="nombre" type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group pt-4"> 
             <Label>email</Label> <br>      
@@ -18,11 +18,11 @@
           </div>
           <div class="form-group py-4">
             <Label>Password</Label> <br>         
-            <input type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
+            <input id="password" type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
             <Label>Repite password</Label> <br>         
-            <input type="password" name="repitePassword" placeholder="********" class="form-control w-50 m-auto" />
+            <input id="repetir_password" type="password" name="repitePassword" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group col-12 col-sm-12">
             <p class="text-white pb-3">Sube tu foto de perfil</p>           
@@ -38,9 +38,22 @@
   </div>
 </div>
  <script>           
-        function registrar() {
+        {{!-- function registrar() {
           window.alert("Usuario registrado");
-        }
+        } --}}
+
+    const registrar = () => {
+      let nombre = document.getElementById('nombre').value;
+      let password = document.getElementById('password').value;
+      let repetir_password = document.getElementById('repetir_password').value;
+      if (repetir_password !== password) {
+        alert(`Has escrito mal la contraseña de confirmación`);
+      } else {
+        alert(`Usuario ${nombre} registrado con éxito! Ya puedes iniciar sesión`);
+        window.location.href = '/inicio' ;
+      }
+    };
+
 </script>  
 
 
