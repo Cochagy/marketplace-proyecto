@@ -1,12 +1,16 @@
 const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
-const { Pool } = require('pg');
+const {
+  Pool
+} = require('pg');
 
 //////////////////////////////////////////////////////
-const { getDate,
-  muestra_usuarios, 
-  muestra_inventario, 
+const {
+  registrarUsuario,
+  getDate,
+  muestra_usuarios,
+  muestra_inventario,
   encuentra_producto
 } = require("./database");
 
@@ -25,8 +29,34 @@ app.get("/registro", async (req, res) => {
 });
 
 app.post("/registro", async (req, res) => {
-
-  res.send(req.body);
+  const {
+    foto
+  } = req.files;
+  const {
+    name
+  } = foto;
+  const {
+    nombre,
+    email,
+    password,
+  } = req.body
+  try {
+    await registrarUsuario(nombre, email, password, name);
+    res.status(201);
+    res.render('inicio');
+  } catch (e) {
+    res.status(500).json({
+      error: `Algo salió mal... ${e}`,
+      code: 500
+    });
+  };
+  foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
+    if (err) return res.status(500).json({
+      error: `Algo salió mal...${err}`,
+      code: 500
+    });
+    res.status(201);
+  });
 });
 
 app.get("/contacto", async (req, res) => {
@@ -75,7 +105,7 @@ app.post("/", async (req, res) => {
   // console.log(productoBuscado);
   const busquedaInput = req.body["busqueda-input"];
   console.log(busquedaInput);
-  const productoBuscado = await encuentra_producto(busquedaInput); 
+  const productoBuscado = await encuentra_producto(busquedaInput);
   console.log(productoBuscado);
   res.render("productosDisponibles", {
     codigo: productoBuscado.id_codigo,
@@ -83,8 +113,8 @@ app.post("/", async (req, res) => {
     nombre: productoBuscado.nombrep,
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
-  });   
-  
+  });
+
   // res.render("productoEncontradoPublico", {
   //   codigo: productoBuscado.id_codigo,
   //   marca: productoBuscado.id_marca,

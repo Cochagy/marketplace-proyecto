@@ -9,6 +9,15 @@ const pool = new Pool({
 
 });
 
+const registrarUsuario = async (nombre, email, password, foto) => {
+    const result = {
+        text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
+        values: [nombre, email, password, foto] 
+    };
+    const res = await pool.query(result);
+    return res.rows[0];
+};
+
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
     console.log(result);
@@ -36,4 +45,4 @@ async function encuentra_producto(busquedaInput) {
     return result.rows[0];
 }
 
-module.exports = { getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
+module.exports = { registrarUsuario, getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
