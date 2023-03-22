@@ -1,94 +1,100 @@
 const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
-const {
-  Pool
-} = require('pg');
+const { Pool } = require('pg');
 
-//////////////////////////////////////////////////////
-const { registrarUsuario,
+///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
+const { 
+  registrarUsuario,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
-  encuentra_producto
+  encuentra_producto,
+  trae_usuario
 } = require("./database");
 
-// const  { encripta, compara }  = require('./encriptador');
-// const { genera_token, verifica_token } = require('./verificadorToken');
-// const { cookie } = require('./cookie');
+/////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
+// getDate();
+// muestra_usuarios();
+// muestra_inventario();
 
-////////////////////////RUTAS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////RUTAS/////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////TRAE LA VISTA DEL BUSCADOR PUBLICO/////////
 app.get("/", async (req, res) => {
   res.render("index");
 });
 
-app.get("/", async (req, res) => {
-  res.render("index");
-});
-
-app.get("/", async (req, res) => {
-  res.render("index");
-});
-///////////////////////////////////////////inicio de sesion////////////////
-app.get("/inicioSesion", async (req, res) => {
+///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
+app.get("/inicio", (req, res) => {
+  console.log(req.body);
   res.render("inicioSesion");
 });
 
-app.post("/inicioSesion", async (req, res) => {
-  // console.log(req.body);
-  const { email, password } = req.body;
-  console.log(email, password);
-  if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
-    const usuario = await trae_usuario(email, password);
-    console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
-         
-    if(!usuario) {
-        res.status(404).send({
-            error: 'Este usuario no se ha registrado',
-            code: 404,
-    }); 
-
-    }if (usuario.is_active !== 1) {        
-        res.status(401).send({
-        error: 'Este usuario se encuentra en evaluacion',
-        code: 401,
-        });               
-                         
-    } else {
-
-      
-        // const usuario_id = await trae_contrasena_encriptada(email);           
-        // contrasena_encriptada = usuario_id.password;    
-        // const compara_contrasena = await compara(password_tutor, password_encriptada); 
-        
-        // if (compara_contrasena === false) {
-        //     res.status(401).send({
-        //         error: 'Credenciales incorrectas',
-        //         code: 401,
-        //     });
-        // }
-        // const usuario = await trae_usuario(email, password_encriptada);        
-        // const token = await genera_token(usuario);
-        // res.cookie('retoken', token, {httpOnly: true});
-        res.render("perfil",{
-          id: usuario.id,
-          sector: usuario.sector,
-          nombre: usuario.nombrep, 
-          email: usuario.email,
-          rut: usuario.rut,
-          id_rol: usuario.id_rol,
-          password: usuario.password,
-          is_active: usuario.is_active,
-          foto: usuario.foto
-        });
-
-    } 
-
-  // res.send("aqui");
+// //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
+app.get("/perfil", (req, res) => {
+  res.render("perfil");
 });
 
-///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
+app.get("/contacto", async (req, res) => {
+  res.render("contacto");
+});
+
+app.post("/contacto", (req, res) => {
+  res.send(req.body);
+});
+
+app.get("/registroProductos", async (req, res) => {
+  res.render("registroProductos");
+});
+
+app.get("/inventario", async (req, res) => {
+  res.render("tuInventario");
+});
+
+app.get("/productosDisponibles", async (req, res) => {
+  res.render("productosDisponibles");
+});
+
+app.get("/listaVendedores", async (req, res) => {
+  res.render("listaVendedores");
+});
+
+app.get("/notificacion", async (req, res) => {
+  res.render("notificacion");
+});
+
+app.get("/transacciones", async (req, res) => {
+  res.render("transacciones");
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
+app.post("/", async (req, res) => {    
+  const busquedaInput = req.body["busqueda-input"];
+  console.log(busquedaInput);
+  const productoBuscado = await encuentra_producto(busquedaInput);
+  console.log(productoBuscado);
+
+  res.render("productoEncontradoPublico", {
+    codigo: productoBuscado.id_codigo,
+    marca: productoBuscado.id_marca,
+    nombre: productoBuscado.nombrep,
+    precio: productoBuscado.precio,
+    sexo: productoBuscado.sexo,
+  });
+
+
+});
+///////////////////////////////aqui termina lo del hito 2///////////
+
+////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 app.get("/registro", async (req, res) => {
   res.render("registro");
 });
@@ -124,52 +130,51 @@ app.post("/registro", async (req, res) => {
   });
 });
 
-app.get("/contacto", async (req, res) => {
-  res.render("contacto");
+///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////
+app.get("/inicioSesion", async (req, res) => {
+  res.render("inicioSesion");
 });
 
-app.post("/contacto", (req, res) => {
+app.post("/inicioSesion", async (req, res) => {
+  // console.log(req.body);
+  const { email, password } = req.body;
+  console.log(email, password);
+  if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
+    const usuario = await trae_usuario(email, password);
+    console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
+         
+    if(!usuario) {
+        res.status(404).send({
+            error: 'Este usuario no se ha registrado',
+            code: 404,
+    }); 
 
-  res.send(req.body);
+    }if (usuario.is_active !== 1) {        
+        res.status(401).send({
+        error: 'Este usuario se encuentra en evaluacion',
+        code: 401,
+        });               
+                         
+    } else {      
+        res.render("perfil",{
+          id: usuario.id,
+          sector: usuario.sector,
+          nombre: usuario.nombrep, 
+          email: usuario.email,
+          rut: usuario.rut,
+          id_rol: usuario.id_rol,
+          password: usuario.password,
+          is_active: usuario.is_active,
+          foto: usuario.foto
+        });
+    } 
+  // res.send("aqui");
 });
 
-app.get("/registroProductos", async (req, res) => {
-  res.render("registroProductos");
-});
-
-app.get("/inventario", async (req, res) => {
-  res.render("tuInventario");
-});
-
-app.get("/productosDisponibles", async (req, res) => {
-  res.render("productosDisponibles");
-});
-
-app.get("/listaVendedores", async (req, res) => {
-  res.render("listaVendedores");
-});
-
-app.get("/notificacion", async (req, res) => {
-  res.render("notificacion");
-});
-
-app.get("/transacciones", async (req, res) => {
-  res.render("transacciones");
-});
-////////////////////////////////////////////////////
-
-// getDate();
-// muestra_usuarios();
-// muestra_inventario();
-
-
-//////////////////////////////////////////////////////////////////BUSCA PRODUCTO//////////////////////////////////////////////////////////////////
-app.post("/", async (req, res) => {
+///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
+app.post("/privado", async (req, res) => {
   console.log(req.body);
-  // const productoBuscado = req.body;
-  // console.log(productoBuscado);run  
   const logeado = req.body;
-  
 
   const busquedaInput = req.body["busqueda-input"];
   console.log(busquedaInput);
@@ -181,17 +186,22 @@ app.post("/", async (req, res) => {
     nombre: productoBuscado.nombrep,
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
-  });   
-  
-  // res.render("productoEncontradoPublico", {
-  //   codigo: productoBuscado.id_codigo,
-  //   marca: productoBuscado.id_marca,
-  //   nombre: productoBuscado.nombrep,
-  //   precio: productoBuscado.precio,
-  //   sexo: productoBuscado.sexo,
-  // });
+  });  
+});
 
-  /////////////////////////////////////////////////////lo de abajo es del hito 2//////////////////////////////
+
+//////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
+
+////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
+// app.get("/", async (req, res) => {
+//   res.render("index");
+// });
+
+// app.get("/", async (req, res) => {
+//   res.render("index");
+// });
+
+  /////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
 
   // const productos = JSON.parse(fs.readFileSync("./productos.json"));
 
@@ -212,132 +222,121 @@ app.post("/", async (req, res) => {
   // if (busquedaInput === productoBuscado.nombre) {
   //   productoBuscado.codigo_p;
   // }
-});
 
-///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
+//////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
 
-app.get("/inicio", (req, res) => {
-  console.log(req.body);
-  res.render("inicioSesion");
-});
+// const usuarios = require("./usuarios.json");
 
-//////////////////////////////////////////////////////TRAE PERFIL////////////////////////////////////////////////////////////////////
+// app.get("/perfil", (req, res) => {
+//   const usuario = usuarios.usuarios.find(
+//     (u) => u.Email === "carlos.garcia@example.com"
+//   );
 
-const usuarios = require("./usuarios.json");
+//   if (!usuario) {
+//     res.redirect("/login");
+//     return;
+//   }
 
-app.get("/perfil", (req, res) => {
-  const usuario = usuarios.usuarios.find(
-    (u) => u.Email === "carlos.garcia@example.com"
-  );
+//   res.render("perfil", {
+//     nombre: usuario.nombre,
+//     email: usuario.Email,
+//     contraseña: usuario.contraseña,
+//     telefono: usuario.telefono,
+//     direccion: usuario.direccion,
+//     comuna: usuario.Comuna.trim(),
+//   });
+// });
 
-  if (!usuario) {
-    res.redirect("/login");
-    return;
-  }
+//////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
-  res.render("perfil", {
-    nombre: usuario.nombre,
-    email: usuario.Email,
-    contraseña: usuario.contraseña,
-    telefono: usuario.telefono,
-    direccion: usuario.direccion,
-    comuna: usuario.Comuna.trim(),
-  });
-});
+// app.use((req, res, next) => {
+//   if (req.headers['x-http-method-override']) {
+//     req.method = req.headers['x-http-method-override'];
+//   }
+//   next();
+// });
 
-//////////////////////////////////////////////////////////////////////BORRAR USUARIO///////////////////////////////////////////////////////////////////
+// // Ruta para manejar solicitudes DELETE
+// app.delete("/eliminar/:RUT", (req, res) => {
+//   const RUT = req.params.RUT;
+//   if (!RUT || typeof RUT !== 'string') {
+//     return res.status(400).json({
+//       message: 'RUT inválido'
+//     });
+//   }
 
-app.use((req, res, next) => {
-  if (req.headers['x-http-method-override']) {
-    req.method = req.headers['x-http-method-override'];
-  }
-  next();
-});
+//   let usuarios = JSON.parse(fs.readFileSync('usuarios.json'));
 
-// Ruta para manejar solicitudes DELETE
-app.delete("/eliminar/:RUT", (req, res) => {
-  const RUT = req.params.RUT;
-  if (!RUT || typeof RUT !== 'string') {
-    return res.status(400).json({
-      message: 'RUT inválido'
-    });
-  }
+//   const index = usuarios.usuarios.findIndex((u) => u.RUT === RUT);
 
-  let usuarios = JSON.parse(fs.readFileSync('usuarios.json'));
+//   if (index < 0) {
+//     return res.status(404).json({
+//       message: 'Usuario no encontrado'
+//     });
+//   }
 
-  const index = usuarios.usuarios.findIndex((u) => u.RUT === RUT);
+//   usuarios.usuarios.splice(index, 1);
 
-  if (index < 0) {
-    return res.status(404).json({
-      message: 'Usuario no encontrado'
-    });
-  }
-
-  usuarios.usuarios.splice(index, 1);
-
-  fs.writeFileSync('usuarios.json', JSON.stringify(usuarios), 'utf-8');
+//   fs.writeFileSync('usuarios.json', JSON.stringify(usuarios), 'utf-8');
 
   // Agrega el siguiente código para mostrar una alerta al usuario
-  const mensaje = 'Usuario eliminado con éxito';
-  res.send(`
-     <script>
-       alert('${mensaje}');
-       window.location.href = '/'; // redirige al usuario a la página principal
-     </script>
-   `);
-});
+//   const mensaje = 'Usuario eliminado con éxito';
+//   res.send(`
+//      <script>
+//        alert('${mensaje}');
+//        window.location.href = '/'; // redirige al usuario a la página principal
+//      </script>
+//    `);
+// });
 
 
-//borrar producto
+/////////////////////////////////////////////////////////BORRA PRODUCTO HITO 2//////////////////
 
-app.delete("/productos/:codigo_p", (req, res) => {
-  const codigo_p = req.params.codigo_p;
+// app.delete("/productos/:codigo_p", (req, res) => {
+//   const codigo_p = req.params.codigo_p;
 
-  const productoEliminado = productos.find(
-    (p) => p.codigo_p === parseInt(codigo_p)
-  );
+//   const productoEliminado = productos.find(
+//     (p) => p.codigo_p === parseInt(codigo_p)
+//   );
 
-  if (productoEliminado) {
-    productos = productos.filter((p) => p.codigo_p !== parseInt(codigo_p));
-    return res.status(200).json({
-      message: "Producto eliminado con éxito",
-    });
-  }
+//   if (productoEliminado) {
+//     productos = productos.filter((p) => p.codigo_p !== parseInt(codigo_p));
+//     return res.status(200).json({
+//       message: "Producto eliminado con éxito",
+//     });
+//   }
 
-  return res.status(404).json({
-    message: "Producto no encontrado",
-  });
-});
+//   return res.status(404).json({
+//     message: "Producto no encontrado",
+//   });
+// });
 
+/////////////////////////////////////////////////////////////////////LOGIN  HITO 2////////////////
 
-///////////////////////////////////////////////////////LOGIN////////////////////////////////////////////////////////////////////////////////////////
+// app.post("/login", (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
 
+//   const usuario = usuarios.usuarios.find((u) => u.Email === email);
 
+//   if (!usuario) {
+//     res.render("login", {
+//       mensaje: "Usuario no encontrado",
+//     });
+//     return;
+//   }
 
-app.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+//   if (usuario.contraseña !== password) {
+//     res.render("login", {
+//       mensaje: "Contraseña incorrecta",
+//     });
+//     return;
+//   }
 
-  const usuario = usuarios.usuarios.find((u) => u.Email === email);
+//   res.redirect("/perfil");
+// });
 
-  if (!usuario) {
-    res.render("login", {
-      mensaje: "Usuario no encontrado",
-    });
-    return;
-  }
-
-  if (usuario.contraseña !== password) {
-    res.render("login", {
-      mensaje: "Contraseña incorrecta",
-    });
-    return;
-  }
-
-  res.redirect("/perfil");
-});
-
-//////////////////////////////////////////////////////CODIGO COMENTADO/////////////////////////////////////////////////
+////////////////////////////////////////////////////CODIGO COMENTADO DEL HITO 2////////////////////
 
 // nuevo//
 // app.get("/inicio", async (req, res) => {
