@@ -1,15 +1,16 @@
 const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
-const { Pool } = require('pg');
+const {
+  Pool
+} = require('pg');
 
 //////////////////////////////////////////////////////
-const { getDate,
+const { registrarUsuario,
+  getDate,
   muestra_usuarios, 
   muestra_inventario, 
-  encuentra_producto,
-  trae_usuario
-  // trae_contrasena_encriptada
+  encuentra_producto
 } = require("./database");
 
 // const  { encripta, compara }  = require('./encriptador');
@@ -93,8 +94,34 @@ app.get("/registro", async (req, res) => {
 });
 
 app.post("/registro", async (req, res) => {
-
-  res.send(req.body);
+  const {
+    foto
+  } = req.files;
+  const {
+    name
+  } = foto;
+  const {
+    nombre,
+    email,
+    password,
+  } = req.body
+  try {
+    await registrarUsuario(nombre, email, password, name);
+    res.status(201);
+    res.render('inicio');
+  } catch (e) {
+    res.status(500).json({
+      error: `Algo salió mal... ${e}`,
+      code: 500
+    });
+  };
+  foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
+    if (err) return res.status(500).json({
+      error: `Algo salió mal...${err}`,
+      code: 500
+    });
+    res.status(201);
+  });
 });
 
 app.get("/contacto", async (req, res) => {
@@ -146,30 +173,15 @@ app.post("/", async (req, res) => {
 
   const busquedaInput = req.body["busqueda-input"];
   console.log(busquedaInput);
-  const productoBuscado = await encuentra_producto(busquedaInput); 
+  const productoBuscado = await encuentra_producto(busquedaInput);
   console.log(productoBuscado);
-
-  if(logeado !== "{{this.email}}") {
-    res.render("productoEncontradoPublico", {
-      codigo: productoBuscado.id_codigo,
-      marca: productoBuscado.id_marca,
-      nombre: productoBuscado.nombrep,
-      precio: productoBuscado.precio,
-      sexo: productoBuscado.sexo,
-    });
-
-  } else {
-    res.render("productosDisponibles", {
-      codigo: productoBuscado.id_codigo,
-      marca: productoBuscado.id_marca,
-      nombre: productoBuscado.nombrep,
-      precio: productoBuscado.precio,
-      sexo: productoBuscado.sexo,
-    }); 
-
-  }
-
-    
+  res.render("productosDisponibles", {
+    codigo: productoBuscado.id_codigo,
+    marca: productoBuscado.id_marca,
+    nombre: productoBuscado.nombrep,
+    precio: productoBuscado.precio,
+    sexo: productoBuscado.sexo,
+  });   
   
   // res.render("productoEncontradoPublico", {
   //   codigo: productoBuscado.id_codigo,
