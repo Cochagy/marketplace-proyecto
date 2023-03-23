@@ -1,4 +1,5 @@
 <div class="container-fluid">
+  {{> buscador }}
   <div class="biombo row">
     <div class="responsivo mt-1 mb-1 col-5 rounded-start" style="background: green">
 
@@ -32,7 +33,7 @@
           <div class="form-group">
             <label for="nombre">Nombre</label><br>
             <input type="text" name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto"
-              value="{{#if this.nombre}}{{this.nombre}}{{/if}}" />
+              value="{{this.nombreu}}" />
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Email</label><br>
@@ -42,7 +43,7 @@
           <div class="form-group pt-4">
             <label for="nombre">Password</label><br>
             <input type="password" name="password" placeholder="*********" class="form-control w-50 m-auto"
-              value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
+              value="{{this.password}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Repite password</label><br>
