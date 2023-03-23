@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 //////////////////////////////////////////////////////
 const {
-  registrarUsuario,
+  registrar_usuario,
   getDate,
   muestra_usuarios,
   muestra_inventario,
