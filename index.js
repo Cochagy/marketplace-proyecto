@@ -7,12 +7,12 @@ const {
 
 //////////////////////////////////////////////////////
 const {
-  registrarUsuario,
+  registrar_usuario,
   getDate,
   muestra_usuarios,
   muestra_inventario,
   encuentra_producto
-} = require("./database");
+} = require("./database.js");
 
 ////////////////////////RUTAS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +41,7 @@ app.post("/registro", async (req, res) => {
     password,
   } = req.body
   try {
-    await registrarUsuario(nombre, email, password, name);
+    await registrar_usuario(nombre, email, password, name);
     res.status(201);
     res.render('inicio');
   } catch (e) {
@@ -148,7 +148,8 @@ app.post("/", async (req, res) => {
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION REDIRECCIONA A PERFIL////////////////////////////////
 
-app.get("/inicio", (req, res) => {
+app.get("/inicio", async (req, res) => {
+  await muestra_usuarios();
   console.log(req.body);
   res.render("inicioSesion");
 });

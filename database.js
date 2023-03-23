@@ -1,4 +1,6 @@
 const { Pool } = require('pg');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -9,13 +11,13 @@ const pool = new Pool({
 
 });
 
-const registrarUsuario = async (nombre, email, password, foto) => {
+const registrar_usuario = async (nombre, email, password, foto) => {
     const result = {
-        text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
+        text: 'INSERT INTO usuarios (nombre, email, password, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
         values: [nombre, email, password, foto] 
     };
     const res = await pool.query(result);
-    return res.rows[0];
+    return res.rows;
 };
 
 const getDate = async () => {
@@ -45,4 +47,4 @@ async function encuentra_producto(busquedaInput) {
     return result.rows[0];
 }
 
-module.exports = { registrarUsuario, getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
+module.exports = { registrar_usuario, getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
