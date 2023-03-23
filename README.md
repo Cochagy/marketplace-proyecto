@@ -20,7 +20,7 @@ Bienvenidos al Marketplace de Belleza, una comunidad donde puedes comprar y vend
 [https://www.figma.com/file/Fv7wlVnqzdP6Ow8JAl9vlv/Marketplace?node-id=0%3A1&t=U7JGTHkObtPGFrqP-]
 
 
-hola
+
 
 
 
