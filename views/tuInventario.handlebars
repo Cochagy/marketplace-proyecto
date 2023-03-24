@@ -59,7 +59,7 @@
   <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
-        <th scope="col">#</th>
+     
         <th scope="col">Foto</th>
         <th scope="col">Nombre</th>        
         <th scope="col">Precio</th>
@@ -69,25 +69,22 @@
       </tr>
     </thead>
 <tbody>            
-      
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/pitanga.jpg"  height="55" Width="75">                
-          </div>
-        </td>
-        
-        <td>Perfume Pitanga</td>
-        <td>54.990</td>
-        <td>Natura</td>        
-        <td>18</td>
-        <td>Masculino</td>
-      </tr>  
-            
-    </tbody>
-    
-     
+        {{#each productos}}
+        <tr>
+          <td>
+            <div>                
+              <img class="rounded-circle" src="/uploads/{{this.foto}}"  height="55" Width="75">                
+            </div>
+          </td>
+          <td>{{this.nombrep}}</td>
+          <td>${{this.precio}}</td>
+          <td>{{this.nombre_marca}}</td>
+          <td>{{this.stock}}</td>
+          <td>{{this.cliente}}</td>
+        </tr>  
+        {{/each}}    
+      </tbody>
+  
   </table>
   <div class="text-center mt-3">    
   <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Pagina Principal</a></th>

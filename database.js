@@ -1,6 +1,4 @@
 const { Pool } = require('pg');
-const dotenv = require('dotenv');
-dotenv.config();
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -11,9 +9,9 @@ const pool = new Pool({
 
 });
 
-const registrar_usuario = async (nombre, email, password, foto) => {
+const registrarUsuario = async (nombre, email, password, foto) => {
     const result = {
-        text: 'INSERT INTO usuarios (nombre, email, password, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
+        text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
         values: [nombre, email, password, foto] 
     };
     const res = await pool.query(result);
@@ -47,4 +45,61 @@ async function encuentra_producto(busquedaInput) {
     return result.rows[0];
 }
 
-module.exports = { registrar_usuario, getDate, muestra_usuarios, muestra_inventario, encuentra_producto };
+
+
+async function trae_usuario(email, password) {
+    const consulta = {
+        text: 'SELECT * FROM usuarios WHERE email = $1 AND password = $2',
+        values: [email, password]
+    };
+    const result = await pool.query(consulta);
+    // console.log(consulta);
+    // console.log(result);
+    return result.rows[0];
+}
+//AUN NO SE PUEDE ACTIVAR////////
+// async function trae_contrasena_encriptada(email) {
+//     const consulta = {
+//         text: 'SELECT * FROM usuario WHERE email = $1',
+//         values: [email]
+//     };
+//     const result = await pool.query(consulta);
+//     return result.rows[0];
+// }
+
+////////////////////LISTA DE PRODUCTOS////////////////////////////////////////////////////////////////
+async function obtenerProductosPorUsuario(idUsuario) {
+    const consulta = {
+        text: `SELECT pr.nombrep, pr.precio, inv.cantidad AS stock, tc.cliente, m.nombre_marca
+        FROM usuarios usu
+        JOIN inventario inv ON usu.id = inv.usuario
+        JOIN productos pr ON inv.codigo = pr.id_codigo
+        JOIN tipo_cliente tc ON pr.tipo_cliente = tc.id
+        JOIN marca m ON pr.id_marca = m.id
+        WHERE usu.id = $1;`,
+        values: [idUsuario]
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+}
+
+
+
+
+
+
+
+
+
+
+
+module.exports = { 
+    registrarUsuario,
+    getDate, 
+    muestra_usuarios, 
+    muestra_inventario, 
+    encuentra_producto, 
+    obtenerProductosPorUsuario,
+    trae_usuario 
+
+};

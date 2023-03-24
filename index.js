@@ -3,13 +3,15 @@ require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
 
-//////////////////////////////////////////////////////
-const {
+///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
+const { 
   registrarUsuario,
   getDate,
-  muestra_usuarios,
-  muestra_inventario,
-  encuentra_producto
+  muestra_usuarios, 
+  muestra_inventario, 
+  encuentra_producto,
+  trae_usuario,
+  obtenerProductosPorUsuario
 } = require("./database");
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
@@ -99,26 +101,34 @@ app.get("/registro", async (req, res) => {
 });
 
 app.post("/registro", async (req, res) => {
-  const { foto } = req.files;
-  const { name } = foto;
-  const { nombre, email, password } = req.body;
+  const {
+    foto
+  } = req.files;
+  const {
+    name
+  } = foto;
+  const {
+    nombre,
+    email,
+    password,
+  } = req.body
   try {
-       await registrar_usuario(nombre, email, password, name);
-       res.status(201);
-       res.render('inicio');
-     } catch (e) {
-       res.status(500).json({
-         error: `Algo salió mal... ${e}`,
-         code: 500
-       });
-     };
-     foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
-       if (err) return res.status(500).json({
-         error: `Algo salió mal...${err}`,
-         code: 500
-       });
-       res.status(201);
-     });
+    await registrarUsuario(nombre, email, password, name);
+    res.status(201);
+    res.render('inicio');
+  } catch (e) {
+    res.status(500).json({
+      error: `Algo salió mal... ${e}`,
+      code: 500
+    });
+  };
+  foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
+    if (err) return res.status(500).json({
+      error: `Algo salió mal...${err}`,
+      code: 500
+    });
+    res.status(201);
+  });
 });
 
 ///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////
@@ -216,10 +226,7 @@ app.post("/privado", async (req, res) => {
 
 //////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
 
-app.get("/inicio", (req, res) => {
-  console.log(req.body);
-  res.render("inicioSesion");
-});
+// const usuarios = require("./usuarios.json");
 
 // app.get("/perfil", (req, res) => {
 //   const usuario = usuarios.usuarios.find(
@@ -240,6 +247,21 @@ app.get("/inicio", (req, res) => {
 //     comuna: usuario.Comuna.trim(),
 //   });
 // });
+
+////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
+
+app.get('/inventario/:idUsuario', async (req, res) => {
+  const { idUsuario } = req.params;
+  try {
+
+    const productos = await obtenerProductosPorUsuario(idUsuario);
+    res.render('tuInventario', { productos });
+    console.log(productos);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
