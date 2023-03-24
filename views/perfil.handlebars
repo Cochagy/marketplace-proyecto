@@ -22,23 +22,38 @@
     </div>
 
     <div class="responsivo col-7 mt-1 mb-1 py-5 text-center rounded-end" style="background: green;">
-      <h1 style="color: aliceblue;">{{this.nombre}}!!</h1>
+      <h1 style="color: aliceblue;">Hola {{this.nombre}}!!</h1>
       <h2>Completa tu perfil</h2>
       <br>
+-
 
-
-     <form action="/perfil" method="GET" enctype="multipart/form-data">
-
+    <form action="/actualizar/:{{this.email}}?_method=PUT" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
           <div class="form-group">
             <label for="nombre">Nombre</label><br>
             <input type="text" name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto"
-              value="{{this.nombreu}}" />
+              value="{{this.nombre}}">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Cedulade identidad</label><br>
+            <input type="text" name="rut" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
+              value="{{this.rut}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Email</label><br>
-            <input type="text" name="email" placeholder="no funciona" class="form-control w-50 m-auto"
-              value="{{#if this.email}}{{this.email}}{{/if}}">
+            <input type="text" name="email" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
+              value="{{this.email}}">
+          </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Telefono</label><br>
+            <input type="text" name="telefono" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
+              value="{{this.telefono}}">
+          </div>
+          <div class="form-group py-4">
+            <label for="nombre">Sector</label><br>
+            <input type="text" name="sector" placeholder="Providencia" class="form-control w-50 m-auto"
+              value="{{this.sector}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Password</label><br>
@@ -47,39 +62,42 @@
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Repite password</label><br>
-            <input type="password" name="repita_pasword" placeholder="***********" class="form-control w-50 m-auto"
-              value="{{#if this.contraseña}}{{this.contraseña}}{{/if}}">
-          </div>
-          <div class="form-group pt-5">
-            <label for="nombre">Telefono</label><br>
-            <input type="text" name="telefono" placeholder="56999999999" class="form-control w-50 m-auto"
-              value="{{#if this.telefono}}{{this.telefono}}{{/if}}" />
-          </div>
-          <div class="form-group py-4">
-            <label for="nombre">Direccion</label><br>
-            <input type="text" name="direccion" placeholder="calle las maravillas 456" class="form-control w-50 m-auto"
-              value="{{#if this.direccion}}{{this.direccion}}{{/if}}">
-          </div>
+            <input type="password" name="repite_pasword" placeholder="***********" class="form-control w-50 m-auto"
+              value="{{this.repite_password}}">
+          </div>                    
         </div>
 
-        <label for="comuna">Comuna/Sector</label><br>
-        <select class="form-select mb-3 w-50 m-auto" name="comuna" aria-label="Default select example">
+          {{!-- comentado por mientras --}}
+
+        {{!-- <label for="comuna">Comuna/Sector</label><br>
+        <select class="form-select mb-3 w-50 m-auto" name="sector" aria-label="Default select example">
           <option selected>Selecciona una comuna</option>
           <option value="Ñuñoa">Ñuñoa</option>
           <option value="Providencia">Providencia</option>
           <option value="Estación Central">Estación Central</option>
           <option value="Santiago Centro">Santiago Centro</option>
           <option value="Las Condes">Las Condes</option>
-        </select>
+        </select> --}}
 
         <div class="form-group col-12 col-sm-12">
           <p class="text-white pb-3">Sube tu foto de perfil</p><br>
           <input type="file" name="foto" onchange="previewFile()"><br>
         </div>
-
+        <div>
+          <button type="submit" class="btn btn-primary my-3 pt-2 w-50 m-auto">Modificar</button><br>
+        </div>
       </form>
 
-      <input class="btn btn-primary my-3 py- w-50 m-auto" type="button" value="modificar" onClick="modificar()">
+      <div>
+        <form action="/eliminar/{{this.cedula_de_identidad}}?_method=DELETE" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger my-3 pt-2 w-50 m-auto">Eliminar cuenta</button>    
+        </form>      
+      </div>
+
+      {{!-- codigo comentado corresponde a hito 2 --}}
+      
+      {{!-- <input class="btn btn-primary my-3 py- w-50 m-auto" type="button" value="modificar" onClick="modificar()">
       <input class="btn btn-danger my-3 py- w-50 m-auto" type="button" value="eliminar" onClick="eliminar()">
 
       <script>
@@ -89,7 +107,7 @@
         function eliminar() {
           window.alert("Tus perfil ha sido borrado");
         }
-      </script>
+      </script> --}}
 
       <p><a class="nav-link" href="./inventario">Gestiona tu inventario</a></p>
 

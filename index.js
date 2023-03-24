@@ -3,19 +3,26 @@ require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
 
+const puerto = process.env.PORT || 4000
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
 const { 
-  registrarUsuario,
+  // registrarUsuario,
+  nuevo_usuario,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
   encuentra_producto,
-  trae_usuario
+  trae_usuario,
+  actualizar_usuario,
+  usuario_email,
+  trae_id_inventario,
+  eliminar_inventario_y_usuario,
+  eliminar_usuario
 } = require("./database");
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
 // getDate();
-// muestra_usuarios();
+ muestra_usuarios();
 // muestra_inventario();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,15 +35,16 @@ app.get("/", async (req, res) => {
 });
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
-app.get("/inicio", (req, res) => {
-  console.log(req.body);
+app.get("/inicio", (req, res) => {  
   res.render("inicioSesion");
 });
 
 // //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
-app.get("/perfil", (req, res) => {
-  res.render("perfil");
-});
+// app.get("/perfil", (req, res) => {
+//   console.log(req.body);
+//   console.log(req.query);
+//   res.render("actualizar");
+// });
 
 ///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
 app.get("/contacto", async (req, res) => {
@@ -78,9 +86,9 @@ app.get("/transacciones", async (req, res) => {
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
 app.post("/", async (req, res) => {    
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
 
   res.render("productoEncontradoPublico", {
     codigo: productoBuscado.id_codigo,
@@ -95,40 +103,81 @@ app.post("/", async (req, res) => {
 ///////////////////////////////aqui termina lo del hito 2///////////
 
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
-app.get("/registro", async (req, res) => {
-  res.render("registro");
-});
+//ruta get con formulario para crear un nuevo usuario
+app.get('/registro', (req, res) => {
+  res.render('registro');
+})
 
-app.post("/registro", async (req, res) => {
-  const {
-    foto
-  } = req.files;
-  const {
-    name
-  } = foto;
-  const {
-    nombre,
-    email,
-    password,
-  } = req.body
+//ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
+app.post('/registro', async (req, res) => {
+  console.log(req.body);
+  const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
+  const id_rol = 1;
+  const is_active = 1;  
+  
+  if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
+      return res.status(400).send('Faltan parámetros')
+  }    
+          
+  if (password != repite_password) {
+      return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
+  }    
+  
+  const {files}=req;
+  if (!req.files) {
+      return res.status(400).send('Debe ingresar una foto de perfil')
+  }
+
+  const { foto }= files;
+  if (!foto || foto == null) {
+      return res.status(400).send('Error al ingresar foto de perfil')
+
+  }
+  const [file_tipo, file_extension] = foto.mimetype.split('/');
+  if (file_tipo !== 'image') {
+      return res.status(400).send('Solo se aceptan formatos de imagen')
+  }
+  const valida_extesion = ['jpg', 'jpeg', 'png', 'webp'];
+  if (!valida_extesion.includes(file_extension)) {
+      return res.status(400).send('Formato de imagen no válido');
+  }
+
+  const{nombre}= foto;    
+  const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);    
+  // const password_encriptada = await encripta(password_usuario);    
+          
   try {
-    await registrarUsuario(nombre, email, password, name);
-    res.status(201);
-    res.render('inicio');
+      
+      const usuario = await nuevo_usuario(sector, nombree, email, rut, id_rol, password, is_active, telefono, foto_usuario);
+      foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+          if (err) return res.status(500).send({
+              error: `algo salio mal... ${err}`,
+              code: 500
+          }) 
+          // res.status(200).json({ message: 'Bienvenido!! su cuenta ha sido creada' });
+          res.render("perfil",{
+            id: usuario.id,
+            sector: usuario.sector,
+            nombre: usuario.nombre, 
+            email: usuario.email,
+            rut: usuario.rut,
+            telefono: usuario.telefono,
+            id_rol: usuario.id_rol,
+            password: usuario.password,
+            repite_password: usuario.repite_password,
+            is_active: usuario.is_active,
+            foto: usuario.foto
+          });                             
+      })       
+        
   } catch (e) {
-    res.status(500).json({
-      error: `Algo salió mal... ${e}`,
-      code: 500
-    });
-  };
-  foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
-    if (err) return res.status(500).json({
-      error: `Algo salió mal...${err}`,
-      code: 500
-    });
-    res.status(201);
-  });
-});
+      res.status(500).send({
+          error: `Algo salio mal...${e}`,
+          code: 500
+      })       
+  }           
+})
+
 
 ///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////
 app.get("/inicioSesion", async (req, res) => {
@@ -138,10 +187,10 @@ app.get("/inicioSesion", async (req, res) => {
 app.post("/inicioSesion", async (req, res) => {
   // console.log(req.body);
   const { email, password } = req.body;
-  console.log(email, password);
+  // console.log(email, password);
   if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
     const usuario = await trae_usuario(email, password);
-    console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
+    // console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
          
     if(!usuario) {
         res.status(404).send({
@@ -159,22 +208,24 @@ app.post("/inicioSesion", async (req, res) => {
         res.render("perfil",{
           id: usuario.id,
           sector: usuario.sector,
-          nombre: usuario.nombrep, 
+          nombre: usuario.nombre, 
           email: usuario.email,
           rut: usuario.rut,
+          telefono: usuario.telefono,
           id_rol: usuario.id_rol,
           password: usuario.password,
+          repite_password: usuario.repite_password,
           is_active: usuario.is_active,
           foto: usuario.foto
         });
     } 
-  // res.send("aqui");
+  // res.send("aqui);
 });
 
 ///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
 app.post("/privado", async (req, res) => {
-  console.log(req.body);
-  const logeado = req.body;
+  // console.log(req.body);
+  // const logeado = req.body;
 
   const busquedaInput = req.body["busqueda-input"];
   console.log(busquedaInput);
@@ -187,6 +238,56 @@ app.post("/privado", async (req, res) => {
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
   });  
+});
+
+/////////////////////////////RECIBE LOS DATOS DE USUARIO REGISTRADO (AUN NO FUNCIONA)//////////////////////
+app.get('/perfil' , async (req, res) => {
+  // console.log(req.body); 
+  // console.log(req.query);
+  // const token = await verifica_token(req.cookies.retoken);
+  // const data = token.data;
+  // const {sector, nombre, email, rut, id_rol, password, is_active, foto} = data;
+
+  // res.render('perfil', {sector, nombre, email, rut, id_rol, password, is_active, foto }); 
+  res.render("perfil")
+  // res.send("nada")   
+});
+
+/////////////////////////////ACTUALIZA DATOS DEL USUARIO REGISTRADO (AUN NO FUNCIONA)//////////////////////
+app.put('/actualizar/:email', async (req, res) => {
+  // console.log(req.body);
+  const { sector, nombre, email, rut, id_rol, password, is_active, foto  } = req.body;         
+    await actualizar_usuario(sector, nombre, email, rut, id_rol, password, is_active, foto );    
+    res.status(200).json({ message: 'Sus datos han sido actualizados' });     
+});
+
+/////////////////////////////ELIMINA DATOS DEL USUARIO REGISTRADO (AUN NO FUNCIONA)//////////////////////
+app.delete('/eliminar/:email', async (req, res) => {         
+  const email = req.params.email;    
+  const usuario = await usuario_email(email); 
+  // console.log(usuario)    
+  const usuario_email = usuario.email
+  // console.log(usuario_email)
+  const inventario = await trae_id_inventario(usuario_email);
+  
+  if(!inventario) {
+      await eliminar_usuario(email);
+      res.status(200).json({ message: 'Su datos han sido eliminados' });
+
+  }else {
+      
+  }
+  try {
+      const id_inventario = inventario.id;
+      await eliminar_inventario_y_usuario(id_inventario);
+      await eliminar_inventario_y_usuario(usuario_email);
+      await eliminar_usuario(email);
+
+      res.status(200).json({ message: 'Su datos han sido eliminados' });
+      
+  } catch (error) {
+      return res.status(500).json({ message: 'Ha ocurrido un error'});        
+  }           
 });
 
 
@@ -373,3 +474,28 @@ app.post("/privado", async (req, res) => {
 //   });
 
 // });
+
+//////////////////////////////////////////////////REGISTRO DE USUARIOS PEDRO///////////////////////
+  // app.post("/registro", async (req, res) => {
+  //   console.log(req.body);
+  //   const { foto } = req.files;
+  //   const { name } = foto;
+  //   const { nombre, email, password} = req.body
+  //   try {
+  //     await registrarUsuario(nombre, email, password, name);
+  //     res.status(201);
+  //     res.render('inicio');
+  //   } catch (e) {
+  //     res.status(500).json({
+  //       error: `Algo salió mal... ${e}`,
+  //       code: 500
+  //     });
+  //   };
+  //   foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
+  //     if (err) return res.status(500).json({
+  //       error: `Algo salió mal...${err}`,
+  //       code: 500
+  //     });
+  //     res.status(201);
+  //   });
+  // });
