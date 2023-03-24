@@ -99,34 +99,26 @@ app.get("/registro", async (req, res) => {
 });
 
 app.post("/registro", async (req, res) => {
-  const {
-    foto
-  } = req.files;
-  const {
-    name
-  } = foto;
-  const {
-    nombre,
-    email,
-    password,
-  } = req.body
+  const { foto } = req.files;
+  const { name } = foto;
+  const { nombre, email, password } = req.body;
   try {
-    await registrar_usuario(nombre, email, password, name);
-    res.status(201);
-    res.render('inicio');
-  } catch (e) {
-    res.status(500).json({
-      error: `Algo salió mal... ${e}`,
-      code: 500
-    });
-  };
-  foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
-    if (err) return res.status(500).json({
-      error: `Algo salió mal...${err}`,
-      code: 500
-    });
-    res.status(201);
-  });
+       await registrar_usuario(nombre, email, password, name);
+       res.status(201);
+       res.render('inicio');
+     } catch (e) {
+       res.status(500).json({
+         error: `Algo salió mal... ${e}`,
+         code: 500
+       });
+     };
+     foto.mv(`${__dirname}/public/uploads/${name}`, (err) => {
+       if (err) return res.status(500).json({
+         error: `Algo salió mal...${err}`,
+         code: 500
+       });
+       res.status(201);
+     });
 });
 
 ///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////

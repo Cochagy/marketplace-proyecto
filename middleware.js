@@ -24,6 +24,13 @@ app.engine(
 
 // Middlewares
 
+///ESTOS SON MIDDLEWARES DE PRUEBA//////
+
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}));
+
 //Permite compartir recursos
 app.use(cors());
 
