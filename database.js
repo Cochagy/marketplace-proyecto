@@ -17,7 +17,7 @@ const registrar_usuario = async (nombre, email, password, foto) => {
         values: [nombre, email, password, foto] 
     };
     const res = await pool.query(result);
-    return res.rows;
+    return res.rows[0];
 };
 
 const getDate = async () => {
