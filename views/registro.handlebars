@@ -10,19 +10,31 @@
         <div class="form-group">             
           <div class="form-group pt-4"> 
             <Label>Nombre</Label> <br>      
-            <input id="nombre" type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+            <input type="text" name="nombree" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+          </div>
+          <div class="form-group pt-4"> 
+            <Label>Cedula de identidad</Label> <br>      
+            <input type="text" name="rut" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group pt-4"> 
             <Label>email</Label> <br>      
-            <input type="text" name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+            <input type="text" name="email" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+          </div>
+          <div class="form-group pt-4"> 
+            <Label>Telefono</Label> <br>      
+            <input type="text" name="telefono" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+          </div>
+          <div class="form-group pt-4"> 
+            <Label>Comuna/sector</Label> <br>      
+            <input type="text" name="sector" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
             <Label>Password</Label> <br>         
-            <input id="password" type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
+            <input type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
             <Label>Repite password</Label> <br>         
-            <input id="repetir_password" type="password" name="repitePassword" placeholder="********" class="form-control w-50 m-auto" />
+            <input type="password" name="repite_password" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group col-12 col-sm-12">
             <p class="text-white pb-3">Sube tu foto de perfil</p>           
@@ -30,17 +42,18 @@
           </div>
         
         </div> <br>
-        <input class="btn btn-primary" type="button" value="Registrar" onClick="registrar()">            
+        {{!-- <input class="btn btn-primary" type="button" value="Registrar" onClick="registrar()">--}}
+        <button type="submit" class="btn btn-primary my-3 pt-2 w-50 m-auto">Registrar</button><br>
           <br><br>
       </form>
       <p><a href="./perfil">Completa tu perfil</a></p>
     </div>  
   </div>
 </div>
- <script>           
-        {{!-- function registrar() {
+ {{!-- <script>           
+        function registrar() {
           window.alert("Usuario registrado");
-        } --}}
+        }
 
     const registrar = () => {
       let nombre = document.getElementById('nombre').value;
@@ -54,7 +67,7 @@
       }
     };
 
-</script>  
+</script>   --}}
 
 
 <script>
