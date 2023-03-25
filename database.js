@@ -1,6 +1,4 @@
-const {
-    Pool
-} = require('pg');
+const { Pool } = require('pg');
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -14,7 +12,7 @@ const pool = new Pool({
 const registrarUsuario = async (nombre, email, password, foto) => {
     const result = {
         text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
-        values: [nombre, email, password, foto]
+        values: [nombre, email, password, foto] 
     };
     const res = await pool.query(result);
     return res.rows[0];
@@ -23,7 +21,7 @@ const registrarUsuario = async (nombre, email, password, foto) => {
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
     console.log(result);
-
+  
 }
 
 async function muestra_usuarios() {
@@ -43,7 +41,7 @@ async function encuentra_producto(busquedaInput) {
         text: 'SELECT * FROM productos WHERE nombrep = $1',
         values: [busquedaInput]
     };
-    const result = await pool.query(consulta);
+    const result = await pool.query(consulta);    
     return result.rows[0];
 }
 
@@ -95,37 +93,13 @@ async function obtenerProductosPorUsuario(idUsuario) {
 
 
 
-module.exports = {
+module.exports = { 
     registrarUsuario,
-    getDate,
-    muestra_usuarios,
-    muestra_inventario,
-    encuentra_producto,
+    getDate, 
+    muestra_usuarios, 
+    muestra_inventario, 
+    encuentra_producto, 
     obtenerProductosPorUsuario,
-    trae_usuario
+    trae_usuario 
 
 };
-
-
-
-
-
-
-
-async function obtenerCamposSector() {
-    const consulta = {
-        text: 'SELECT id, nombre FROM sector',
-    };
-    const resultado = await pool.query(consulta);
-    return resultado.rows;
-}
-
-app.get('/api/camposSector', async (req, res) => {
-    try {
-        const camposSector = await obtenerCamposSector();
-        res.json(camposSector);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error interno del servidor');
-    }
-});
