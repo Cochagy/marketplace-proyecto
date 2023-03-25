@@ -85,7 +85,7 @@ async function obtenerProductosPorUsuario(idUsuario) {
     return resultado.rows;
 }
 
-hola
+
 
 
 
