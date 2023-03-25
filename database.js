@@ -45,6 +45,8 @@ async function encuentra_producto(busquedaInput) {
     return result.rows[0];
 }
 
+
+
 async function trae_usuario(email, password) {
     const consulta = {
         text: 'SELECT * FROM usuarios WHERE email = $1 AND password = $2',
@@ -65,11 +67,39 @@ async function trae_usuario(email, password) {
 //     return result.rows[0];
 // }
 
+////////////////////LISTA DE PRODUCTOS////////////////////////////////////////////////////////////////
+async function obtenerProductosPorUsuario(idUsuario) {
+    const consulta = {
+        text: `SELECT pr.nombrep, pr.precio, inv.cantidad AS stock, tc.cliente, m.nombre_marca
+        FROM usuarios usu
+        JOIN inventario inv ON usu.id = inv.usuario
+        JOIN productos pr ON inv.codigo = pr.id_codigo
+        JOIN tipo_cliente tc ON pr.tipo_cliente = tc.id
+        JOIN marca m ON pr.id_marca = m.id
+        WHERE usu.id = $1;`,
+        values: [idUsuario]
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+}
+
+
+
+
+
+
+
+
+
+
+
 module.exports = { 
     registrarUsuario,
     getDate, 
     muestra_usuarios, 
     muestra_inventario, 
     encuentra_producto, 
+    obtenerProductosPorUsuario,
     trae_usuario 
+
 };

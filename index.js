@@ -10,7 +10,8 @@ const {
   muestra_usuarios, 
   muestra_inventario, 
   encuentra_producto,
-  trae_usuario
+  trae_usuario,
+  obtenerProductosPorUsuario
 } = require("./database");
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
@@ -246,6 +247,21 @@ app.post("/privado", async (req, res) => {
 //     comuna: usuario.Comuna.trim(),
 //   });
 // });
+
+////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
+
+app.get('/inventario/:idUsuario', async (req, res) => {
+  const { idUsuario } = req.params;
+  try {
+
+    const productos = await obtenerProductosPorUsuario(idUsuario);
+    res.render('tuInventario', { productos });
+    console.log(productos);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
