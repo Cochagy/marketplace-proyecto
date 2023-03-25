@@ -72,20 +72,29 @@ async function trae_usuario(email, password) {
 ////////////////////LISTA DE PRODUCTOS////////////////////////////////////////////////////////////////
 async function obtenerProductosPorUsuario(idUsuario) {
     const consulta = {
-        text: `SELECT pr.nombrep, pr.precio, inv.cantidad AS stock, tc.cliente, m.nombre_marca
-        FROM usuarios usu
-        JOIN inventario inv ON usu.id = inv.usuario
-        JOIN productos pr ON inv.codigo = pr.id_codigo
-        JOIN tipo_cliente tc ON pr.tipo_cliente = tc.id
-        JOIN marca m ON pr.id_marca = m.id
-        WHERE usu.id = $1;`,
+        text: `SELECT i.id, i.usuario, i.codigo, i.cantidad, i.id_estado, i.marca, i.nombrep, i.precio, t.cliente, i.foto
+        FROM inventario i
+        JOIN tipo_cliente t ON i.tipo_cliente = t.id
+        WHERE i.usuario = $1;`,
         values: [idUsuario]
     };
     const resultado = await pool.query(consulta);
     return resultado.rows;
 }
 
-
+////////////////////LISTA DE VENDEDORES////////////////////////////////////////////////////////////////
+async function obtenerVendedores(idproducto) {
+    const consulta = {
+        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector
+        FROM inventario inv
+        JOIN usuarios usr ON inv.usuario = usr.id
+        JOIN sector sec ON usr.sector = sec.id
+        WHERE inv.codigo = $1;`,
+        values: [idproducto]
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+}
 
 
 
@@ -102,6 +111,7 @@ module.exports = {
     muestra_inventario,
     encuentra_producto,
     obtenerProductosPorUsuario,
-    trae_usuario
+    trae_usuario,
+    obtenerVendedores
 
 };
