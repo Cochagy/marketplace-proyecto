@@ -31,27 +31,29 @@
         <th scope="col">Precio producto</th>
         <th scope="col">Stock</th>
         <th scope="col">Comuna/sector</th>
-        <th scope="col">Contactar</th>                     
+        <th scope="col"></th>                     
       </tr>
     </thead>
 
-     <tbody> 
-      
-      <tr>
-        <td>{{@index}}</td>
-        <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/Susana.jpg" height="55" Width="75">                
-          </div>
-        </td>
-        <td>Susana Mora</td>
-        <td>49.990<br></td>
-        <td>7</td>
-        <td>Providencia</td>             
-        <td> <input class="btn btn-primary m-auto" type="button" value="Seleccionar" onClick="seleccionar()"></td>
-      </tr>  
-      
-    </tbody>
+   <tbody>            
+        {{#each vendedores}}
+        <tr>
+          <td>
+            <div>                
+             <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" width="75">
+
+               
+            </div>
+          </td>
+          <td>{{this.nombre}}</td>
+          <td>{{this.nombrep}}</td>
+          <td>$ {{this.precio}}</td>
+          <td>{{this.cantidad}}</td>
+          <td>{{this.nombre_sector}}</td>
+          <td> <input class="btn btn-primary m-auto" type="button" value="Contactar" onClick="seleccionar()"></td>
+        </tr>  
+        {{/each}}    
+      </tbody>
 
 
 

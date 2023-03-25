@@ -11,7 +11,8 @@ const {
   muestra_inventario, 
   encuentra_producto,
   trae_usuario,
-  obtenerProductosPorUsuario
+  obtenerProductosPorUsuario,
+  obtenerVendedores
 } = require("./database");
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
@@ -262,6 +263,23 @@ app.get('/inventario/:idUsuario', async (req, res) => {
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 });
+
+
+//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO////////////////////////////////////////////////////////
+
+app.get('/listaVendedores/:idProducto', async (req, res) => {
+  const { idProducto } = req.params;
+  try {
+
+    const vendedores = await obtenerVendedores(idProducto);
+    res.render('listaVendedores', { vendedores });
+    console.log(vendedores);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
+
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
