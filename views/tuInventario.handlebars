@@ -73,13 +73,15 @@
         <tr>
           <td>
             <div>                
-              <img class="rounded-circle" src="/uploads/{{this.foto}}"  height="55" Width="75">                
+             <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
+
+               
             </div>
           </td>
           <td>{{this.nombrep}}</td>
           <td>${{this.precio}}</td>
-          <td>{{this.nombre_marca}}</td>
-          <td>{{this.stock}}</td>
+          <td>{{this.marca}}</td>
+          <td>{{this.cantidad}}</td>
           <td>{{this.cliente}}</td>
         </tr>  
         {{/each}}    
@@ -87,7 +89,7 @@
   
   </table>
   <div class="text-center mt-3">    
-  <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Pagina Principal</a></th>
+  <th><a class="btn btn-primary" style="margin: 20px" href="/" role="button">Pagina Principal</a></th>
   </div>
 
   </section>
