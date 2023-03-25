@@ -1,14 +1,16 @@
 const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
-const { Pool } = require('pg');
+const {
+  Pool
+} = require('pg');
 
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
-const { 
+const {
   registrarUsuario,
   getDate,
-  muestra_usuarios, 
-  muestra_inventario, 
+  muestra_usuarios,
+  muestra_inventario,
   encuentra_producto,
   trae_usuario,
   obtenerProductosPorUsuario,
@@ -78,7 +80,7 @@ app.get("/transacciones", async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
-app.post("/", async (req, res) => {    
+app.post("/", async (req, res) => {
   const busquedaInput = req.body["busqueda-input"];
   console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
@@ -139,37 +141,43 @@ app.get("/inicioSesion", async (req, res) => {
 
 app.post("/inicioSesion", async (req, res) => {
   // console.log(req.body);
-  const { email, password } = req.body;
+  const {
+    email,
+    password
+  } = req.body;
   console.log(email, password);
-  if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
-    const usuario = await trae_usuario(email, password);
-    console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
-         
-    if(!usuario) {
-        res.status(404).send({
-            error: 'Este usuario no se ha registrado',
-            code: 404,
-    }); 
+  if (!email || !password) return res.status(400).json(({
+    error: 'Faltan parametros'
+  }))
+  const usuario = await trae_usuario(email, password);
+  console.log(usuario.id, usuario.sector, usuario.nombre, usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
 
-    }if (usuario.is_active !== 1) {        
-        res.status(401).send({
-        error: 'Este usuario se encuentra en evaluacion',
-        code: 401,
-        });               
-                         
-    } else {      
-        res.render("perfil",{
-          id: usuario.id,
-          sector: usuario.sector,
-          nombre: usuario.nombrep, 
-          email: usuario.email,
-          rut: usuario.rut,
-          id_rol: usuario.id_rol,
-          password: usuario.password,
-          is_active: usuario.is_active,
-          foto: usuario.foto
-        });
-    } 
+  if (!usuario) {
+    res.status(404).send({
+      error: 'Este usuario no se ha registrado',
+      code: 404,
+    });
+
+  }
+  if (usuario.is_active !== 1) {
+    res.status(401).send({
+      error: 'Este usuario se encuentra en evaluacion',
+      code: 401,
+    });
+
+  } else {
+    res.render("perfil", {
+      id: usuario.id,
+      sector: usuario.sector,
+      nombre: usuario.nombrep,
+      email: usuario.email,
+      rut: usuario.rut,
+      id_rol: usuario.id_rol,
+      password: usuario.password,
+      is_active: usuario.is_active,
+      foto: usuario.foto
+    });
+  }
   // res.send("aqui");
 });
 
@@ -188,7 +196,7 @@ app.post("/privado", async (req, res) => {
     nombre: productoBuscado.nombrep,
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
-  });  
+  });
 });
 
 
@@ -203,27 +211,27 @@ app.post("/privado", async (req, res) => {
 //   res.render("index");
 // });
 
-  /////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
+/////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
 
-  // const productos = JSON.parse(fs.readFileSync("./productos.json"));
+// const productos = JSON.parse(fs.readFileSync("./productos.json"));
 
-  // const productoBuscado = productos.productos.find(
-  //   (p) => p.nombre === busquedaInput
-  // );
-  // if (!productoBuscado) {
-  //   res.redirect("/contacto");
-  //   return;
-  // }
-  // res.render("productosDisponibles", {
-  //   codigo: productoBuscado.codigo_p,
-  //   marca: productoBuscado.marca,
-  //   nombre: productoBuscado.nombre,
-  //   precio: productoBuscado.precio,
-  //   sexo: productoBuscado.sexo,
-  // });
-  // if (busquedaInput === productoBuscado.nombre) {
-  //   productoBuscado.codigo_p;
-  // }
+// const productoBuscado = productos.productos.find(
+//   (p) => p.nombre === busquedaInput
+// );
+// if (!productoBuscado) {
+//   res.redirect("/contacto");
+//   return;
+// }
+// res.render("productosDisponibles", {
+//   codigo: productoBuscado.codigo_p,
+//   marca: productoBuscado.marca,
+//   nombre: productoBuscado.nombre,
+//   precio: productoBuscado.precio,
+//   sexo: productoBuscado.sexo,
+// });
+// if (busquedaInput === productoBuscado.nombre) {
+//   productoBuscado.codigo_p;
+// }
 
 //////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
 
@@ -252,15 +260,37 @@ app.post("/privado", async (req, res) => {
 ////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
 
 app.get('/inventario/:idUsuario', async (req, res) => {
-  const { idUsuario } = req.params;
+  const {
+    idUsuario
+  } = req.params;
   try {
 
     const productos = await obtenerProductosPorUsuario(idUsuario);
-    res.render('tuInventario', { productos });
+    res.render('tuInventario', {
+      productos
+    });
     console.log(productos);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+    return res.status(500).json({
+      mensaje: 'Error interno del servidor'
+    });
+  }
+});
+
+
+
+////////////// RUTA PARA OBTENER LISTADO DE COMUNAS //////////////
+
+app.get('/api/camposSector', async (req, res) => {
+  try {
+    const camposSector = await obtenerCamposSector();
+    res.render('buscadorPorComuna', { camposSector });
+    res.status(200);
+    // console.log(camposSector);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error interno del servidor');
   }
 });
 
@@ -296,7 +326,7 @@ app.get('/inventario/:idUsuario', async (req, res) => {
 
 //   fs.writeFileSync('usuarios.json', JSON.stringify(usuarios), 'utf-8');
 
-  // Agrega el siguiente código para mostrar una alerta al usuario
+// Agrega el siguiente código para mostrar una alerta al usuario
 //   const mensaje = 'Usuario eliminado con éxito';
 //   res.send(`
 //      <script>

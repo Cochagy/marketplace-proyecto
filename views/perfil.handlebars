@@ -61,10 +61,12 @@
               value="{{#if this.direccion}}{{this.direccion}}{{/if}}">
           </div>
         </div>
-
         <label for="comuna">Comuna/Sector</label><br>
         <select class="form-select mb-3 w-50 m-auto" name="comuna" aria-label="Default select example">
           <option selected>Selecciona una comuna</option>
+        {{!-- {{#each camposSector}}
+          <option value="{{nombre}}">{{nombre}}</option>
+        {{/each}} --}} 
           <option value="Ñuñoa">Ñuñoa</option>
           <option value="Providencia">Providencia</option>
           <option value="Estación Central">Estación Central</option>
