@@ -11,7 +11,8 @@ const {
   muestra_inventario, 
   encuentra_producto,
   trae_usuario,
-  obtenerProductosPorUsuario
+  obtenerProductosPorUsuario,
+  obtenerCamposSector
 } = require("./database");
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////

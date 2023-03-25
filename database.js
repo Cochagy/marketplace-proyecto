@@ -81,7 +81,17 @@ async function obtenerProductosPorUsuario(idUsuario) {
     };
     const resultado = await pool.query(consulta);
     return resultado.rows;
-}
+};
+
+///// GET LISTADO DE LAS COMUNAS ////
+
+const obtenerCamposSector = async () => {
+    const consulta = {
+        text: 'SELECT id, nombre FROM sector',
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+};
 
 
 
@@ -100,6 +110,6 @@ module.exports = {
     muestra_inventario, 
     encuentra_producto, 
     obtenerProductosPorUsuario,
-    trae_usuario 
-
+    trae_usuario,
+    obtenerCamposSector 
 };
