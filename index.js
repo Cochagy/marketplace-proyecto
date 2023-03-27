@@ -2,6 +2,7 @@ const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
+const Handlebars = require("handlebars");
 
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
 const { 
@@ -14,6 +15,9 @@ const {
   obtenerProductosPorUsuario,
   obtenerVendedores
 } = require("./database");
+
+
+
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
 // getDate();
@@ -273,7 +277,7 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
 
     const vendedores = await obtenerVendedores(idProducto);
     res.render('listaVendedores', { vendedores });
-    console.log(vendedores);
+    //console.log(vendedores);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -407,3 +411,21 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
 //   });
 
 // });
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/enviar-objeto', function(req, res) {
+  var objeto = req.body;
+console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send('Objeto recibido correctamente');
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+
+
+
