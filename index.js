@@ -9,6 +9,8 @@ const {
   
   // registrarUsuario,
   nuevo_usuario,
+  trae_usuario_email,
+  trae_password_encriptada,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
@@ -192,8 +194,8 @@ app.post("/inicioSesion", async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
   if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
-    const usuario = await trae_usuario(email, password);
-    console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
+    const usuario = await trae_usuario_email(email);
+    // console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
          
     if(!usuario) {
         res.status(404).send({
@@ -201,25 +203,57 @@ app.post("/inicioSesion", async (req, res) => {
             code: 404,
     }); 
 
-    }if (usuario.is_active !== 1) {        
-        res.status(401).send({
-        error: 'Este usuario se encuentra en evaluacion',
-        code: 401,
-        });               
-                         
-    } else {      
+    // }if (usuario.is_active !== 1) {        
+    //     res.status(401).send({
+    //     error: 'Este usuario se encuentra en evaluacion',
+    //     code: 401,
+    // });  
+    
+    } else {
+
+      const usuario_id = await trae_password_encriptada(email); 
+      console.log(usuario_id);          
+        password_encriptada = usuario_id.password;    
+        const compara_password = await compara(password, password_encriptada);
+        console.log(password);
+        console.log(password_encriptada); 
+        
+        if (compara_password === false) {
+            res.status(401).send({
+                error: 'Credenciales incorrectas',
+                code: 401,
+            });
+        }
+        const usuario = await trae_usuario(email, password_encriptada);        
+        const token = await genera_token(usuario);
+        res.cookie('retoken', token, {httpOnly: true});
+        // res.redirect("/perfil");     
         res.render("perfil",{
           id: usuario.id,
           sector: usuario.sector,
-          nombre: usuario.nombrep, 
+          nombre: usuario.nombre, 
           email: usuario.email,
           rut: usuario.rut,
-          id_rol: usuario.id_rol,
-          password: usuario.password,
+          telefono: usuario.telefono,
+          id_rol: usuario.id_rol,          
           is_active: usuario.is_active,
           foto: usuario.foto
         });
-    } 
+    }
+                         
+    // } else {      
+    //     res.render("perfil",{
+    //       id: usuario.id,
+    //       sector: usuario.sector,
+    //       nombre: usuario.nombrep, 
+    //       email: usuario.email,
+    //       rut: usuario.rut,
+    //       id_rol: usuario.id_rol,
+    //       // password: usuario.password,
+    //       // is_active: usuario.is_active,
+    //       foto: usuario.foto
+    //     });
+    // } 
   // res.send("aqui");
 });
 

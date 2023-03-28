@@ -1,6 +1,6 @@
 const cookie = (req, res, next) => {    
     if (!req.cookies.retoken) {
-        return res. redirect('/403')
+        return res.redirect('/403')
     }
     next();
 }
