@@ -1,59 +1,67 @@
-<<div class="container-fluid">      
+<<div class="container-fluid">
   <div class="biombo row px-5">
-    <h1 class="text-center mt-5" style="color: green;">Registrate aqui</h1> 
-    {{> cardRegistro }}    
-    
-    <div class="responsivo col-7 mt-5 py-5 mb-5 text-center rounded" style="background: green;">      
-      <h3>Registro</h3><br>     
-      
-      <form action="/registro" method="POST" enctype="multipart/form-data">      
-        <div class="form-group">             
-          <div class="form-group pt-4"> 
-            <Label>Nombre</Label> <br>      
+    <h1 class="text-center mt-5" style="color: green;">Registrate aqui</h1>
+    {{> cardRegistro }}
+
+    <div class="responsivo col-7 mt-5 py-5 mb-5 text-center rounded" style="background: green;">
+      <h3>Registro</h3><br>
+
+      <form action="/registro" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <div class="form-group pt-4">
+            <Label>Nombre</Label> <br>
             <input type="text" name="nombree" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
-          <div class="form-group pt-4"> 
-            <Label>Cedula de identidad</Label> <br>      
+          <div class="form-group pt-4">
+            <Label>Cedula de identidad</Label> <br>
             <input type="text" name="rut" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
-          <div class="form-group pt-4"> 
-            <Label>email</Label> <br>      
+          <div class="form-group pt-4">
+            <Label>email</Label> <br>
             <input type="text" name="email" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
-          <div class="form-group pt-4"> 
-            <Label>Telefono</Label> <br>      
+          <div class="form-group pt-4">
+            <Label>Telefono</Label> <br>
             <input type="text" name="telefono" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
           </div>
-          <div class="form-group pt-4"> 
-            <Label>Comuna/sector</Label> <br>      
-            <input type="text" name="sector" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
+          <div class="form-group pt-4">
+            <Label>Comuna/sector</Label> <br>
+            {{!-- <input type="text" name="sector" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" /> --}}
+            <select class="form-select mb-3 w-50 m-auto" name="comuna" aria-label="Default select example"
+              data-show-subtext="true" data-live-search="true">
+              <option selected>Selecciona una comuna</option>
+              {{#each camposSector}}
+              <option value="{{this.id}}">{{this.nombre_sector}}</option>
+              {{/each}}
+            </select>
           </div>
           <div class="form-group py-4">
-            <Label>Password</Label> <br>         
+            <Label>Password</Label> <br>
             <input type="password" name="password" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group py-4">
-            <Label>Repite password</Label> <br>         
+            <Label>Repite password</Label> <br>
             <input type="password" name="repite_password" placeholder="********" class="form-control w-50 m-auto" />
           </div>
           <div class="form-group col-12 col-sm-12">
-            <p class="text-white pb-3">Sube tu foto de perfil</p>           
-            <input type="file" name="foto" onchange="previewFile()"><br>          
+            <p class="text-white pb-3">Sube tu foto de perfil</p>
+            <input type="file" name="foto" onchange="previewFile()"><br>
           </div>
-        
+
         </div> <br>
         {{!-- <input class="btn btn-primary" type="button" value="Registrar" onClick="registrar()">--}}
         <button type="submit" class="btn btn-primary my-3 pt-2 w-50 m-auto">Registrar</button><br>
-          <br><br>
+        <br><br>
       </form>
       <p><a href="./perfil">Completa tu perfil</a></p>
-    </div>  
+    </div>
   </div>
-</div>
- {{!-- <script>           
-        function registrar() {
-          window.alert("Usuario registrado");
-        }
+  </div>
+  {{!--
+  <script>
+    function registrar() {
+      window.alert("Usuario registrado");
+    }
 
     const registrar = () => {
       let nombre = document.getElementById('nombre').value;
@@ -63,28 +71,26 @@
         alert(`Has escrito mal la contraseña de confirmación`);
       } else {
         alert(`Usuario ${nombre} registrado con éxito! Ya puedes iniciar sesión`);
-        window.location.href = '/inicio' ;
+        window.location.href = '/inicio';
       }
     };
 
-</script>   --}}
+  </script> --}}
 
+  <script>
 
-<script>
+    function previewFile() {
+      const preview = document.getElementById('ppRegistro');
+      const file = document.querySelector('input[type=file').files[0];
+      const reader = new FileReader();
 
-  function previewFile() {
-    const preview = document.getElementById('ppRegistro');
-    const file = document.querySelector('input[type=file').files[0];
-    const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        preview.src = reader.result;
+      }, false);
 
-    reader.addEventListener("load", () => {
-      preview.src = reader.result;
-    }, false);
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    };
 
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
-  
-</script>
-
+  </script>
