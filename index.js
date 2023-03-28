@@ -12,6 +12,8 @@ const {
   nuevo_usuario,
   trae_usuario_email,
   trae_password_encriptada,
+  trae_usuario,  
+  nuevo_producto,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
@@ -41,7 +43,7 @@ app.get("/", async (req, res) => {
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
 app.get("/inicio", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   res.render("inicioSesion");
 });
 
@@ -276,7 +278,62 @@ app.post("/privado", async (req, res) => {
   });  
 });
 
+///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
+app.get("/inventario", async (req, res) => {
+  res.render("tuInventario");
+});
 
+//ruta post que crea nueva mascota, al terminar conduce a completar antecedentes de salud
+app.post('/registro_producto', async (req, res) => {
+  console.log(req.body);
+
+  // const token = await verifica_token(req.cookies.retoken);
+  // const data = token.data;
+  // const {id} = data;   
+  const { marca,nombrep, precio } = req.body;
+  // const tutor_id = id;
+  
+  if (!marca || !nombrep || !precio ) {
+      return res.status(400).send('Faltan parámetros')
+  }
+
+  const {files}=req    
+  if (!req.files) {
+      return res.status(400).send('Debe ingresar una foto del producto')
+  }
+
+  const { foto } = files;
+  if (!foto || foto == null) {
+      return res.status(400).send('Error al ingresar foto de producto')
+
+  }
+
+  const{nombre} = foto;    
+  const foto_producto = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+  //
+  const id_codigo = 100;
+  const id_marca = 10;
+  const tipo_cliente = 3;
+  //
+
+  try {
+      const producto = await nuevo_producto( id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto);                
+      foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+          if (err) return res.status(500).send({
+              error: `algo salio mal... ${err}`,
+              code: 500
+          })            
+          res.redirect('/tuInventario');            
+      })       
+         
+  } catch (e) {
+      res.status(500).send({
+          error: `Algo salio mal...${e}`,
+          code: 500
+      })       
+  }     
+  
+});
 //////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
 
 ////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
