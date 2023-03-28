@@ -11,6 +11,15 @@ const pool = new Pool({
 
 });
 
+//trae listado de comunas
+const obtenerCamposSector = async () => {
+    const consulta = {
+        text: 'SELECT id, nombre_sector FROM sector',
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+};
+
 //registra usuario
 const nuevo_usuario = async ( sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario) => {    
     const consulta = {
@@ -153,7 +162,8 @@ module.exports = {
     muestra_inventario,
     encuentra_producto,    
     obtenerProductosPorUsuario,    
-    obtenerVendedores
+    obtenerVendedores,
+    obtenerCamposSector
 
 };
 
