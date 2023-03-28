@@ -134,17 +134,17 @@ app.post('/tuInventario', async (req, res) => {
   const id_rol = 1;
   const is_active = 1;  
   
-  if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
-      return res.status(400).send('Faltan parámetros')
-  }    
+  // if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
+  //     return res.status(400).send('Faltan parámetros')
+  // }    
           
-  if (password != repite_password) {
-      return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
-  }    
+  // if (password != repite_password) {
+  //     return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
+  // }    
   
   const {files}=req;
   if (!req.files) {
-      return res.status(400).send('Debe ingresar una foto de perfil')
+      return res.status(400).send('Debe ingresar una foto del producto')
   }
 
   const { foto }= files;
