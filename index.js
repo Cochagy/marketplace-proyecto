@@ -11,11 +11,12 @@ const {
   nuevo_usuario,
   trae_usuario_email,
   trae_password_encriptada,
+  trae_usuario,  
+  nuevo_producto,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
-  encuentra_producto,
-  trae_usuario,
+  encuentra_producto,  
   obtenerProductosPorUsuario,
   obtenerVendedores
 } = require("./database");
@@ -40,7 +41,7 @@ app.get("/", async (req, res) => {
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
 app.get("/inicio", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   res.render("inicioSesion");
 });
 
@@ -62,9 +63,9 @@ app.get("/registroProductos", async (req, res) => {
   res.render("registroProductos");
 });
 
-app.get("/inventario", async (req, res) => {
-  res.render("tuInventario");
-});
+// app.get("/inventario", async (req, res) => {
+//   res.render("tuInventario");
+// });
 
 app.get("/productosDisponibles", async (req, res) => {
   res.render("productosDisponibles");
@@ -89,9 +90,9 @@ app.get("/transacciones", async (req, res) => {
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
 app.post("/", async (req, res) => {    
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
 
   res.render("productoEncontradoPublico", {
     codigo: productoBuscado.id_codigo,
@@ -103,7 +104,6 @@ app.post("/", async (req, res) => {
 
 
 });
-///////////////////////////////aqui termina lo del hito 2///////////
 
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 //ruta get con formulario para crear un nuevo usuario
@@ -113,7 +113,7 @@ app.get('/registro', (req, res) => {
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
 app.post('/registro', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const id_rol = 1;
   const is_active = 1;  
@@ -182,8 +182,6 @@ app.post('/registro', async (req, res) => {
   }           
 })
 
-
-
 ///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////
 app.get("/inicioSesion", async (req, res) => {
   res.render("inicioSesion");
@@ -192,7 +190,7 @@ app.get("/inicioSesion", async (req, res) => {
 app.post("/inicioSesion", async (req, res) => {
   // console.log(req.body);
   const { email, password } = req.body;
-  console.log(email, password);
+  // console.log(email, password);
   if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
     const usuario = await trae_usuario_email(email);
     // console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
@@ -212,11 +210,11 @@ app.post("/inicioSesion", async (req, res) => {
     } else {
 
       const usuario_id = await trae_password_encriptada(email); 
-      console.log(usuario_id);          
+      // console.log(usuario_id);          
         password_encriptada = usuario_id.password;    
         const compara_password = await compara(password, password_encriptada);
-        console.log(password);
-        console.log(password_encriptada); 
+        // console.log(password);
+        // console.log(password_encriptada); 
         
         if (compara_password === false) {
             res.status(401).send({
@@ -259,13 +257,13 @@ app.post("/inicioSesion", async (req, res) => {
 
 ///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
 app.post("/privado", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const logeado = req.body;
 
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
   res.render("productosDisponibles", {
     codigo: productoBuscado.id_codigo,
     marca: productoBuscado.id_marca,
@@ -275,7 +273,63 @@ app.post("/privado", async (req, res) => {
   });  
 });
 
+///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
+app.get("/inventario", async (req, res) => {
+  res.render("tuInventario");
+});
 
+//ruta post que crea nueva mascota, al terminar conduce a completar antecedentes de salud
+app.post('/registro_producto', async (req, res) => {
+  console.log(req.body);
+
+  // const token = await verifica_token(req.cookies.retoken);
+  // const data = token.data;
+  // const {id} = data;   
+  const { marca,nombrep, precio } = req.body;
+  const estado = "1";
+
+  
+  if (!marca || !nombrep || !precio ) {
+      return res.status(400).send('Faltan parámetros')
+  }
+
+  const {files}=req    
+  if (!req.files) {
+      return res.status(400).send('Debe ingresar una foto del producto')
+  }
+
+  const { foto } = files;
+  if (!foto || foto == null) {
+      return res.status(400).send('Error al ingresar foto de producto')
+
+  }
+
+  const{nombre} = foto;    
+  const foto_producto = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+  //
+  const id_codigo = 100;
+  const id_marca = 10;
+  const tipo_cliente = 3;
+  //
+
+  try {
+      const producto = await nuevo_producto( id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto);                
+      foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+          if (err) return res.status(500).send({
+              error: `algo salio mal... ${err}`,
+              code: 500
+          })            
+          res.redirect('/tuInventario');            
+      })       
+         
+  } catch (e) {
+      res.status(500).send({
+          error: `Algo salio mal...${e}`,
+          code: 500
+      })       
+  }     
+  
+});
 //////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
 
 ////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
