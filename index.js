@@ -2,6 +2,7 @@ const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
+const Handlebars = require("handlebars");
 
 const puerto = process.env.PORT || 4000
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
@@ -184,7 +185,7 @@ app.post('/registro', async (req, res) => {
 
 
 
-///////////////////////////////////////////////////////////////////INICIO DE SESION////////////////
+///////////////////////////////////////////////////////////////////INICIO DE SESION/////////////////////////////////////////////////////
 app.get("/inicioSesion", async (req, res) => {
   res.render("inicioSesion");
 });
@@ -192,7 +193,7 @@ app.get("/inicioSesion", async (req, res) => {
 app.post("/inicioSesion", async (req, res) => {
   // console.log(req.body);
   const { email, password } = req.body;
-  console.log(email, password);
+  //console.log(email, password);
   if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
     const usuario = await trae_usuario_email(email);
     // console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
@@ -362,6 +363,21 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
+});
+
+
+app.post('/enviar-objeto', function(req, res) {
+  var objeto = req.body;
+console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send('Objeto recibido correctamente');
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
 });
 
 
