@@ -1,9 +1,7 @@
 const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
-const {
-  Pool
-} = require('pg');
+const { Pool } = require('pg');
 
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
 const {
@@ -13,9 +11,11 @@ const {
   muestra_inventario,
   encuentra_producto,
   trae_usuario,
-  obtenerProductosPorUsuario,
-  obtenerCamposSector
+  obtenerProductosPorUsuario
 } = require("./database");
+
+
+
 
 /////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
 // getDate();
@@ -294,6 +294,23 @@ app.get('/api/camposSector', async (req, res) => {
   }
 });
 
+
+//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO////////////////////////////////////////////////////////
+
+app.get('/listaVendedores/:idProducto', async (req, res) => {
+  const { idProducto } = req.params;
+  try {
+
+    const vendedores = await obtenerVendedores(idProducto);
+    res.render('listaVendedores', { vendedores });
+    //console.log(vendedores);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
+
+
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
 // app.use((req, res, next) => {
@@ -420,3 +437,21 @@ app.get('/api/camposSector', async (req, res) => {
 //   });
 
 // });
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/enviar-objeto', function(req, res) {
+  var objeto = req.body;
+console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send('Objeto recibido correctamente');
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+
+
+

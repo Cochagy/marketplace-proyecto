@@ -1,4 +1,6 @@
-const { Pool } = require('pg');
+const {
+    Pool
+} = require('pg');
 
 const pool = new Pool({
     host: process.env.DB_HOST,
@@ -12,7 +14,7 @@ const pool = new Pool({
 const registrarUsuario = async (nombre, email, password, foto) => {
     const result = {
         text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
-        values: [nombre, email, password, foto] 
+        values: [nombre, email, password, foto]
     };
     const res = await pool.query(result);
     return res.rows[0];
@@ -21,7 +23,7 @@ const registrarUsuario = async (nombre, email, password, foto) => {
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
     console.log(result);
-  
+
 }
 
 async function muestra_usuarios() {
@@ -41,7 +43,7 @@ async function encuentra_producto(busquedaInput) {
         text: 'SELECT * FROM productos WHERE nombrep = $1',
         values: [busquedaInput]
     };
-    const result = await pool.query(consulta);    
+    const result = await pool.query(consulta);
     return result.rows[0];
 }
 
@@ -70,13 +72,10 @@ async function trae_usuario(email, password) {
 ////////////////////LISTA DE PRODUCTOS////////////////////////////////////////////////////////////////
 async function obtenerProductosPorUsuario(idUsuario) {
     const consulta = {
-        text: `SELECT pr.nombrep, pr.precio, inv.cantidad AS stock, tc.cliente, m.nombre_marca
-        FROM usuarios usu
-        JOIN inventario inv ON usu.id = inv.usuario
-        JOIN productos pr ON inv.codigo = pr.id_codigo
-        JOIN tipo_cliente tc ON pr.tipo_cliente = tc.id
-        JOIN marca m ON pr.id_marca = m.id
-        WHERE usu.id = $1;`,
+        text: `SELECT i.id, i.usuario, i.codigo, i.cantidad, i.id_estado, i.marca, i.nombrep, i.precio, t.cliente, i.foto
+        FROM inventario i
+        JOIN tipo_cliente t ON i.tipo_cliente = t.id
+        WHERE i.usuario = $1;`,
         values: [idUsuario]
     };
     const resultado = await pool.query(consulta);
@@ -93,6 +92,19 @@ const obtenerCamposSector = async () => {
     return resultado.rows;
 };
 
+////////////////////LISTA DE VENDEDORES////////////////////////////////////////////////////////////////
+async function obtenerVendedores(idproducto) {
+    const consulta = {
+        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector
+        FROM inventario inv
+        JOIN usuarios usr ON inv.usuario = usr.id
+        JOIN sector sec ON usr.sector = sec.id
+        WHERE inv.codigo = $1;`,
+        values: [idproducto]
+    };
+    const resultado = await pool.query(consulta);
+    return resultado.rows;
+}
 
 
 
@@ -102,14 +114,13 @@ const obtenerCamposSector = async () => {
 
 
 
-
-module.exports = { 
+module.exports = {
     registrarUsuario,
-    getDate, 
-    muestra_usuarios, 
-    muestra_inventario, 
-    encuentra_producto, 
+    getDate,
+    muestra_usuarios,
+    muestra_inventario,
+    encuentra_producto,
     obtenerProductosPorUsuario,
-    trae_usuario,
-    obtenerCamposSector 
+    trae_usuario 
+
 };

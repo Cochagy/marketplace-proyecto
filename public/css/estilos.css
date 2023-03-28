@@ -158,7 +158,11 @@ nav {
 }
 
 th {
-    color: aliceblue;
+    color: #ffffff;
+}
+
+td {
+    color: #ffffff;
 }
 
 /* responsivo */
@@ -221,3 +225,19 @@ th {
     }
           
 }
+
+.punto, .punto-seleccionado {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .punto {
+    background-color: #ddd;
+  }
+  
+  .punto-seleccionado {
+    background-color: #007bff;
+  }
