@@ -18,7 +18,7 @@ const {
   muestra_usuarios, 
   muestra_inventario, 
   encuentra_producto,
-  trae_usuario,
+  // trae_usuario,
   obtenerProductosPorUsuario,
   obtenerVendedores
 } = require("./database");
@@ -115,7 +115,7 @@ app.get('/registro', (req, res) => {
 })
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
-app.post('/registro', async (req, res) => {
+app.post('/tuInventario', async (req, res) => {
   console.log(req.body);
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const id_rol = 1;
