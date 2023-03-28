@@ -20,7 +20,8 @@ const {
   encuentra_producto,
   // trae_usuario,
   obtenerProductosPorUsuario,
-  obtenerVendedores
+  obtenerVendedores,
+  obtenerCamposSector
 } = require("./database");
 
 const  { encripta, compara }  = require('./encriptador');
@@ -110,9 +111,21 @@ app.post("/", async (req, res) => {
 
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 //ruta get con formulario para crear un nuevo usuario
-app.get('/registro', (req, res) => {
-  res.render('registro');
-})
+// app.get('/registro', (req, res) => {
+//   res.render('registro');
+// })
+
+//ruta get registro con el buscador de comunas
+app.get('/registro', async (req, res) => {
+  try {
+    const camposSector = await obtenerCamposSector();
+    res.render('registro', { camposSector });
+    res.status(200);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error interno del servidor');
+  }
+});
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
 app.post('/tuInventario', async (req, res) => {
