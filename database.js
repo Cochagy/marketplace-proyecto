@@ -11,14 +11,18 @@ const pool = new Pool({
 
 });
 
-const registrarUsuario = async (nombre, email, password, foto) => {
-    const result = {
-        text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
-        values: [nombre, email, password, foto]
-    };
-    const res = await pool.query(result);
-    return res.rows[0];
-};
+//registra usuario
+const nuevo_usuario = async ( sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario) => {    
+    const consulta = {
+        text: 'INSERT INTO usuarios ( sector, nombre, email, rut, id_rol, password, is_active, telefono, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+        values: [ sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario]
+    }
+    const resultado = await pool.query(consulta);   
+    const usuario = resultado.rows[0];
+    return usuario;
+}
+
+
 
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
@@ -105,7 +109,8 @@ async function obtenerVendedores(idproducto) {
 
 
 module.exports = {
-    registrarUsuario,
+    // registrarUsuario,
+    nuevo_usuario,
     getDate,
     muestra_usuarios,
     muestra_inventario,
@@ -115,3 +120,15 @@ module.exports = {
     obtenerVendedores
 
 };
+
+
+/////////////////////////////////////////////PAPELERA DE RECICLAJE/////////////////////////////////
+//REGISTRO DE USUARIOS PEDRO ////////////
+// const registrarUsuario = async (nombre, email, password, foto) => {
+//     const result = {
+//         text: 'INSERT INTO usuarios (nombre, email, pasword, foto) VALUES ($1, $2, $3, $4) RETURNING*;',
+//         values: [nombre, email, password, foto]
+//     };
+//     const res = await pool.query(result);
+//     return res.rows[0];
+// };
