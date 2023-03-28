@@ -161,7 +161,7 @@ app.post("/inicioSesion", async (req, res) => {
   }
   if (usuario.is_active !== 1) {
     res.status(401).send({
-      error: 'Este usuario se encuentra en evaluacion',
+      error: 'Este usuario se encuentra en evaluación',
       code: 401,
     });
 
@@ -449,9 +449,9 @@ console.log(objeto);
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-Handlebars.registerHelper('json', function(context) {
-  return JSON.stringify(context);
-});
+// Handlebars.registerHelper('json', function(context) {
+//   return JSON.stringify(context);
+// });
 
 
 
