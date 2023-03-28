@@ -43,7 +43,7 @@ async function trae_password_encriptada(email) {
     const result = await pool.query(consulta);
     return result.rows[0];
 }
-
+//trae al usuario desde la base de datos
 async function trae_usuario(email, password_encriptada) {
     const consulta = {
         text: 'SELECT * FROM usuarios WHERE email = $1 AND password = $2',
@@ -51,27 +51,36 @@ async function trae_usuario(email, password_encriptada) {
     };
     const result = await pool.query(consulta);
     // console.log(consulta);
-    console.log(result);
+ // console.log(result);
     return result.rows[0];
 }
 
+///////////////////////PRODUCTOS///////////////////////////////
 
+const nuevo_producto = async (id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto) => {    
+    const consulta = {
+        text: 'INSERT INTO inventario (id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        values: [ id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto]
+    }
+    const resultado = await pool.query(consulta);   
+    const producto = resultado.rows[0];
+    return producto;
+}
 //DESDE AQUI LAS CONSULTAS PARA VER DATOS DE BASE DE DATOS (SOLAMENTE PARA PRUEBAS)/////////////////
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
-    console.log(result);
-
+   // console.log(result);
 }
 
 async function muestra_usuarios() {
     const resultado = await pool.query(`SELECT * FROM usuarios`);
-    console.log(resultado);
+  // console.log(resultado);
     return resultado.rows;
 }
 
 async function muestra_inventario() {
     const resultado = await pool.query(`SELECT * FROM inventario`);
-    console.log(resultado);
+    // console.log(resultado);
     return resultado.rows;
 }
 
@@ -138,6 +147,7 @@ module.exports = {
     trae_usuario_email,
     trae_password_encriptada,
     trae_usuario,
+    nuevo_producto, 
     getDate,
     muestra_usuarios,
     muestra_inventario,
