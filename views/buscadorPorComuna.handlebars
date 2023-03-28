@@ -1,0 +1,18 @@
+<h1>Menú desplegable con Bootstrap y datos de la base de datos</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-expanded="false">
+                    Selecciona un sector
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="menu-desplegable">
+                    {{#each camposSector}}
+                    <li><a class="dropdown-item" href="#" data-value="{{id}}">{{nombre}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
