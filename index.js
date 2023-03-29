@@ -135,6 +135,7 @@ app.get('/registro', async (req, res) => {
 app.post('/registro', async (req, res) => {
   // console.log(req.body);
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
+  const sectorId = parseInt(sector);
   const id_rol = 1;
   const is_active = 1;  
   
@@ -171,7 +172,7 @@ app.post('/registro', async (req, res) => {
           
   try {
       
-      const usuario = await nuevo_usuario(sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
+      const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
       foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
           if (err) return res.status(500).send({
               error: `algo salio mal... ${err}`,
@@ -181,7 +182,7 @@ app.post('/registro', async (req, res) => {
           // res.status(200).json({ message: 'Bienvenido!! su cuenta ha sido creada' });
           res.render("perfil",{
             id: usuario.id,
-            sector: usuario.sector,
+            sector: usuario.sectorId,
             nombre: usuario.nombre, 
             email: usuario.email,
             rut: usuario.rut,
