@@ -49,8 +49,12 @@ app.get("/inicio", (req, res) => {
 });
 
 // //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
-app.get("/perfil", (req, res) => {
-  res.render("perfil");
+app.get("/perfil", cookie, async (req, res) => {
+  console.log(req.body);
+  const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const {nombre, rut, email, telefono, sector, foto} = data;    
+  res.render("perfil", {nombre, rut, email, telefono, sector, foto});
 });
 
 ///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
@@ -93,9 +97,9 @@ app.get("/transacciones", async (req, res) => {
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
 app.post("/", async (req, res) => {    
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
 
   res.render("productoEncontradoPublico", {
     codigo: productoBuscado.id_codigo,
@@ -129,7 +133,7 @@ app.get('/registro', async (req, res) => {
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
 app.post('/registro', async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const sectorId = parseInt(sector);
   const id_rol = 1;
@@ -229,11 +233,11 @@ app.post("/inicioSesion", async (req, res) => {
     } else {
 
       const usuario_id = await trae_password_encriptada(email); 
-      console.log(usuario_id);          
+      // console.log(usuario_id);          
         password_encriptada = usuario_id.password;    
         const compara_password = await compara(password, password_encriptada);
-        console.log(password);
-        console.log(password_encriptada); 
+        // console.log(password);
+        // console.log(password_encriptada); 
         
         if (compara_password === false) {
             res.status(401).send({
@@ -243,19 +247,20 @@ app.post("/inicioSesion", async (req, res) => {
         }
         const usuario = await trae_usuario(email, password_encriptada);        
         const token = await genera_token(usuario);
+        // console.log(token);
         res.cookie('retoken', token, {httpOnly: true});
-        // res.redirect("/perfil");     
-        res.render("perfil",{
-          id: usuario.id,
-          sector: usuario.sector,
-          nombre: usuario.nombre, 
-          email: usuario.email,
-          rut: usuario.rut,
-          telefono: usuario.telefono,
-          id_rol: usuario.id_rol,          
-          is_active: usuario.is_active,
-          foto: usuario.foto
-        });
+        res.redirect("/perfil");     
+        // res.render("perfil",{
+        //   id: usuario.id,
+        //   sector: usuario.sector,
+        //   nombre: usuario.nombre, 
+        //   email: usuario.email,
+        //   rut: usuario.rut,
+        //   telefono: usuario.telefono,
+        //   id_rol: usuario.id_rol,          
+        //   is_active: usuario.is_active,
+        //   foto: usuario.foto
+        // });
     }
                          
     // } else {      
@@ -276,13 +281,13 @@ app.post("/inicioSesion", async (req, res) => {
 
 ///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
 app.post("/privado", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const logeado = req.body;
 
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
   res.render("productosDisponibles", {
     codigo: productoBuscado.id_codigo,
     marca: productoBuscado.id_marca,
@@ -293,21 +298,26 @@ app.post("/privado", async (req, res) => {
 });
 
 ///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
-app.get("/inventario", async (req, res) => {
+app.get("/inventario", cookie, async  (req, res) => {
   res.render("tuInventario");
 });
 
-//ruta post que crea nueva mascota, al terminar conduce a completar antecedentes de salud
-app.post('/tuInventario', async (req, res) => {
+//ruta post que registra un producto, al terminar conduce a completar antecedentes de salud
+app.post('/tuInventario', cookie, async (req, res) => {
   console.log(req.body);
 
-  // const token = await verifica_token(req.cookies.retoken);
-  // const data = token.data;
-  // const {id} = data;   
-  const { marca,nombrep, precio } = req.body;
-  // const tutor_id = id;
+  const token = await verifica_token(req.cookies.retoken);
+  const data = token.data;
+  const {email, id} = data;  
+  console.log ({email, id}); 
+  const { marca,nombrep, precio, codigo, cantidad } = req.body;
+  const usuario = id;
+  console.log(usuario);
+  const id_estado = 1;  
+  const tipo_cliente = 5;
   
-  if (!marca || !nombrep || !precio ) {
+  
+  if (!marca || !nombrep || !precio || !codigo ) {
       return res.status(400).send('Faltan parámetros')
   }
 
@@ -324,20 +334,16 @@ app.post('/tuInventario', async (req, res) => {
 
   const{nombre} = foto;    
   const foto_producto = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
-  //
-  const id_codigo = 100;
-  const id_marca = 10;
-  const tipo_cliente = 3;
-  //
+   
 
   try {
-      const producto = await nuevo_producto( id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto);                
+      const producto = await nuevo_producto( usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto_producto);                
       foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
           if (err) return res.status(500).send({
               error: `algo salio mal... ${err}`,
               code: 500
           })            
-          res.redirect('/tuInventario');            
+          res.redirect('/perfil');            
       })       
          
   } catch (e) {
