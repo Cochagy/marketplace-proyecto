@@ -21,7 +21,8 @@ const {
   // trae_usuario,
   obtenerProductosPorUsuario,
   obtenerVendedores,
-  obtenerCamposSector
+  obtenerCamposSector,
+  obtenerTransacciones
 } = require("./database");
 
 const  { encripta, compara }  = require('./encriptador');
@@ -445,11 +446,47 @@ console.log(objeto);
   res.send('Objeto recibido correctamente');
 });
 
-////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////TRNSACCIONES//////////////////////////////////////////////////
+
+app.get('/transacciones/:idUsuario', async (req, res) => {
+
+  const { idUsuario } = req.params;
+  try {
+
+    const transacciones = await obtenerTransacciones(idUsuario);
+    res.render('transacciones', { transacciones });
+    console.log(transacciones);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
+
+
+
+// app.post('/enviar-objeto', function(req, res) {
+//   var objeto = req.body;
+// console.log(objeto);
+//   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+//   res.send('Objeto recibido correctamente');
+// });
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Handlebars.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
+
 
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
