@@ -144,7 +144,7 @@
         </thead>
 
         <tbody>
-
+          {{#each inventario}}
           <tr>
             <td>{{@index}}</td>
             <td>
@@ -153,12 +153,17 @@
               </div>
             </td>
 
-            <td>Perfume Pitanga</td>
+            {{!-- <td>Perfume Pitanga</td>
             <td>54.990</td>
             <td>18</td>
-            <td>Masculino</td>
+            <td>Masculino</td> --}}
+            <td>{{this.nombrep}}</td>
+          <td>${{this.precio}}</td>
+          <td>{{this.marca}}</td>
+          <td>{{this.cantidad}}</td>
+          <td>{{this.cliente}}</td>
           </tr>
-
+          {{/each}} 
         </tbody>
       </table>
       <div class="text-center mt-3">

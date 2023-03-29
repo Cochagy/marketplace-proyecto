@@ -342,7 +342,7 @@ app.post('/tuInventario', cookie, async (req, res) => {
               error: `algo salio mal... ${err}`,
               code: 500
           })            
-          res.redirect('/tuInventario');            
+          res.redirect('/perfil');            
       })       
          
   } catch (e) {
