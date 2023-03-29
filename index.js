@@ -128,7 +128,7 @@ app.get('/registro', async (req, res) => {
 });
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
-app.post('/tuInventario', async (req, res) => {
+app.post('/registro', async (req, res) => {
   console.log(req.body);
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const id_rol = 1;
@@ -297,7 +297,7 @@ app.get("/inventario", async (req, res) => {
 });
 
 //ruta post que crea nueva mascota, al terminar conduce a completar antecedentes de salud
-app.post('/registro_producto', async (req, res) => {
+app.post('/tuInventario', async (req, res) => {
   console.log(req.body);
 
   // const token = await verifica_token(req.cookies.retoken);
