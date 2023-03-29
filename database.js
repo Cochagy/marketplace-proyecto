@@ -125,6 +125,7 @@ async function obtenerProductosPorUsuario(idUsuario) {
         values: [idUsuario]
     };
     const resultado = await pool.query(consulta);
+    // console.log(resultado);
     return resultado.rows;
 }
 
