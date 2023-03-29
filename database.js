@@ -21,10 +21,10 @@ const obtenerCamposSector = async () => {
 };
 
 //registra usuario
-const nuevo_usuario = async ( sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario) => {    
+const nuevo_usuario = async ( sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario) => {    
     const consulta = {
         text: 'INSERT INTO usuarios ( sector, nombre, email, rut, id_rol, password, is_active, telefono, foto) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-        values: [ sector, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario]
+        values: [ sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario]
     }
     const resultado = await pool.query(consulta);   
     const usuario = resultado.rows[0];
