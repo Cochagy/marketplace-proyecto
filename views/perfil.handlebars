@@ -27,7 +27,7 @@
       <br>
 -
 
-    <form action="/actualizar/:{{this.email}}?_method=PUT" method="POST" enctype="multipart/form-data">
+    <form action="/actualizar/:{{this.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
           <div class="form-group">
@@ -53,7 +53,7 @@
           <div class="form-group py-4">
             <label for="nombre">Sector</label><br>
             <input type="text" name="sector" placeholder="Providencia" class="form-control w-50 m-auto"
-              value="{{this.sector}}">
+              value="{{this.nombre_sector}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Password</label><br>
@@ -91,7 +91,7 @@
       </form>
 
       <div>
-        <form action="/eliminar/{{email}}?_method=DELETE" method="POST">
+        <form action="/eliminar/{{id}}?_method=DELETE" method="POST">
           <input type="hidden" name="_method" value="DELETE">
           <input class="btn btn-danger my-3 py- w-50 m-auto" type="submit" value="eliminar" onClick="eliminar()">
           {{!-- <button type="submit" class="btn btn-danger my-3 pt-2 w-50 m-auto">Eliminar cuenta</button>     --}}
@@ -134,8 +134,9 @@
       <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            {{!-- <th scope="col">#</th> --}}
             <th scope="col">Foto</th>
+            <th scope="col">Marca</th>
             <th scope="col">Nombre</th>
             <th scope="col">Precio</th>
             <th scope="col">Stock</th>
@@ -144,21 +145,27 @@
         </thead>
 
         <tbody>
-
+          {{#each productos}}
           <tr>
-            <td>{{@index}}</td>
+            {{!-- <td>{{@index}}</td> --}}
             <td>
               <div>
-                <img class="rounded-circle" src="/uploads/pitanga.jpg" height="55" Width="75">
+                <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
+                {{!-- <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" height="55" Width="75"> --}}
               </div>
             </td>
 
-            <td>Perfume Pitanga</td>
+            {{!-- <td>Perfume Pitanga</td>
             <td>54.990</td>
             <td>18</td>
-            <td>Masculino</td>
+            <td>Masculino</td> --}}
+            <td>{{this.marca}}</td>
+            <td>{{this.nombrep}}</td>
+            <td>{{this.precio}}</td>         
+            <td>{{this.cantidad}}</td>
+            <td>{{this.cliente}}</td>
           </tr>
-
+          {{/each}} 
         </tbody>
       </table>
       <div class="text-center mt-3">

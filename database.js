@@ -66,10 +66,10 @@ async function trae_usuario(email, password_encriptada) {
 
 ///////////////////////PRODUCTOS///////////////////////////////
 
-const nuevo_producto = async (id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto) => {    
+const nuevo_producto = async (usuario, codigo, cantidad,id_estado, marca, nombrep, precio, tipo_cliente, foto_producto) => {    
     const consulta = {
-        text: 'INSERT INTO inventario (id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        values: [ id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto]
+        text: 'INSERT INTO inventario (usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+        values: [ usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto_producto]
     }
     const resultado = await pool.query(consulta);   
     const producto = resultado.rows[0];
@@ -125,6 +125,7 @@ async function obtenerProductosPorUsuario(idUsuario) {
         values: [idUsuario]
     };
     const resultado = await pool.query(consulta);
+    // console.log(resultado);
     return resultado.rows;
 }
 

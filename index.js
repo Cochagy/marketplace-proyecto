@@ -44,14 +44,17 @@ app.get("/", async (req, res) => {
 });
 
 ///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
-app.get("/inicio", (req, res) => {
-  // console.log(req.body);
+app.get("/inicio", (req, res) => {  
   res.render("inicioSesion");
 });
 
 // //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
-app.get("/perfil", (req, res) => {
-  res.render("perfil");
+app.get("/perfil", cookie, async (req, res) => {  
+  const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const {id,nombre, rut, email, telefono, sector, foto} = data;    
+    const productos = await obtenerProductosPorUsuario(id);    
+  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
 });
 
 ///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
@@ -94,9 +97,9 @@ app.get("/transacciones", async (req, res) => {
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
 app.post("/", async (req, res) => {    
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
 
   res.render("productoEncontradoPublico", {
     codigo: productoBuscado.id_codigo,
@@ -108,13 +111,7 @@ app.post("/", async (req, res) => {
 
 
 });
-///////////////////////////////aqui termina lo del hito 2///////////
-
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
-//ruta get con formulario para crear un nuevo usuario
-// app.get('/registro', (req, res) => {
-//   res.render('registro');
-// })
 
 //ruta get registro con el buscador de comunas
 app.get('/registro', async (req, res) => {
@@ -129,20 +126,19 @@ app.get('/registro', async (req, res) => {
 });
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
-app.post('/registro', async (req, res) => {
-  console.log(req.body);
+app.post('/registro', async (req, res) => { 
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const sectorId = parseInt(sector);
   const id_rol = 1;
   const is_active = 1;  
   
-  // if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
-  //     return res.status(400).send('Faltan parámetros')
-  // }    
+  if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
+      return res.status(400).send('Faltan parámetros')
+  }    
           
-  // if (password != repite_password) {
-  //     return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
-  // }    
+  if (password != repite_password) {
+      return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
+  }    
   
   const {files}=req;
   if (!req.files) {
@@ -175,21 +171,7 @@ app.post('/registro', async (req, res) => {
               error: `algo salio mal... ${err}`,
               code: 500
           }) 
-          // res.render("perfil");
-          // res.status(200).json({ message: 'Bienvenido!! su cuenta ha sido creada' });
-          res.render("perfil",{
-            id: usuario.id,
-            sector: usuario.sectorId,
-            nombre: usuario.nombre, 
-            email: usuario.email,
-            rut: usuario.rut,
-            telefono: usuario.telefono,
-            id_rol: usuario.id_rol,
-            // password: usuario.password,
-            // repite_password: usuario.repite_password,
-            is_active: usuario.is_active,
-            foto: usuario.foto
-          });                             
+          res.redirect("/inicioSesion");                                     
       })       
         
   } catch (e) {
@@ -200,21 +182,17 @@ app.post('/registro', async (req, res) => {
   }           
 })
 
-
-
 ///////////////////////////////////////////////////////////////////INICIO DE SESION/////////////////////////////////////////////////////
 app.get("/inicioSesion", async (req, res) => {
   res.render("inicioSesion");
 });
 
-app.post("/inicioSesion", async (req, res) => {
-  // console.log(req.body);
+app.post("/inicioSesion", async (req, res) => {  
   const { email, password } = req.body;
-  //console.log(email, password);
+ 
   if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
     const usuario = await trae_usuario_email(email);
-    // console.log(usuario.id,usuario.sector, usuario.nombre,usuario.email, usuario.rut, usuario.id_rol, usuario.password, usuario.is_active, usuario.foto);
-         
+
     if(!usuario) {
         res.status(404).send({
             error: 'Este usuario no se ha registrado',
@@ -229,12 +207,9 @@ app.post("/inicioSesion", async (req, res) => {
     
     } else {
 
-      const usuario_id = await trae_password_encriptada(email); 
-      console.log(usuario_id);          
+      const usuario_id = await trae_password_encriptada(email);             
         password_encriptada = usuario_id.password;    
-        const compara_password = await compara(password, password_encriptada);
-        console.log(password);
-        console.log(password_encriptada); 
+        const compara_password = await compara(password, password_encriptada);       
         
         if (compara_password === false) {
             res.status(401).send({
@@ -244,46 +219,23 @@ app.post("/inicioSesion", async (req, res) => {
         }
         const usuario = await trae_usuario(email, password_encriptada);        
         const token = await genera_token(usuario);
+        // console.log(token);
         res.cookie('retoken', token, {httpOnly: true});
-        // res.redirect("/perfil");     
-        res.render("perfil",{
-          id: usuario.id,
-          sector: usuario.sector,
-          nombre: usuario.nombre, 
-          email: usuario.email,
-          rut: usuario.rut,
-          telefono: usuario.telefono,
-          id_rol: usuario.id_rol,          
-          is_active: usuario.is_active,
-          foto: usuario.foto
-        });
-    }
-                         
-    // } else {      
-    //     res.render("perfil",{
-    //       id: usuario.id,
-    //       sector: usuario.sector,
-    //       nombre: usuario.nombrep, 
-    //       email: usuario.email,
-    //       rut: usuario.rut,
-    //       id_rol: usuario.id_rol,
-    //       // password: usuario.password,
-    //       // is_active: usuario.is_active,
-    //       foto: usuario.foto
-    //     });
-    // } 
-  // res.send("aqui");
+        res.redirect("/perfil");       
+    }                    
+    
 });
 
 ///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
 app.post("/privado", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const logeado = req.body;
 
   const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
+  // console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  // console.log(productoBuscado);
+  // res.render("/productosDisponibles");
   res.render("productosDisponibles", {
     codigo: productoBuscado.id_codigo,
     marca: productoBuscado.id_marca,
@@ -294,21 +246,25 @@ app.post("/privado", async (req, res) => {
 });
 
 ///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
-app.get("/inventario", async (req, res) => {
+app.get("/inventario", cookie, async  (req, res) => {
   res.render("tuInventario");
 });
 
-//ruta post que crea nueva mascota, al terminar conduce a completar antecedentes de salud
-app.post('/tuInventario', async (req, res) => {
-  console.log(req.body);
-
-  // const token = await verifica_token(req.cookies.retoken);
-  // const data = token.data;
-  // const {id} = data;   
-  const { marca,nombrep, precio } = req.body;
-  // const tutor_id = id;
+//ruta post que registra un producto, al terminar conduce a completar antecedentes de salud
+app.post('/tuInventario', cookie, async (req, res) => {
+  // console.log(req.body);
+  const token = await verifica_token(req.cookies.retoken);
+  const data = token.data;
+  const {email, id} = data;  
+  // console.log ({email, id}); 
+  const { marca,nombrep, precio, codigo, cantidad } = req.body;
+  const usuario = id;
+  // console.log(usuario);
+  const id_estado = 1;  
+  const tipo_cliente = 5;
   
-  if (!marca || !nombrep || !precio ) {
+  
+  if (!marca || !nombrep || !precio || !codigo ) {
       return res.status(400).send('Faltan parámetros')
   }
 
@@ -325,20 +281,16 @@ app.post('/tuInventario', async (req, res) => {
 
   const{nombre} = foto;    
   const foto_producto = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
-  //
-  const id_codigo = 100;
-  const id_marca = 10;
-  const tipo_cliente = 3;
-  //
+   
 
   try {
-      const producto = await nuevo_producto( id_codigo, id_marca, nombrep, precio, tipo_cliente, foto_producto);                
+      const producto = await nuevo_producto( usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto_producto);                
       foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
           if (err) return res.status(500).send({
               error: `algo salio mal... ${err}`,
               code: 500
           })            
-          res.redirect('/tuInventario');            
+          res.redirect('/perfil');            
       })       
          
   } catch (e) {
@@ -414,7 +366,7 @@ app.get('/inventario/:idUsuario', async (req, res) => {
 
     const productos = await obtenerProductosPorUsuario(idUsuario);
     res.render('tuInventario', { productos });
-    console.log(productos);
+    // console.log(productos);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -430,7 +382,7 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
 
     const vendedores = await obtenerVendedores(idProducto);
     res.render('listaVendedores', { vendedores });
-    console.log(vendedores);
+    // console.log(vendedores);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -440,7 +392,7 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
 
 app.post('/enviar-objeto', function(req, res) {
   var objeto = req.body;
-console.log(objeto);
+// console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
   res.send('Objeto recibido correctamente');
