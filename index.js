@@ -603,3 +603,5 @@ Handlebars.registerHelper('json', function(context) {
 //     res.status(201);
 //   });
 // });
+
+//module.exports = app;
