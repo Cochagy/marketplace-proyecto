@@ -1,4 +1,4 @@
-const app = require("./middleware.js");
+const app = require("./server.js");
 require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
@@ -452,67 +452,7 @@ app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
 
-
-//////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
-
-////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
-// app.get("/", async (req, res) => {
-//   res.render("index");
-// });
-
-// app.get("/", async (req, res) => {
-//   res.render("index");
-// });
-
-  /////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
-
-  // const productos = JSON.parse(fs.readFileSync("./productos.json"));
-
-  // const productoBuscado = productos.productos.find(
-  //   (p) => p.nombre === busquedaInput
-  // );
-  // if (!productoBuscado) {
-  //   res.redirect("/contacto");
-  //   return;
-  // }
-  // res.render("productosDisponibles", {
-  //   codigo: productoBuscado.codigo_p,
-  //   marca: productoBuscado.marca,
-  //   nombre: productoBuscado.nombre,
-  //   precio: productoBuscado.precio,
-  //   sexo: productoBuscado.sexo,
-  // });
-  // if (busquedaInput === productoBuscado.nombre) {
-  //   productoBuscado.codigo_p;
-  // }
-
-//////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
-
-// const usuarios = require("./usuarios.json");
-
-// app.get("/perfil", (req, res) => {
-//   const usuario = usuarios.usuarios.find(
-//     (u) => u.Email === "carlos.garcia@example.com"
-//   );
-
-//   if (!usuario) {
-//     res.redirect("/login");
-//     return;
-//   }
-
-//   res.render("perfil", {
-//     nombre: usuario.nombre,
-//     email: usuario.Email,
-//     contraseña: usuario.contraseña,
-//     telefono: usuario.telefono,
-//     direccion: usuario.direccion,
-//     comuna: usuario.Comuna.trim(),
-//   });
-// });
 
 ////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
 
@@ -819,4 +759,66 @@ module.exports = app;
 //     console.error(error);
 //     return res.status(500).json({ mensaje: 'Error interno del servidor' });
 //   }
+// });
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
+
+////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
+// app.get("/", async (req, res) => {
+//   res.render("index");
+// });
+
+// app.get("/", async (req, res) => {
+//   res.render("index");
+// });
+
+  /////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
+
+  // const productos = JSON.parse(fs.readFileSync("./productos.json"));
+
+  // const productoBuscado = productos.productos.find(
+  //   (p) => p.nombre === busquedaInput
+  // );
+  // if (!productoBuscado) {
+  //   res.redirect("/contacto");
+  //   return;
+  // }
+  // res.render("productosDisponibles", {
+  //   codigo: productoBuscado.codigo_p,
+  //   marca: productoBuscado.marca,
+  //   nombre: productoBuscado.nombre,
+  //   precio: productoBuscado.precio,
+  //   sexo: productoBuscado.sexo,
+  // });
+  // if (busquedaInput === productoBuscado.nombre) {
+  //   productoBuscado.codigo_p;
+  // }
+
+//////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
+
+// const usuarios = require("./usuarios.json");
+
+// app.get("/perfil", (req, res) => {
+//   const usuario = usuarios.usuarios.find(
+//     (u) => u.Email === "carlos.garcia@example.com"
+//   );
+
+//   if (!usuario) {
+//     res.redirect("/login");
+//     return;
+//   }
+
+//   res.render("perfil", {
+//     nombre: usuario.nombre,
+//     email: usuario.Email,
+//     contraseña: usuario.contraseña,
+//     telefono: usuario.telefono,
+//     direccion: usuario.direccion,
+//     comuna: usuario.Comuna.trim(),
+//   });
 // });
