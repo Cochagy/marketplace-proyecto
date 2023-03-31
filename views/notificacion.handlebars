@@ -1,57 +1,167 @@
-<div class="container-fluid">   
+<div class="container-fluid">
   <section class="biombo">
     <h1 class="text-center pt-5" style="color: green;">Hola Carlos!!!</h1>
     {{> cardNotificacion }}
-    <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una solicitud de compra</h1>
-    <div class="py-4">  
-      <hr class="w-100"/>
+    <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una notificacion</h1>
+    <div class="py-4">
+      <hr class="w-100" />
   </section>
   <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Imagen</th>
-        <th scope="col">Nombre</th>        
+
+        <th scope="col">Transaccion</th>
+        <th scope="col">Quien entrega</th>
         <th scope="col">Producto</th>
         <th scope="col">Cantidad</th>
-        <th scope="col">Aceptar</th>                     
+        <th scope="col">Accion Comprador</th>
+        <th scope="col">Accion Vendedor</th>
       </tr>
     </thead>
 
-    <tbody> 
-      
+    <tbody>
+      {{#each notificacion}}
       <tr>
-        <td>{{@index}}</td>
+
+        <td>{{this.e_compra}}</td>
+        <td>{{this.usuario}}</td>
+        <td>{{this.nombrep}}</td>
+        <td>$ {{this.precio}}</td>
+
+
+
+     
+     
+   
         <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/Susana.jpg" height="55" Width="75">                
-          </div>
+          {{#if_eq u_solicitado null}}
+
+          {{else}}
+          {{#unless_eq estado_compra 3}}
+          {{#unless_eq estado_compra 4}}
+
+           {{!-- boton para confirmar solicitud de envio --}}
+          <button class="btn btn-primary m-auto" type="button"
+            onclick="confirmarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Confirmar</button>
+          {{!-- boton para rechazar solicitud de envio --}}
+          <button class="btn btn-danger m-auto" type="button"
+            onclick="rechazarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Rechazar</button>
+          {{/unless_eq}}
+          {{/unless_eq}}
+          {{/if_eq}}
         </td>
-        <td>Susana Mora</td>
-        <td>Crema hidratante<br></td>
-        <td>5</td>             
-        <td> <input class="btn btn-primary m-auto" type="button" value="Seleccionar" onClick="seleccionar()"></td>
-      </tr>  
-      
+
+
+<td>
+          {{!-- boton para confirmar contacto con vendedor--}}
+       {{#if_eq estado_compra 4}}
+          <button class="btn btn-primary m-auto" type="button"
+            onclick="confirmaContacto('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Quiero contactarme con {{this.n_solicitado}}</button>
+    {{/if_eq}}
+       </td>
+
+
+      </tr>
+      {{/each}}
     </tbody>
-
-
   </table>
+  <hr>
 
-  <div class="text-center mt-3">   
-    <input class="btn btn-primary m-auto" type="button" value="Confirmar solicitud" onClick="enviar()">
 
-      <script> 
-        function seleccionar() {
-          window.alert("Solicitud de compra seleccionada");
-        }       
-        function enviar() {
-          window.alert("Orden de compra confirmada");
-        }
-      </script>    
-  </div>
-    
-</div> 
+  
+  <script>
+    function seleccionar() {
+      window.alert("Solicitud de compra seleccionada");
+    }
+    function confirmarPeticion() {
+      window.alert("Orden de compra confirmada");
+    }
+  </script>
+
+  {{!-- script para confirmar solicitud de envio --}}
+  <script>
+    function confirmarPeticion(u_solicitante, n_solicitante, u_solicitado, n_solicitado, cod_producto, nombrep, estado_compra, cantidad) {
+      var objeto = {
+        u_solicitante: u_solicitante,
+        n_solicitante: n_solicitante,
+        u_solicitado: u_solicitado,
+        n_solicitado: n_solicitado,
+        cod_producto: cod_producto,
+        nombrep: nombrep,
+        estado_compra: estado_compra,
+        cantidad: cantidad
+      };
+      fetch('/enviar-confirmacion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(objeto)
+      })
+        .then(function (response) {
+          // Hacer algo con la respuesta del servidor si lo deseas
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
+    function rechazarPeticion(u_solicitante, n_solicitante, u_solicitado, n_solicitado, cod_producto, nombrep, estado_compra, cantidad) {
+      var objeto = {
+        u_solicitante: u_solicitante,
+        n_solicitante: n_solicitante,
+        u_solicitado: u_solicitado,
+        n_solicitado: n_solicitado,
+        cod_producto: cod_producto,
+        nombrep: nombrep,
+        estado_compra: estado_compra,
+        cantidad: cantidad
+      };
+      fetch('/enviar-rechazar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(objeto)
+      })
+        .then(function (response) {
+          // Hacer algo con la respuesta del servidor si lo deseas
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
+    function confirmaContacto(u_solicitante, n_solicitante, u_solicitado, n_solicitado, cod_producto, nombrep, estado_compra, cantidad) {
+      var objeto = {
+        u_solicitante: u_solicitante,
+        n_solicitante: n_solicitante,
+        u_solicitado: u_solicitado,
+        n_solicitado: n_solicitado,
+        cod_producto: cod_producto,
+        nombrep: nombrep,
+        estado_compra: estado_compra,
+        cantidad: cantidad
+      };
+      fetch('/enviar-contacto', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(objeto)
+      })
+        .then(function (response) {
+          // Hacer algo con la respuesta del servidor si lo deseas
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    }
+
+  </script>
+</div>
+
+</div>
 </div>
 
 

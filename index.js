@@ -2,7 +2,7 @@ const app = require("./middleware.js");
 require("dotenv").config();
 const fs = require("fs");
 const { Pool } = require('pg');
-const Handlebars = require("handlebars");
+const handlebars = require("handlebars");
 
 const puerto = process.env.PORT || 4000
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
@@ -12,8 +12,12 @@ const {
   nuevo_usuario,
   trae_usuario_email,
   trae_password_encriptada,
-  trae_usuario,  
+  trae_usuario, 
+  trae_usuario_id, 
   nuevo_producto,
+  actualizar_usuario,
+  elimina_producto,
+  desactivar,
   getDate,
   muestra_usuarios, 
   muestra_inventario, 
@@ -22,21 +26,16 @@ const {
   obtenerProductosPorUsuario,
   obtenerVendedores,
   obtenerCamposSector,
-  obtenerTransacciones
+  trae_usuario_idproducto,
+  obtenerTransacciones,
+  obtenerNotificaciones
 } = require("./database");
 
 const  { encripta, compara }  = require('./encriptador');
 const { genera_token, verifica_token } = require('./verificadorToken');
 const { cookie } = require('./cookie');
 
-/////////////////////////////////////////UTIL PARA REALIZAR PRUEBAS, SOLO SE DESCOMENTA///////////
-// getDate();
-// muestra_usuarios();
-// muestra_inventario();
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////RUTAS/////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////TRAE LA VISTA DEL BUSCADOR PUBLICO/////////
 app.get("/", async (req, res) => {
@@ -90,9 +89,7 @@ app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
 app.post("/", async (req, res) => {    
@@ -130,7 +127,12 @@ app.post('/registro', async (req, res) => {
   const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
   const sectorId = parseInt(sector);
   const id_rol = 1;
-  const is_active = 1;  
+  const is_active = 1;
+  const busca_usuario = await trae_usuario_email(email);
+  
+  if (busca_usuario) {
+    return res.status(400).send('Usuario ya se encuentra registrado')
+  }
   
   if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
       return res.status(400).send('Faltan parámetros')
@@ -182,11 +184,55 @@ app.post('/registro', async (req, res) => {
   }           
 })
 
-///////////////////////////////////////////////////////////////////INICIO DE SESION/////////////////////////////////////////////////////
+///////////////////////////////////////////////eliminiar usuario (o desactivar) ok//////////////
+//eliminar usuario con objeto
+app.put('/enviar-objeto3', async function(req, res) {
+  var objeto = req.body;
+  let id = objeto['id'];
+// console.log(id);
+// console.log(objeto);  
+  try {
+          const usuario = await trae_usuario_id(id);
+          // console.log(usuario);
+          if (usuario) {
+            const desactivado = 2;
+            console.log(desactivado, id);
+            await desactivar(desactivado, id);           
+            res.status(200).json({ message: 'Su datos han sido eliminados' });
+          }            
+          
+      } catch (error) {
+          return res.status(500).json({ message: 'Ha ocurrido un error'});        
+      }  
+  res.redirect('/');
+});
+
+//actualizar usuario (solo telefono) hace todo pero no guarda muestra undefine//////////////
+app.put('/actualizar/:email', async (req, res) => {  
+  const email = req.params.email;
+  const telefono = req.body.telefono;
+
+  const datos = {email,telefono}
+  
+  console.log(email);
+  console.log(telefono);
+
+  await actualizar_usuario(datos);      
+
+  res.status(200).json({ message: 'Sus datos han sido actualizados' });     
+});
+
+/////////////////////////////////////////////////////// INICIO DE SESION /////////
+app.get("/inicio", (req, res) => {  
+  res.render("inicioSesion");
+});
+
+////////////////////////////////////////////////////////INICIO DE SESION trae formulario/////////////////////////////////////////////////////
 app.get("/inicioSesion", async (req, res) => {
   res.render("inicioSesion");
 });
 
+//inicio de sesion debe redireccionar a perfil con cookie
 app.post("/inicioSesion", async (req, res) => {  
   const { email, password } = req.body;
  
@@ -198,12 +244,7 @@ app.post("/inicioSesion", async (req, res) => {
             error: 'Este usuario no se ha registrado',
             code: 404,
     }); 
-
-    // }if (usuario.is_active !== 1) {        
-    //     res.status(401).send({
-    //     error: 'Este usuario se encuentra en evaluacion',
-    //     code: 401,
-    // });  
+ 
     
     } else {
 
@@ -226,23 +267,23 @@ app.post("/inicioSesion", async (req, res) => {
     
 });
 
-///////////////////////////////////////////BUSCA PRODUCTO USUARIO LOGEADO//////////////////////
-app.post("/privado", async (req, res) => {
-  // console.log(req.body);
-  const logeado = req.body;
-
-  const busquedaInput = req.body["busqueda-input"];
-  // console.log(busquedaInput);
-  const productoBuscado = await encuentra_producto(busquedaInput);
-  // console.log(productoBuscado);
-  // res.render("/productosDisponibles");
-  res.render("productosDisponibles", {
-    codigo: productoBuscado.id_codigo,
-    marca: productoBuscado.id_marca,
-    nombre: productoBuscado.nombrep,
-    precio: productoBuscado.precio,
-    sexo: productoBuscado.sexo,
-  });  
+// //////////////////////////////////////////////TRAE LA VISTA DEL PERFIL con cookie////////////////
+app.get("/perfil", cookie, async (req, res) => {  
+  const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const {id,nombre, rut, email, telefono, sector, foto} = data;    
+    const productos = await obtenerProductosPorUsuario(id);
+       
+     console.log(productos);
+  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
+});
+/////////////////////////BUSCA PRODUCTO USUARIO LOGEADO (falta incluir cookie)//////////////////////
+app.get("/productosDisponibles", cookie, async (req, res) => {  
+  const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const {id,nombre, rut, email, telefono, sector, foto} = data;    
+    const productos = await obtenerProductosPorUsuario(id);    
+  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
 });
 
 ///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
@@ -250,7 +291,7 @@ app.get("/inventario", cookie, async  (req, res) => {
   res.render("tuInventario");
 });
 
-//ruta post que registra un producto, al terminar conduce a completar antecedentes de salud
+//ruta post que registra un producto, al terminar redirenderisa datos en inventario del usuario
 app.post('/tuInventario', cookie, async (req, res) => {
   // console.log(req.body);
   const token = await verifica_token(req.cookies.retoken);
@@ -301,6 +342,121 @@ app.post('/tuInventario', cookie, async (req, res) => {
   }     
   
 });
+
+
+
+//elimina producto de inventario (falta que recargue y refresque)
+app.delete('/enviar-objeto2', async function(req, res) {
+  var objeto = req.body;
+  let id = objeto['id'];
+console.log(id);
+console.log(objeto);  
+  await elimina_producto(id);
+  res.redirect('/perfil');
+});
+////////////////////////////////////////////////lista de vendedores///////////////
+
+app.get("/listaVendedores", async (req, res) => {
+  res.render("listaVendedores");
+});
+
+app.get('/listaVendedores/:id', async(req, res) => {  
+  console.log(req.body.nombre);
+  const idproducto = req.params;  
+  try {
+    const vendedores = await trae_usuario_idproducto(idproducto);
+    // const vendedores = await obtenerVendedores(idproducto);
+    console.log(vendedores);    
+    res.render('listaVendedores', { vendedores });
+
+  } catch (e) {
+      res.status(500).send({
+        error: `Algo salio mal...${e}`,
+        code: 500
+    });  
+
+  }  
+});
+
+///////////////////////////////////////////////////////ADMINISTRACION////////////
+
+//ruta que trae vista de administarcion ok
+app.get('/administracion', async (req, res) => {
+  // console.log(req.body); 
+  res.render('administracion'); 
+  
+})
+
+//autentica a funcionario administardor ok
+app.post('/administracion', async (req, res) => {    
+  const { contrasena_funcionario, nombre_funcionario} = req.body;
+  if (contrasena_funcionario === process.env.ADMIN) {
+    // console.log(req.body);
+      res.render('admin_usuarios');
+  } else {
+      res.render('403');
+  };    
+});
+
+
+///////////////////////////////////////////AUTORIZAR USUARIOS/////
+
+//ruta que trae lista de usuarios para su autorizacion
+app.get('/admin_usuarios', async (req, res) => {    
+  try {
+      const usuarios = await muestra_usuarios();
+      // console.log(usuarios);   
+      res.render('administracion', { usuarios });     
+  } catch (e) {
+      res.status(500).send({
+          error: `Algo salio mal...${e}`,
+          code: 500
+      });        
+  }
+})
+
+//ruta put que cambia estado de usuarios
+app.put('/administracion', async (req, res)=>{
+  const { is_active, email } = req.body;
+     
+  try {
+      const usuario = await cambiar_estado(is_active, email);
+      res.status(200).send(usuario);
+  } catch (e) {
+      res.status(500).send({
+          error: `Algo salio mal...${e}`,
+          code: 500
+      })
+  }
+  
+})
+
+
+///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
+
+app.get("/contacto", async (req, res) => {
+  res.render("contacto");
+});
+
+app.post("/contacto", (req, res) => {
+  res.send(req.body);
+});
+
+
+
+app.get("/notificacion", async (req, res) => {
+  res.render("notificacion");
+});
+
+app.get("/transacciones", async (req, res) => {
+  res.render("transacciones");
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
 //////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
 
 ////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
@@ -360,18 +516,7 @@ app.post('/tuInventario', cookie, async (req, res) => {
 
 ////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
 
-app.get('/inventario/:idUsuario', async (req, res) => {
-  const { idUsuario } = req.params;
-  try {
 
-    const productos = await obtenerProductosPorUsuario(idUsuario);
-    res.render('tuInventario', { productos });
-    // console.log(productos);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ mensaje: 'Error interno del servidor' });
-  }
-});
 
 
 //////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO////////////////////////////////////////////////////////
@@ -392,7 +537,7 @@ app.get('/listaVendedores/:idProducto', async (req, res) => {
 
 app.post('/enviar-objeto', function(req, res) {
   var objeto = req.body;
-// console.log(objeto);
+  console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
   res.send('Objeto recibido correctamente');
@@ -425,19 +570,77 @@ app.get('/transacciones/:idUsuario', async (req, res) => {
 // });
 
 
+////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
 
+app.get('/notificacion/:idUsuario', async (req, res) => {
 
+  const { idUsuario } = req.params;
+  try {
 
+    const notificacion = await obtenerNotificaciones(idUsuario);
+    res.render('notificacion', { notificacion });
+    console.log(notificacion);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+});
 
+app.post('/enviar-confirmacion', function(req, res) {
+  var objeto = req.body;
+ console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
+  res.send('Objeto recibido correctamente');
+});
 
+app.post('/enviar-rechazar', function(req, res) {
+  var objeto = req.body;
+ console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
+  res.send('Objeto recibido correctamente');
+});
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.post('/enviar-contacto', function(req, res) {
+  var objeto = req.body;
+ console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-Handlebars.registerHelper('json', function(context) {
+  res.send('Objeto recibido correctamente');
+});
+
+////////////////////////////////////////////////////////////////////////////////////
+
+handlebars.registerHelper('json', function(context) {
   return JSON.stringify(context);
 });
+
+handlebars.registerHelper('if_eq', function(a, b, opts) {
+  if (a === b) {
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+});
+
+handlebars.registerHelper('unless_eq', function (a, b, opts) {
+  if (a !== b) {
+    return opts.fn(this);
+  } else {
+    return opts.inverse(this);
+  }
+});
+
+handlebars.registerHelper('if_neither_eq', function(a, b, value, options) {
+  if (a !== value && b !== value) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+});
+
+
+module.exports = app;
 
 
 
@@ -602,4 +805,18 @@ Handlebars.registerHelper('json', function(context) {
 //     });
 //     res.status(201);
 //   });
+// });
+
+
+// app.get('/inventario/:idUsuario', async (req, res) => {
+//   const { idUsuario } = req.params;
+//   try {
+
+//     const productos = await obtenerProductosPorUsuario(idUsuario);
+//     res.render('tuInventario', { productos });
+//     // console.log(productos);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ mensaje: 'Error interno del servidor' });
+//   }
 // });

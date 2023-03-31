@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "directories": {
+    "test": "/public/tests"
+  },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -21,14 +25,19 @@
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
     "express-handlebars": "^6.0.6",
+    "jest": "^29.5.0",
     "jsonwebtoken": "^9.0.0",
     "method-override": "^3.0.0",
     "nodemailer": "^6.9.1",
     "pg": "^8.9.0",
+    "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.21"
+  },
+  "jest": {
+    "testMatch": ["**/public/tests/**/*.spec.js"]
   }
 }

@@ -8,62 +8,70 @@
       <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: rgb(205, 107, 107);">
         <div>
           <section class="mt-5 ms-5 pt-5">
-            <h1>{{this.marca}} </h1><br>
-            <h1>{{this.nombre}}</h1>
-            <h1>{{this.sexo}}</h1><br>
-            <h1>{{this.precio}}</h1>
-            {{!-- <h2>
-              "Esika Hidratante es una crema hidratante suave, formulada con aceites naturales, que proporciona una
+            <div class="container p-5">
+              <h1>{{this.marca}} </h1><br>
+              <h1>{{this.nombre}}</h1>            
+              <h1>{{this.precio}}</h1><br><br>
+              <h2>
+              Formulada con aceites naturales, que proporciona una
               hidratación profunda y duradera para la piel. Esta crema nutritiva contiene antioxidantes y vitaminas para
               ayudar a proteger la piel de los daños del medio ambiente. Su fórmula ligera se absorbe rápidamente para
               dejar la piel con un toque cómodo y sedoso. Esta crema hidratante es ideal para todo tipo de pieles,
-              especialmente para pieles secas y deshidratadas."</h2> --}}
+              especialmente para pieles secas y deshidratadas."</h2>
+            </div>           
           </section>
         </div>
       </div>
     </div>
   </div>
 
-  <section>
-    <h1 class="text-center mt-5" style="color: green;">Productos disponibles</h1>
+ <section>
+    <h1 class="text-center mt-5" style="color: green;">Tu inventario</h1>
     <div class="py-4">
       <hr class="w-100" />
 
       <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Imagen</th>
+            {{!-- <th scope="col">#</th> --}}
+            <th scope="col">Foto</th>
             <th scope="col">Marca</th>
             <th scope="col">Nombre</th>
             <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
             <th scope="col">Descripción</th>
-            <th scope="col">Vendedores</th>
           </tr>
         </thead>
 
         <tbody>
-
+          {{#each productos}}
           <tr>
-            <td>{{@index}}</td>
+            {{!-- <td>{{@index}}</td> --}}
             <td>
               <div>
-                <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" Width="75">
+                <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
+                {{!-- <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" height="55" Width="75"> --}}
               </div>
             </td>
-            <td>{{this.marca}}</td>
-            <td>{{this.nombre}}<br></td>
-            <td>{{this.precio}}</td>
-            <td>{{this.sexo}}</td>
-            <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./listaVendedores">seleccionar</a></td>
-          </tr>
 
+            {{!-- <td>Perfume Pitanga</td>
+            <td>54.990</td>
+            <td>18</td>
+            <td>Masculino</td> --}}
+            <td>{{this.marca}}</td>
+            <td>{{this.nombrep}}</td>
+            <td>{{this.precio}}</td>         
+            <td>{{this.cantidad}}</td>
+            <td>{{this.cliente}}</td>            
+            <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar</button></td>           
+            {{!-- <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./elimina_producto/:{{this.id}}">Eliminar</a></td> --}}
+          </tr>
+          {{/each}} 
         </tbody>
       </table>
       <div class="text-center mt-3">
-        <a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./">Ir al buscador</a>
+        <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Cerrar sesion</a></th>
       </div>
-
     </div>
   </section>
 </div>
