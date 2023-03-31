@@ -7,9 +7,9 @@
       </div>
       <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
         <div class="mt-5">
-          <h1>esika</h1>
-          <h1>Crema hidratante</h1>
-          <h1>Femenino</h1>
+          <h1>{{this.marca}}</h1>
+          <h1>{{this.nombrep}}</h1>
+          <h1>{{this.precio}}</h1>
           <h1>Pitanga eau de toilette 150ml.</h1>
         </div>
         <br>
@@ -27,7 +27,6 @@
         <thead>
           <tr>
             <th scope="col">Imagen</th>
-            <th scope="col">Vendedor</th>
             <th scope="col">Nombre</th>
             <th scope="col">Precio producto</th>
             <th scope="col">Stock</th>
@@ -50,9 +49,7 @@
             <td>{{this.cantidad}}</td>
             <td>{{this.nombre_sector}}</td>
             <td>
-
                 <button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
-
             </td>
           </tr>
           {{/each}}

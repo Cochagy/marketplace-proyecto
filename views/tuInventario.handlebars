@@ -63,47 +63,7 @@
   </div>
 </div>
 
-  <section>
-    <h1 class="text-center mt-5" style="color: green;">Tu inventario</h1>
-    <div class="py-4">  
-  <hr class="w-100"/>
-
-  <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-    <thead>
-      <tr>
-     
-        <th scope="col">Foto</th>
-        <th scope="col">Nombre</th>        
-        <th scope="col">Precio</th>
-        <th scope="col">Marca</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Descripción</th>                     
-      </tr>
-    </thead>
-<tbody>            
-        {{#each productos}}
-        <tr>
-          <td>
-            <div>                
-             <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
-
-               
-            </div>
-          </td>
-          <td>{{this.nombrep}}</td>
-          <td>${{this.precio}}</td>
-          <td>{{this.marca}}</td>
-          <td>{{this.cantidad}}</td>
-          <td>{{this.cliente}}</td>
-        </tr>  
-        {{/each}}    
-      </tbody>
-  </table>
-  <div class="text-center mt-3">    
-  <th><a class="btn btn-primary" style="margin: 20px" href="/" role="button">Pagina Principal</a></th>
-  </div>
-
-  </section>
+ 
 </div>
 
 <script>
