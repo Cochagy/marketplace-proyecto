@@ -1,26 +1,28 @@
 const app = require("./server.js");
 require("dotenv").config();
 const fs = require("fs");
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 const handlebars = require("handlebars");
+const helpers = require("./views/helpers/helpers.js");
+const baseURL = 'https://marketplace-proyecto-production.up.railway.app/uploads/';
 
-const puerto = process.env.PORT || 4000
+
+const puerto = process.env.PORT || 4000;
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
-const { 
-  
+const {
   // registrarUsuario,
   nuevo_usuario,
   trae_usuario_email,
   trae_password_encriptada,
-  trae_usuario, 
-  trae_usuario_id, 
+  trae_usuario,
+  trae_usuario_id,
   nuevo_producto,
   actualizar_usuario,
   elimina_producto,
   desactivar,
   getDate,
-  muestra_usuarios, 
-  muestra_inventario, 
+  muestra_usuarios,
+  muestra_inventario,
   encuentra_producto,
   // trae_usuario,
   obtenerProductosPorUsuario,
@@ -28,32 +30,20 @@ const {
   obtenerCamposSector,
   trae_usuario_idproducto,
   obtenerTransacciones,
-  obtenerNotificaciones
+  obtenerNotificaciones,
 } = require("./database");
 
-const  { encripta, compara }  = require('./encriptador');
-const { genera_token, verifica_token } = require('./verificadorToken');
-const { cookie } = require('./cookie');
+const { encripta, compara } = require("./encriptador");
+const { genera_token, verifica_token } = require("./verificadorToken");
+const { cookie } = require("./cookie");
 
-
-
-///////////////////////////////////////////////////////TRAE LA VISTA DEL BUSCADOR PUBLICO/////////
-app.get("/", async (req, res) => {
-  res.render("index");
+Object.keys(helpers).forEach(function (key) {
+  handlebars.registerHelper(key, helpers[key]);
 });
 
-///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
-app.get("/inicio", (req, res) => {  
-  res.render("inicioSesion");
-});
-
-// //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
-app.get("/perfil", cookie, async (req, res) => {  
-  const token = await verifica_token(req.cookies.retoken);
-    const data = token.data;
-    const {id,nombre, rut, email, telefono, sector, foto} = data;    
-    const productos = await obtenerProductosPorUsuario(id);    
-  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
+app.get("/cerrar-sesion", (req, res) => {
+  res.clearCookie("retoken");
+  res.redirect("/");
 });
 
 ///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
@@ -77,10 +67,6 @@ app.get("/productosDisponibles", async (req, res) => {
   res.render("productosDisponibles");
 });
 
-app.get("/listaVendedores", async (req, res) => {
-  res.render("listaVendedores");
-});
-
 app.get("/notificacion", async (req, res) => {
   res.render("notificacion");
 });
@@ -89,14 +75,17 @@ app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
 });
 
+///////////////////////////////////////////////////////TRAE LA VISTA DEL BUSCADOR PUBLICO/////////
+app.get("/", async (req, res) => {
+  res.render("index");
+});
 
-
-/////////////////////////////////////////////////////BUSCA PRODUCTO SIN INICIAR SESION/////////////////////////
-app.post("/", async (req, res) => {    
+/////////////////////////////////////////////////////BUSCA PRODUCTO PUBLICO /////////////////////////
+app.post("/publico", async (req, res) => {
   const busquedaInput = req.body["busqueda-input"];
-  // console.log(busquedaInput);
+  console.log(busquedaInput);
   const productoBuscado = await encuentra_producto(busquedaInput);
-  // console.log(productoBuscado);
+  console.log(productoBuscado);
 
   res.render("productoEncontradoPublico", {
     codigo: productoBuscado.id_codigo,
@@ -105,125 +94,237 @@ app.post("/", async (req, res) => {
     precio: productoBuscado.precio,
     sexo: productoBuscado.sexo,
   });
+});
 
+///////////////////////////////////////////BUSCAR PRODUCTO PRIVADO//////////////////////////////////////////////
 
+app.post("/privado", async (req, res) => {
+  const busquedaInput = req.body["busqueda-input"];
+  console.log(busquedaInput);
+  const productoBuscado = await encuentra_producto(busquedaInput);
+  console.log(productoBuscado);
+
+  res.render("productosDisponibles", {
+    codigo: productoBuscado.id_codigo,
+    marca: productoBuscado.id_marca,
+    nombre: productoBuscado.nombrep,
+    precio: productoBuscado.precio,
+    sexo: productoBuscado.sexo,
+  });
+});
+
+///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
+app.get("/inicio", (req, res) => {
+  res.render("inicioSesion");
+});
+
+// //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
+app.get("/perfil", cookie, async (req, res) => {
+  const token = await verifica_token(req.cookies.retoken);
+  const data = token.data;
+  const { id, nombre, rut, email, telefono, sector, foto } = data;
+  const productos = await obtenerProductosPorUsuario(id);
+  res.render("perfil", {
+    id,
+    nombre,
+    rut,
+    email,
+    telefono,
+    sector,
+    foto,
+    productos,
+  });
+console.log(foto)
 });
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 
 //ruta get registro con el buscador de comunas
-app.get('/registro', async (req, res) => {
+app.get("/registro", async (req, res) => {
   try {
     const camposSector = await obtenerCamposSector();
-    res.render('registro', { camposSector });
+    res.render("registro", {
+      camposSector,
+    });
     res.status(200);
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error interno del servidor');
+    res.status(500).send("Error interno del servidor");
   }
 });
 
 //ruta post para ingresar datos y crear nuevo usuario, debe redireccionar a inicio de sesion
-app.post('/registro', async (req, res) => { 
-  const { sector, nombree, email, rut, password, telefono, repite_password} = req.body;    
+app.post("/registro", async (req, res) => {
+  const { sector, nombree, email, rut, password, telefono, repite_password } =
+    req.body;
   const sectorId = parseInt(sector);
   const id_rol = 1;
   const is_active = 1;
   const busca_usuario = await trae_usuario_email(email);
-  
+
   if (busca_usuario) {
-    return res.status(400).send('Usuario ya se encuentra registrado')
+    return res.status(400).send("Usuario ya se encuentra registrado");
   }
-  
-  if (!sector || !nombree || !email || !rut || !id_rol || !password || !repite_password || !is_active || !telefono ) {
-      return res.status(400).send('Faltan parámetros')
-  }    
-          
+
+  if (
+    !sector ||
+    !nombree ||
+    !email ||
+    !rut ||
+    !id_rol ||
+    !password ||
+    !repite_password ||
+    !is_active ||
+    !telefono
+  ) {
+    return res.status(400).send("Faltan parámetros");
+  }
+
   if (password != repite_password) {
-      return res.status(418).send('Debe repetir la misma contraseña para crear su cuenta')
-  }    
-  
-  const {files}=req;
+    return res
+      .status(418)
+      .send("Debe repetir la misma contraseña para crear su cuenta");
+  }
+
+  const { files } = req;
   if (!req.files) {
-      return res.status(400).send('Debe ingresar una foto del producto')
+    return res.status(400).send("Debe ingresar una foto del producto");
   }
 
-  const { foto }= files;
+  const { foto } = files;
   if (!foto || foto == null) {
-      return res.status(400).send('Error al ingresar foto de perfil')
-
+    return res.status(400).send("Error al ingresar foto de perfil");
   }
-  const [file_tipo, file_extension] = foto.mimetype.split('/');
-  if (file_tipo !== 'image') {
-      return res.status(400).send('Solo se aceptan formatos de imagen')
+  const [file_tipo, file_extension] = foto.mimetype.split("/");
+  if (file_tipo !== "image") {
+    return res.status(400).send("Solo se aceptan formatos de imagen");
   }
-  const valida_extesion = ['jpg', 'jpeg', 'png', 'webp'];
+  const valida_extesion = ["jpg", "jpeg", "png", "webp"];
   if (!valida_extesion.includes(file_extension)) {
-      return res.status(400).send('Formato de imagen no válido');
+    return res.status(400).send("Formato de imagen no válido");
   }
 
-  const{nombre}= foto;    
-  const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);    
-  const password_encriptada = await encripta(password);    
-          
-  try {
-      
-      const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
-      foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
-          if (err) return res.status(500).send({
-              error: `algo salio mal... ${err}`,
-              code: 500
-          }) 
-          res.redirect("/inicioSesion");                                     
-      })       
-        
-  } catch (e) {
-      res.status(500).send({
-          error: `Algo salio mal...${e}`,
-          code: 500
-      })       
-  }           
-})
+  const password_encriptada = await encripta(password);
+
+  const nombreImagen = `foto_${nombree}_${Date.now()}.${file_extension}`;
+
+  const foto_usuario = `https://marketplace-proyecto-production.up.railway.app/uploads/${nombreImagen}`;
+
+  const usuario = await nuevo_usuario(
+    sectorId,
+    nombree,
+    email,
+    rut,
+    id_rol,
+    password_encriptada,
+    is_active,
+    telefono,
+    foto_usuario
+  );
+
+  foto.mv(`${__dirname}/public/uploads/${nombreImagen}`, async (err) => {
+    if (err)
+      return res.status(500).send({
+        error: `algo salio mal... ${err}`,
+        code: 500,
+      });
+    res.redirect("/inicioSesion");
+  });
+  /////
+  // const{nombre}= foto;
+  // const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+  // const password_encriptada = await encripta(password);
+
+  // try {
+
+  //     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
+  //     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+  //         if (err) return res.status(500).send({
+  //             error: `algo salio mal... ${err}`,
+  //             code: 500
+  //         })
+  //         res.redirect("/inicioSesion");
+  //     })
+
+  // } catch (e) {
+  //     res.status(500).send({
+  //         error: `Algo salio mal...${e}`,
+  //         code: 500
+  //     })
+  // }
+
+  // const{nombre}= foto;
+  // // const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+  // const foto_usuario = `https://marketplace-proyecto-production.up.railway.app/uploads/${nombre}`;
+  // const password_encriptada = await encripta(password);
+
+  // try {
+
+  //     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
+  //     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+  //         if (err) return res.status(500).send({
+  //             error: `algo salio mal... ${err}`,
+  //             code: 500
+  //         })
+  //         res.redirect("/inicioSesion");
+  //     })
+
+  // } catch (e) {
+  //     res.status(500).send({
+  //         error: `Algo salio mal...${e}`,
+  //         code: 500
+  //     })
+  // }
+  /////
+});
 
 ///////////////////////////////////////////////eliminiar usuario (o desactivar) ok//////////////
 //eliminar usuario con objeto
-app.put('/enviar-objeto3', async function(req, res) {
+app.put("/enviar-objeto3", async function (req, res) {
   var objeto = req.body;
-  let id = objeto['id'];
-// console.log(id);
-// console.log(objeto);  
+  let id = objeto["id"];
+  // console.log(id);
+  // console.log(objeto);
   try {
-          const usuario = await trae_usuario_id(id);
-          // console.log(usuario);
-          if (usuario) {
-            const desactivado = 2;
-            console.log(desactivado, id);
-            await desactivar(desactivado, id);           
-            res.status(200).json({ message: 'Su datos han sido eliminados' });
-          }            
-          
-      } catch (error) {
-          return res.status(500).json({ message: 'Ha ocurrido un error'});        
-      }  
-  res.redirect('/');
+    const usuario = await trae_usuario_id(id);
+    // console.log(usuario);
+    if (usuario) {
+      const desactivado = 2;
+      console.log(desactivado, id);
+      await desactivar(desactivado, id);
+      res.status(200).json({
+        message: "Su datos han sido eliminados",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Ha ocurrido un error",
+    });
+  }
+  res.redirect("/");
 });
 
 //actualizar usuario (solo telefono) hace todo pero no guarda muestra undefine//////////////
-app.put('/actualizar/:email', async (req, res) => {  
+app.put("/actualizar/:email", async (req, res) => {
   const email = req.params.email;
   const telefono = req.body.telefono;
 
-  const datos = {email,telefono}
-  
+  const datos = {
+    email,
+    telefono,
+  };
+
   console.log(email);
   console.log(telefono);
 
-  await actualizar_usuario(datos);      
+  await actualizar_usuario(datos);
 
-  res.status(200).json({ message: 'Sus datos han sido actualizados' });     
+  res.status(200).json({
+    message: "Sus datos han sido actualizados",
+  });
 });
 
 /////////////////////////////////////////////////////// INICIO DE SESION /////////
-app.get("/inicio", (req, res) => {  
+app.get("/inicio", (req, res) => {
   res.render("inicioSesion");
 });
 
@@ -233,204 +334,202 @@ app.get("/inicioSesion", async (req, res) => {
 });
 
 //inicio de sesion debe redireccionar a perfil con cookie
-app.post("/inicioSesion", async (req, res) => {  
+app.post("/inicioSesion", async (req, res) => {
   const { email, password } = req.body;
- 
-  if(!email || !password) return res.status(400).json(({error: 'Faltan parametros'}))    
-    const usuario = await trae_usuario_email(email);
 
-    if(!usuario) {
-        res.status(404).send({
-            error: 'Este usuario no se ha registrado',
-            code: 404,
-    }); 
- 
-    
-    } else {
+  if (!email || !password)
+    return res.status(400).json({
+      error: "Faltan parametros",
+    });
+  const usuario = await trae_usuario_email(email);
 
-      const usuario_id = await trae_password_encriptada(email);             
-        password_encriptada = usuario_id.password;    
-        const compara_password = await compara(password, password_encriptada);       
-        
-        if (compara_password === false) {
-            res.status(401).send({
-                error: 'Credenciales incorrectas',
-                code: 401,
-            });
-        }
-        const usuario = await trae_usuario(email, password_encriptada);        
-        const token = await genera_token(usuario);
-        // console.log(token);
-        res.cookie('retoken', token, {httpOnly: true});
-        res.redirect("/perfil");       
-    }                    
-    
+  if (!usuario) {
+    res.status(404).send({
+      error: "Este usuario no se ha registrado",
+      code: 404,
+    });
+  } else {
+    const usuario_id = await trae_password_encriptada(email);
+    password_encriptada = usuario_id.password;
+    const compara_password = await compara(password, password_encriptada);
+
+    if (compara_password === false) {
+      res.status(401).send({
+        error: "Credenciales incorrectas",
+        code: 401,
+      });
+    }
+    const usuario = await trae_usuario(email, password_encriptada);
+    const token = await genera_token(usuario);
+    // console.log(token);
+    res.cookie("retoken", token, {
+      httpOnly: true,
+    });
+    res.redirect("/perfil");
+  }
 });
 
 // //////////////////////////////////////////////TRAE LA VISTA DEL PERFIL con cookie////////////////
-app.get("/perfil", cookie, async (req, res) => {  
+app.get("/perfil", cookie, async (req, res) => {
   const token = await verifica_token(req.cookies.retoken);
-    const data = token.data;
-    const {id,nombre, rut, email, telefono, sector, foto} = data;    
-    const productos = await obtenerProductosPorUsuario(id);
-       
-     console.log(productos);
-  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
+  const data = token.data;
+  const { id, nombre, rut, email, telefono, sector, foto } = data;
+  const productos = await obtenerProductosPorUsuario(id);
+
+  console.log(productos);
+  res.render("perfil", {
+    id,
+    nombre,
+    rut,
+    email,
+    telefono,
+    sector,
+    foto,
+    productos,
+  });
 });
 /////////////////////////BUSCA PRODUCTO USUARIO LOGEADO (falta incluir cookie)//////////////////////
-app.get("/productosDisponibles", cookie, async (req, res) => {  
+app.get("/productosDisponibles", cookie, async (req, res) => {
   const token = await verifica_token(req.cookies.retoken);
-    const data = token.data;
-    const {id,nombre, rut, email, telefono, sector, foto} = data;    
-    const productos = await obtenerProductosPorUsuario(id);    
-  res.render("perfil", {id, nombre, rut, email, telefono, sector, foto, productos});
+  const data = token.data;
+  const { id, nombre, rut, email, telefono, sector, foto } = data;
+  const productos = await obtenerProductosPorUsuario(id);
+  res.render("perfil", {
+    id,
+    nombre,
+    rut,
+    email,
+    telefono,
+    sector,
+    foto,
+    productos,
+  });
 });
 
 ///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
-app.get("/inventario", cookie, async  (req, res) => {
+app.get("/inventario", cookie, async (req, res) => {
   res.render("tuInventario");
 });
 
 //ruta post que registra un producto, al terminar redirenderisa datos en inventario del usuario
-app.post('/tuInventario', cookie, async (req, res) => {
+app.post("/tuInventario", cookie, async (req, res) => {
   // console.log(req.body);
   const token = await verifica_token(req.cookies.retoken);
   const data = token.data;
-  const {email, id} = data;  
-  // console.log ({email, id}); 
-  const { marca,nombrep, precio, codigo, cantidad } = req.body;
+  const { email, id } = data;
+  // console.log ({email, id});
+  const { marca, nombrep, precio, codigo, cantidad } = req.body;
   const usuario = id;
   // console.log(usuario);
-  const id_estado = 1;  
+  const id_estado = 1;
   const tipo_cliente = 5;
-  
-  
-  if (!marca || !nombrep || !precio || !codigo ) {
-      return res.status(400).send('Faltan parámetros')
+
+  if (!marca || !nombrep || !precio || !codigo) {
+    return res.status(400).send("Faltan parámetros");
   }
 
-  const {files}=req    
+  const { files } = req;
   if (!req.files) {
-      return res.status(400).send('Debe ingresar una foto del producto')
+    return res.status(400).send("Debe ingresar una foto del producto");
   }
 
   const { foto } = files;
   if (!foto || foto == null) {
-      return res.status(400).send('Error al ingresar foto de producto')
-
+    return res.status(400).send("Error al ingresar foto de producto");
   }
 
-  const{nombre} = foto;    
-  const foto_producto = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
-   
+  const { nombre } = foto;
+  const foto_producto = `http://localhost:` + puerto + `/uploads/${nombre}`;
 
   try {
-      const producto = await nuevo_producto( usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto_producto);                
-      foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
-          if (err) return res.status(500).send({
-              error: `algo salio mal... ${err}`,
-              code: 500
-          })            
-          res.redirect('/perfil');            
-      })       
-         
+    const producto = await nuevo_producto(
+      usuario,
+      codigo,
+      cantidad,
+      id_estado,
+      marca,
+      nombrep,
+      precio,
+      tipo_cliente,
+      foto_producto
+    );
+    foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+      if (err)
+        return res.status(500).send({
+          error: `algo salio mal... ${err}`,
+          code: 500,
+        });
+      res.redirect("/perfil");
+    });
   } catch (e) {
-      res.status(500).send({
-          error: `Algo salio mal...${e}`,
-          code: 500
-      })       
-  }     
-  
+    res.status(500).send({
+      error: `Algo salio mal...${e}`,
+      code: 500,
+    });
+  }
 });
-
-
 
 //elimina producto de inventario (falta que recargue y refresque)
-app.delete('/enviar-objeto2', async function(req, res) {
+app.delete("/enviar-objeto2", async function (req, res) {
   var objeto = req.body;
-  let id = objeto['id'];
-console.log(id);
-console.log(objeto);  
+  let id = objeto["id"];
+  console.log(id);
+  console.log(objeto);
   await elimina_producto(id);
-  res.redirect('/perfil');
-});
-////////////////////////////////////////////////lista de vendedores///////////////
-
-app.get("/listaVendedores", async (req, res) => {
-  res.render("listaVendedores");
-});
-
-app.get('/listaVendedores/:id', async(req, res) => {  
-  console.log(req.body.nombre);
-  const idproducto = req.params;  
-  try {
-    const vendedores = await trae_usuario_idproducto(idproducto);
-    // const vendedores = await obtenerVendedores(idproducto);
-    console.log(vendedores);    
-    res.render('listaVendedores', { vendedores });
-
-  } catch (e) {
-      res.status(500).send({
-        error: `Algo salio mal...${e}`,
-        code: 500
-    });  
-
-  }  
+  res.redirect("/perfil");
 });
 
 ///////////////////////////////////////////////////////ADMINISTRACION////////////
 
 //ruta que trae vista de administarcion ok
-app.get('/administracion', async (req, res) => {
-  // console.log(req.body); 
-  res.render('administracion'); 
-  
-})
-
-//autentica a funcionario administardor ok
-app.post('/administracion', async (req, res) => {    
-  const { contrasena_funcionario, nombre_funcionario} = req.body;
-  if (contrasena_funcionario === process.env.ADMIN) {
-    // console.log(req.body);
-      res.render('admin_usuarios');
-  } else {
-      res.render('403');
-  };    
+app.get("/administracion", async (req, res) => {
+  // console.log(req.body);
+  res.render("administracion");
 });
 
+//autentica a funcionario administardor ok
+app.post("/administracion", async (req, res) => {
+  const { contrasena_funcionario, nombre_funcionario } = req.body;
+  if (contrasena_funcionario === process.env.ADMIN) {
+    // console.log(req.body);
+    res.render("admin_usuarios");
+  } else {
+    res.render("403");
+  }
+});
 
 ///////////////////////////////////////////AUTORIZAR USUARIOS/////
 
 //ruta que trae lista de usuarios para su autorizacion
-app.get('/admin_usuarios', async (req, res) => {    
+app.get("/admin_usuarios", async (req, res) => {
   try {
-      const usuarios = await muestra_usuarios();
-      // console.log(usuarios);   
-      res.render('administracion', { usuarios });     
+    const usuarios = await muestra_usuarios();
+    // console.log(usuarios);
+    res.render("administracion", {
+      usuarios,
+    });
   } catch (e) {
-      res.status(500).send({
-          error: `Algo salio mal...${e}`,
-          code: 500
-      });        
+    res.status(500).send({
+      error: `Algo salio mal...${e}`,
+      code: 500,
+    });
   }
-})
+});
 
 //ruta put que cambia estado de usuarios
-app.put('/administracion', async (req, res)=>{
+app.put("/administracion", async (req, res) => {
   const { is_active, email } = req.body;
-     
-  try {
-      const usuario = await cambiar_estado(is_active, email);
-      res.status(200).send(usuario);
-  } catch (e) {
-      res.status(500).send({
-          error: `Algo salio mal...${e}`,
-          code: 500
-      })
-  }
-  
-})
 
+  try {
+    const usuario = await cambiar_estado(is_active, email);
+    res.status(200).send(usuario);
+  } catch (e) {
+    res.status(500).send({
+      error: `Algo salio mal...${e}`,
+      code: 500,
+    });
+  }
+});
 
 ///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
 
@@ -442,8 +541,6 @@ app.post("/contacto", (req, res) => {
   res.send(req.body);
 });
 
-
-
 app.get("/notificacion", async (req, res) => {
   res.render("notificacion");
 });
@@ -452,54 +549,80 @@ app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
 });
 
-
-
 ////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO con cookie////////////////////////////////////////////////////////
+// app.get("/listaVendedores", async (req, res) => {
+//   res.render("listaVendedores");
+// });
 
+// app.get('/listaVendedores/:idProducto', async (req, res) => {
+//   const { idProducto } = req.params;
+//   try {
 
+//     const vendedores = await obtenerVendedores(idProducto);
+//     res.render('listaVendedores', { vendedores });
+//     console.log(vendedores);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ mensaje: 'Error interno del servidor' });
+//   }
+// });
 
-//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO////////////////////////////////////////////////////////
-
-app.get('/listaVendedores/:idProducto', async (req, res) => {
-  const { idProducto } = req.params;
+app.get("/listaVendedores", cookie, async (req, res) => {
   try {
+    // Aquí va tu lógica para obtener los datos que necesitas.
 
-    const vendedores = await obtenerVendedores(idProducto);
-    res.render('listaVendedores', { vendedores });
-    // console.log(vendedores);
+    res.render("listaVendedores");
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
   }
 });
 
+app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
+  const { idProducto } = req.params;
+  try {
+    const vendedores = await obtenerVendedores(idProducto);
+    res.render("listaVendedores", {
+      vendedores,
+    });
+    console.log(vendedores);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
+  }
+});
 
-app.post('/enviar-objeto', function(req, res) {
+app.post("/enviar-objeto", function (req, res) {
   var objeto = req.body;
   console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send('Objeto recibido correctamente');
+  res.send("Objeto recibido correctamente");
 });
 
 ///////////////////////////////////////////TRNSACCIONES//////////////////////////////////////////////////
 
-app.get('/transacciones/:idUsuario', async (req, res) => {
-
+app.get("/transacciones/:idUsuario", async (req, res) => {
   const { idUsuario } = req.params;
   try {
-
     const transacciones = await obtenerTransacciones(idUsuario);
-    res.render('transacciones', { transacciones });
+    res.render("transacciones", {
+      transacciones,
+    });
     console.log(transacciones);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ mensaje: 'Error interno del servidor' });
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
   }
 });
-
-
 
 // app.post('/enviar-objeto', function(req, res) {
 //   var objeto = req.body;
@@ -509,80 +632,51 @@ app.get('/transacciones/:idUsuario', async (req, res) => {
 //   res.send('Objeto recibido correctamente');
 // });
 
-
 ////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
 
-app.get('/notificacion/:idUsuario', async (req, res) => {
-
+app.get("/notificacion/:idUsuario", async (req, res) => {
   const { idUsuario } = req.params;
   try {
-
     const notificacion = await obtenerNotificaciones(idUsuario);
-    res.render('notificacion', { notificacion });
+    res.render("notificacion", {
+      notificacion,
+      usuarioObj: {
+        usuario: idUsuario,
+      },
+    });
     console.log(notificacion);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 });
 
-app.post('/enviar-confirmacion', function(req, res) {
+app.post("/enviar-confirmacion", function (req, res) {
   var objeto = req.body;
- console.log(objeto);
+  console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send('Objeto recibido correctamente');
+  res.send("Objeto recibido correctamente");
 });
 
-app.post('/enviar-rechazar', function(req, res) {
+app.post("/enviar-rechazar", function (req, res) {
   var objeto = req.body;
- console.log(objeto);
+  console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send('Objeto recibido correctamente');
+  res.send("Objeto recibido correctamente");
 });
 
-app.post('/enviar-contacto', function(req, res) {
+app.post("/enviar-contacto", function (req, res) {
   var objeto = req.body;
- console.log(objeto);
+  console.log(objeto);
   // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send('Objeto recibido correctamente');
+  res.send("Objeto recibido correctamente");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-handlebars.registerHelper('json', function(context) {
-  return JSON.stringify(context);
-});
-
-handlebars.registerHelper('if_eq', function(a, b, opts) {
-  if (a === b) {
-    return opts.fn(this);
-  } else {
-    return opts.inverse(this);
-  }
-});
-
-handlebars.registerHelper('unless_eq', function (a, b, opts) {
-  if (a !== b) {
-    return opts.fn(this);
-  } else {
-    return opts.inverse(this);
-  }
-});
-
-handlebars.registerHelper('if_neither_eq', function(a, b, value, options) {
-  if (a !== value && b !== value) {
-    return options.fn(this);
-  }
-  return options.inverse(this);
-});
-
-
 module.exports = app;
-
-
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
@@ -616,7 +710,7 @@ module.exports = app;
 
 //   fs.writeFileSync('usuarios.json', JSON.stringify(usuarios), 'utf-8');
 
-  // Agrega el siguiente código para mostrar una alerta al usuario
+// Agrega el siguiente código para mostrar una alerta al usuario
 //   const mensaje = 'Usuario eliminado con éxito';
 //   res.send(`
 //      <script>
@@ -625,7 +719,6 @@ module.exports = app;
 //      </script>
 //    `);
 // });
-
 
 /////////////////////////////////////////////////////////BORRA PRODUCTO HITO 2//////////////////
 
@@ -683,7 +776,6 @@ module.exports = app;
 //app.get("/perfil", async (req, res) => {
 //res.render("perfil");
 //});
-
 
 // // llamar datos perfil
 // const usuarios = require('./usuarios.json');
@@ -747,7 +839,6 @@ module.exports = app;
 //   });
 // });
 
-
 // app.get('/inventario/:idUsuario', async (req, res) => {
 //   const { idUsuario } = req.params;
 //   try {
@@ -765,7 +856,6 @@ module.exports = app;
 /////////////////////////////////////////////DESDE AQUI ESTA MAS O MENOS AVANZADO////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-
 //////////////////////////////////////////////////PAPELERA DE RECLAJE/////////////////////////////
 
 ////////////////////////////////////////////////////CODIGO REPETIDO CANDIDATO A SER ELIMINADO
@@ -777,27 +867,27 @@ module.exports = app;
 //   res.render("index");
 // });
 
-  /////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
+/////////////////////////////////////////////////SE USO EN EL BUSCADOR DEL HITO 2////////////////
 
-  // const productos = JSON.parse(fs.readFileSync("./productos.json"));
+// const productos = JSON.parse(fs.readFileSync("./productos.json"));
 
-  // const productoBuscado = productos.productos.find(
-  //   (p) => p.nombre === busquedaInput
-  // );
-  // if (!productoBuscado) {
-  //   res.redirect("/contacto");
-  //   return;
-  // }
-  // res.render("productosDisponibles", {
-  //   codigo: productoBuscado.codigo_p,
-  //   marca: productoBuscado.marca,
-  //   nombre: productoBuscado.nombre,
-  //   precio: productoBuscado.precio,
-  //   sexo: productoBuscado.sexo,
-  // });
-  // if (busquedaInput === productoBuscado.nombre) {
-  //   productoBuscado.codigo_p;
-  // }
+// const productoBuscado = productos.productos.find(
+//   (p) => p.nombre === busquedaInput
+// );
+// if (!productoBuscado) {
+//   res.redirect("/contacto");
+//   return;
+// }
+// res.render("productosDisponibles", {
+//   codigo: productoBuscado.codigo_p,
+//   marca: productoBuscado.marca,
+//   nombre: productoBuscado.nombre,
+//   precio: productoBuscado.precio,
+//   sexo: productoBuscado.sexo,
+// });
+// if (busquedaInput === productoBuscado.nombre) {
+//   productoBuscado.codigo_p;
+// }
 
 //////////////////////////////////////////////////////TRAE PERFIL hito 2////////////////////////////////////////////////////////////////////
 
@@ -821,4 +911,22 @@ module.exports = app;
 //     direccion: usuario.direccion,
 //     comuna: usuario.Comuna.trim(),
 //   });
+// });
+
+// app.get('/listaVendedores/:id', async(req, res) => {
+//   console.log(req.body.nombre);
+//   const idproducto = req.params;
+//   try {
+//     const vendedores = await trae_usuario_idproducto(idproducto);
+//     // const vendedores = await obtenerVendedores(idproducto);
+//     console.log(vendedores);
+//     res.render('listaVendedores', { vendedores });
+
+//   } catch (e) {
+//       res.status(500).send({
+//         error: `Algo salio mal...${e}`,
+//         code: 500
+//     });
+
+//   }
 // });

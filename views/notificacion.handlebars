@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <section class="biombo">
-    <h1 class="text-center pt-5" style="color: green;">Hola Carlos!!!</h1>
+    <h1 class="text-center pt-5" style="color: green;">Hola Carlos!!! </h1>
     {{> cardNotificacion }}
     <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una notificacion</h1>
     <div class="py-4">
@@ -14,25 +14,18 @@
         <th scope="col">Quien entrega</th>
         <th scope="col">Producto</th>
         <th scope="col">Cantidad</th>
-        <th scope="col">Accion Comprador</th>
-        <th scope="col">Accion Vendedor</th>
+        <th scope="col">Accion</th>
+    
       </tr>
     </thead>
 
     <tbody>
       {{#each notificacion}}
       <tr>
-
         <td>{{this.e_compra}}</td>
         <td>{{this.usuario}}</td>
         <td>{{this.nombrep}}</td>
         <td>$ {{this.precio}}</td>
-
-
-
-     
-     
-   
         <td>
           {{#if_eq u_solicitado null}}
 
@@ -51,14 +44,6 @@
           {{/if_eq}}
         </td>
 
-
-<td>
-          {{!-- boton para confirmar contacto con vendedor--}}
-       {{#if_eq estado_compra 4}}
-          <button class="btn btn-primary m-auto" type="button"
-            onclick="confirmaContacto('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Quiero contactarme con {{this.n_solicitado}}</button>
-    {{/if_eq}}
-       </td>
 
 
       </tr>

@@ -149,7 +149,7 @@ async function muestra_inventario() {
 //busca productos en la base de datos (buscador)
 async function encuentra_producto(busquedaInput) {
     const consulta = {
-        text: 'SELECT * FROM inventario WHERE nombrep = $1',
+        text: "SELECT * FROM inventario WHERE LOWER(nombrep) LIKE '%' || LOWER($1) || '%'",
         values: [busquedaInput]
     };
     const result = await pool.query(consulta);
