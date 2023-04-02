@@ -1,9 +1,10 @@
-<<div class="container-fluid">
-  <div class="biombo row px-5">
+<div class="container-fluid">
+  <div class="biombo row px-5 d-flex flex-column flex-lg-row">
     <h1 class="text-center mt-5" style="color: green;">Regístrate aqui</h1>
     {{> cardRegistro }}
 
-    <div class="responsivo col-7 mt-5 py-5 mb-5 text-center rounded" style="background: green;">
+      <div class="responsivo col-12 col-lg-7 mt-5 py-5 mb-5 text-center rounded mx-lg-auto" style="background: green;">
+
       <h3>Registro</h3><br>
 
       <form action="/registro" method="POST" enctype="multipart/form-data">
@@ -53,7 +54,7 @@
         <br>
         <br><br>
       </form>
-
+      <p><a href="./perfil">Completa tu perfil</a></p>
     </div>
   </div>
   </div>
