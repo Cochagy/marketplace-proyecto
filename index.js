@@ -4,8 +4,7 @@ const fs = require("fs");
 const { Pool } = require("pg");
 const handlebars = require("handlebars");
 const helpers = require("./views/helpers/helpers.js");
-const baseURL = 'https://marketplace-proyecto-production.up.railway.app/uploads/';
-
+module.exports = app;
 
 const puerto = process.env.PORT || 4000;
 ///////////////////////////////////////////////////IMPORTACIONNES////////////////////////////////
@@ -46,7 +45,7 @@ app.get("/cerrar-sesion", (req, res) => {
   res.redirect("/");
 });
 
-///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
+///////////////////////////////////////////////////////RUTAS POR TRABAJAR GET////////////////////////
 app.get("/contacto", async (req, res) => {
   res.render("contacto");
 });
@@ -75,6 +74,14 @@ app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
 });
 
+app.get("/403", (req, res) => {
+  res.render("index");
+});
+
+app.get("/contacto", async (req, res) => {
+  res.render("contacto");
+});
+
 ///////////////////////////////////////////////////////TRAE LA VISTA DEL BUSCADOR PUBLICO/////////
 app.get("/", async (req, res) => {
   res.render("index");
@@ -82,41 +89,154 @@ app.get("/", async (req, res) => {
 
 /////////////////////////////////////////////////////BUSCA PRODUCTO PUBLICO /////////////////////////
 app.post("/publico", async (req, res) => {
-  const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
-  const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  try {
+    const busquedaInput = req.body["busqueda-input"];
 
-  res.render("productoEncontradoPublico", {
-    codigo: productoBuscado.id_codigo,
-    marca: productoBuscado.id_marca,
-    nombre: productoBuscado.nombrep,
-    precio: productoBuscado.precio,
-    sexo: productoBuscado.sexo,
-  });
+    // Verificar si el campo de búsqueda está vacío
+    if (!busquedaInput.trim()) {
+      res.render("contacto");
+    }
+
+    const productoBuscado = await encuentra_producto(busquedaInput);
+    console.log(productoBuscado);
+
+    res.render("productoEncontradoPublico", {
+      codigo: productoBuscado.id_codigo,
+      marca: productoBuscado.id_marca,
+      nombre: productoBuscado.nombrep,
+      precio: productoBuscado.precio,
+      sexo: productoBuscado.sexo,
+    });
+  } catch (error) {
+    console.error('Error en la ruta "/publico":', error);
+    res.status(500).send("Error interno del servidor");
+  }
 });
 
 ///////////////////////////////////////////BUSCAR PRODUCTO PRIVADO//////////////////////////////////////////////
 
 app.post("/privado", async (req, res) => {
-  const busquedaInput = req.body["busqueda-input"];
-  console.log(busquedaInput);
-  const productoBuscado = await encuentra_producto(busquedaInput);
-  console.log(productoBuscado);
+  try {
+    const busquedaInput = req.body["busqueda-input"];
+    console.log(busquedaInput);
+    const productoBuscado = await encuentra_producto(busquedaInput);
+    console.log(productoBuscado);
 
-  res.render("productosDisponibles", {
-    codigo: productoBuscado.id_codigo,
-    marca: productoBuscado.id_marca,
-    nombre: productoBuscado.nombrep,
-    precio: productoBuscado.precio,
-    sexo: productoBuscado.sexo,
-  });
+    const redirectURL = `/listaVendedores/${productoBuscado.codigo}`;
+
+    // Redirecciona al usuario a la URL construida
+    res.redirect(redirectURL);
+    console.log(redirectURL);
+  } catch (error) {
+    console.error('Error en la ruta "/privado":', error);
+    res.render("index");
+  }
 });
 
-///////////////////////////////////////////////////////TRAE FORMULARIO INICIO DE SESION /////////
-app.get("/inicio", (req, res) => {
-  res.render("inicioSesion");
+//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO con cookie////////////////////////////////////////////////////////
+
+app.get("/listaVendedores", cookie, async (req, res) => {
+  try {
+    // Aquí va tu lógica para obtener los datos que necesitas.
+
+    res.render("listaVendedores");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
+  }
 });
+
+app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
+  const { idProducto } = req.params;
+  try {
+    const vendedores = await obtenerVendedores(idProducto);
+    const producto = await obtenerVendedores(idProducto);
+    res.render("listaVendedores", {
+      vendedores,
+      productos: producto,
+    });
+    console.log(vendedores);
+    console.log(producto);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
+  }
+});
+
+app.post("/enviar-objeto", function (req, res) {
+  var objeto = req.body;
+  console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send("Objeto recibido correctamente");
+});
+
+////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
+
+app.get("/notificacion/:idUsuario", async (req, res) => {
+  const { idUsuario } = req.params;
+  try {
+    const notificacion = await obtenerNotificaciones(idUsuario);
+    res.render("notificacion", {
+      notificacion,
+      usuarioObj: {
+        usuario: idUsuario,
+      },
+    });
+    console.log(notificacion);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post("/enviar-confirmacion", function (req, res) {
+  var objeto = req.body;
+  console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send("Objeto recibido correctamente");
+});
+
+app.post("/enviar-rechazar", function (req, res) {
+  var objeto = req.body;
+  console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send("Objeto recibido correctamente");
+});
+
+app.post("/enviar-contacto", function (req, res) {
+  var objeto = req.body;
+  console.log(objeto);
+  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+  res.send("Objeto recibido correctamente");
+});
+
+///////////////////////////////////////////TRNSACCIONES//////////////////////////////////////////////////
+
+app.get("/transacciones/:idUsuario", async (req, res) => {
+  const { idUsuario } = req.params;
+  try {
+    const transacciones = await obtenerTransacciones(idUsuario);
+    res.render("transacciones", {
+      transacciones,
+    });
+    console.log(transacciones);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor",
+    });
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////////////////RUTAS INICIO SESION PERFILES//////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // //////////////////////////////////////////////////////TRAE LA VISTA DEL PERFIL////////////////
 app.get("/perfil", cookie, async (req, res) => {
@@ -134,7 +254,7 @@ app.get("/perfil", cookie, async (req, res) => {
     foto,
     productos,
   });
-console.log(foto)
+  console.log(foto);
 });
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 
@@ -229,52 +349,6 @@ app.post("/registro", async (req, res) => {
       });
     res.redirect("/inicioSesion");
   });
-  /////
-  // const{nombre}= foto;
-  // const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
-  // const password_encriptada = await encripta(password);
-
-  // try {
-
-  //     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
-  //     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
-  //         if (err) return res.status(500).send({
-  //             error: `algo salio mal... ${err}`,
-  //             code: 500
-  //         })
-  //         res.redirect("/inicioSesion");
-  //     })
-
-  // } catch (e) {
-  //     res.status(500).send({
-  //         error: `Algo salio mal...${e}`,
-  //         code: 500
-  //     })
-  // }
-
-  // const{nombre}= foto;
-  // // const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
-  // const foto_usuario = `https://marketplace-proyecto-production.up.railway.app/uploads/${nombre}`;
-  // const password_encriptada = await encripta(password);
-
-  // try {
-
-  //     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
-  //     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
-  //         if (err) return res.status(500).send({
-  //             error: `algo salio mal... ${err}`,
-  //             code: 500
-  //         })
-  //         res.redirect("/inicioSesion");
-  //     })
-
-  // } catch (e) {
-  //     res.status(500).send({
-  //         error: `Algo salio mal...${e}`,
-  //         code: 500
-  //     })
-  // }
-  /////
 });
 
 ///////////////////////////////////////////////eliminiar usuario (o desactivar) ok//////////////
@@ -308,10 +382,7 @@ app.put("/actualizar/:email", async (req, res) => {
   const email = req.params.email;
   const telefono = req.body.telefono;
 
-  const datos = {
-    email,
-    telefono,
-  };
+  const datos = { email, telefono };
 
   console.log(email);
   console.log(telefono);
@@ -389,22 +460,26 @@ app.get("/perfil", cookie, async (req, res) => {
   });
 });
 /////////////////////////BUSCA PRODUCTO USUARIO LOGEADO (falta incluir cookie)//////////////////////
-app.get("/productosDisponibles", cookie, async (req, res) => {
-  const token = await verifica_token(req.cookies.retoken);
-  const data = token.data;
-  const { id, nombre, rut, email, telefono, sector, foto } = data;
-  const productos = await obtenerProductosPorUsuario(id);
-  res.render("perfil", {
-    id,
-    nombre,
-    rut,
-    email,
-    telefono,
-    sector,
-    foto,
-    productos,
-  });
-});
+// app.get("/productosDisponibles", cookie, async (req, res) => {
+//   const token = await verifica_token(req.cookies.retoken);
+//   const data = token.data;
+//   const { id, nombre, rut, email, telefono, sector, foto } = data;
+//   const productos = await obtenerProductosPorUsuario(id);
+//   res.render("perfil", {
+//     id,
+//     nombre,
+//     rut,
+//     email,
+//     telefono,
+//     sector,
+//     foto,
+//     productos,
+//   });
+// });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// INVENTARIO//
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////REGISTRAR PRODUCTOS EN EL INVENTARIO///////////
 app.get("/inventario", cookie, async (req, res) => {
@@ -494,7 +569,7 @@ app.post("/administracion", async (req, res) => {
     // console.log(req.body);
     res.render("admin_usuarios");
   } else {
-    res.render("403");
+    res.render("/");
   }
 });
 
@@ -531,98 +606,9 @@ app.put("/administracion", async (req, res) => {
   }
 });
 
-///////////////////////////////////////////////////////RUTAS POR TRABAJAR////////////////////////
-
-app.get("/contacto", async (req, res) => {
-  res.render("contacto");
-});
-
-app.post("/contacto", (req, res) => {
-  res.send(req.body);
-});
-
-app.get("/notificacion", async (req, res) => {
-  res.render("notificacion");
-});
-
-app.get("/transacciones", async (req, res) => {
-  res.render("transacciones");
-});
-
-////////////////////////////////////////////////LISTAR PRODUCTOS POR USUARIO///////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////LISTAR VENDEDORES POR PRODUCTO con cookie////////////////////////////////////////////////////////
-// app.get("/listaVendedores", async (req, res) => {
-//   res.render("listaVendedores");
-// });
-
-// app.get('/listaVendedores/:idProducto', async (req, res) => {
-//   const { idProducto } = req.params;
-//   try {
-
-//     const vendedores = await obtenerVendedores(idProducto);
-//     res.render('listaVendedores', { vendedores });
-//     console.log(vendedores);
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ mensaje: 'Error interno del servidor' });
-//   }
-// });
-
-app.get("/listaVendedores", cookie, async (req, res) => {
-  try {
-    // Aquí va tu lógica para obtener los datos que necesitas.
-
-    res.render("listaVendedores");
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensaje: "Error interno del servidor",
-    });
-  }
-});
-
-app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
-  const { idProducto } = req.params;
-  try {
-    const vendedores = await obtenerVendedores(idProducto);
-    res.render("listaVendedores", {
-      vendedores,
-    });
-    console.log(vendedores);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensaje: "Error interno del servidor",
-    });
-  }
-});
-
-app.post("/enviar-objeto", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
-
-  res.send("Objeto recibido correctamente");
-});
-
-///////////////////////////////////////////TRNSACCIONES//////////////////////////////////////////////////
-
-app.get("/transacciones/:idUsuario", async (req, res) => {
-  const { idUsuario } = req.params;
-  try {
-    const transacciones = await obtenerTransacciones(idUsuario);
-    res.render("transacciones", {
-      transacciones,
-    });
-    console.log(transacciones);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      mensaje: "Error interno del servidor",
-    });
-  }
-});
+//////////////////////////////////////////////////////////////////////////////CODIGO BASURAAAAAA/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////CODIGO BASURAAAAAA/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////CODIGO BASURAAAAAA/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // app.post('/enviar-objeto', function(req, res) {
 //   var objeto = req.body;
@@ -632,51 +618,7 @@ app.get("/transacciones/:idUsuario", async (req, res) => {
 //   res.send('Objeto recibido correctamente');
 // });
 
-////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
-
-app.get("/notificacion/:idUsuario", async (req, res) => {
-  const { idUsuario } = req.params;
-  try {
-    const notificacion = await obtenerNotificaciones(idUsuario);
-    res.render("notificacion", {
-      notificacion,
-      usuarioObj: {
-        usuario: idUsuario,
-      },
-    });
-    console.log(notificacion);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.post("/enviar-confirmacion", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
-
-  res.send("Objeto recibido correctamente");
-});
-
-app.post("/enviar-rechazar", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
-
-  res.send("Objeto recibido correctamente");
-});
-
-app.post("/enviar-contacto", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
-
-  res.send("Objeto recibido correctamente");
-});
-
 ////////////////////////////////////////////////////////////////////////////////////
-
-module.exports = app;
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 
@@ -928,5 +870,69 @@ module.exports = app;
 //         code: 500
 //     });
 
+//   }
+// });
+
+/////
+// const{nombre}= foto;
+// const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+// const password_encriptada = await encripta(password);
+
+// try {
+
+//     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
+//     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+//         if (err) return res.status(500).send({
+//             error: `algo salio mal... ${err}`,
+//             code: 500
+//         })
+//         res.redirect("/inicioSesion");
+//     })
+
+// } catch (e) {
+//     res.status(500).send({
+//         error: `Algo salio mal...${e}`,
+//         code: 500
+//     })
+// }
+
+// const{nombre}= foto;
+// // const foto_usuario = (`http://localhost:`+ puerto +`/uploads/${nombre}`);
+// const foto_usuario = `https://marketplace-proyecto-production.up.railway.app/uploads/${nombre}`;
+// const password_encriptada = await encripta(password);
+
+// try {
+
+//     const usuario = await nuevo_usuario(sectorId, nombree, email, rut, id_rol, password_encriptada, is_active, telefono, foto_usuario);
+//     foto.mv(`${__dirname}/public/uploads/${nombre}`, async (err) => {
+//         if (err) return res.status(500).send({
+//             error: `algo salio mal... ${err}`,
+//             code: 500
+//         })
+//         res.redirect("/inicioSesion");
+//     })
+
+// } catch (e) {
+//     res.status(500).send({
+//         error: `Algo salio mal...${e}`,
+//         code: 500
+//     })
+// }
+/////
+
+// app.get("/listaVendedores", async (req, res) => {
+//   res.render("listaVendedores");
+// });
+
+// app.get('/listaVendedores/:idProducto', async (req, res) => {
+//   const { idProducto } = req.params;
+//   try {
+
+//     const vendedores = await obtenerVendedores(idProducto);
+//     res.render('listaVendedores', { vendedores });
+//     console.log(vendedores);
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ mensaje: 'Error interno del servidor' });
 //   }
 // });
