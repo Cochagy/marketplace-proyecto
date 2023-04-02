@@ -197,11 +197,12 @@ async function obtenerProductosPorUsuario(idUsuario) {
 ////////////////////LISTA DE VENDEDORES////////////////////////////////////////////////////////////////
 async function obtenerVendedores(idproducto) {
     const consulta = {
-        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector
+        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector, inv.marca, inv.foto
         FROM inventario inv
         JOIN usuarios usr ON inv.usuario = usr.id
         JOIN sector sec ON usr.sector = sec.id
-        WHERE inv.codigo = $1;`,
+        WHERE inv.codigo = $1;
+        `,
         values: [idproducto]
     };
     const resultado = await pool.query(consulta);

@@ -241,3 +241,7 @@ td {
   .punto-seleccionado {
     background-color: #007bff;
   }
+
+  .capitalize {
+    text-transform: capitalize;
+  }

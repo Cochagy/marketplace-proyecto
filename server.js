@@ -44,6 +44,10 @@ app.use(bodyParser.json());
 //Contenido de carpeta public declarado como estatico
 app.use(express.static(__dirname + "/public"));
 
+//Contenido de carpeta uploads declarado como estatico
+app.use('/uploads', express.static('uploads'));
+
+
 //Configuracion de css, que accedera directamente a carpeta de bootstrap descargado en node_modules
 app.use("/css", express.static(__dirname + "/node_modules/bootstrap/dist/css"));
 
