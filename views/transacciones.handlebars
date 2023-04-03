@@ -9,6 +9,7 @@
   <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
+<<<<<<< HEAD
 
         <th scope="col">Compra/venta</th>
         <th scope="col">Imagen</th>
@@ -34,10 +35,36 @@
           </div>
         </td>
 
+=======
+        
+        <th scope="col">Compra/venta</th>
+        <th scope="col">Imagen</th>
+        <th scope="col">Producto</th>        
+        <th scope="col">Precio</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Nombre</th>                     
+      </tr>
+    </thead>
+
+    <tbody> 
+      {{#each transacciones}}
+      <tr>
+       
+        <td>{{this.tipo_de_compra}}</td>
+        <td>
+            <div>                
+             <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
+
+               
+            </div>
+          </td>
+                    
+>>>>>>> e70cecc0baf5ffcc713dad373755f59e4f200b32
         <td>{{this.nombrep}}</td>
         <td>$ {{this.precio}}</td>
         <td>{{this.cantidad}}</td>
         <td>{{this.usuario}}</td>
+<<<<<<< HEAD
         
 
 <td>
@@ -56,4 +83,15 @@
   </table>
   <br>
 </div>
+=======
+  
+      </tr> 
+
+       {{/each}} 
+      
+       </tbody>
+  </table>  
+  <br>
+</div> 
+>>>>>>> e70cecc0baf5ffcc713dad373755f59e4f200b32
 </div>

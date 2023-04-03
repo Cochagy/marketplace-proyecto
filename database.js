@@ -211,6 +211,45 @@ async function obtenerVendedores(idproducto) {
 }
 
 ////////////////////////////////////////TRANSACCIONES/////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
+=======
+
+
+async function obtenerTransacciones(usuario) {
+    const consulta = {
+      text: `SELECT orden_compra.id,
+      orden_compra.u_solicitado,
+      usuarios_solicitado.nombre AS n_solicitado,
+      orden_compra.u_solicitante,
+      usuarios_solicitante.nombre AS n_solicitante,
+      orden_compra.cod_producto,
+      inventario.nombrep,
+      inventario.precio,
+      inventario.cantidad,
+      orden_compra.fecha_solicitud,
+      orden_compra.duracion,
+      orden_compra.estado_compra,
+      orden_compra.tipo_de_compra,
+      CASE
+      WHEN orden_compra.tipo_de_compra = 'venta'
+      THEN usuarios_solicitante.nombre
+      ELSE usuarios_solicitado.nombre
+      END AS usuario
+      FROM orden_compra
+      JOIN inventario ON orden_compra.cod_producto = inventario.codigo
+      JOIN usuarios AS usuarios_solicitado ON orden_compra.u_solicitado = usuarios_solicitado.id
+      JOIN usuarios AS usuarios_solicitante ON orden_compra.u_solicitante = usuarios_solicitante.id
+      WHERE orden_compra.u_solicitado = $1 OR orden_compra.u_solicitante = $1`,
+      values: [usuario]
+    };
+  
+    const resultado = await pool.query(consulta);
+  
+    return resultado.rows;
+  }
+// crea consulta sql para eliminar campo u_solicitado de la tabla orden_compra?
+
+>>>>>>> e70cecc0baf5ffcc713dad373755f59e4f200b32
 
 
 async function obtenerTransacciones(usuario) {
@@ -337,9 +376,13 @@ module.exports = {
     obtenerProductosPorUsuario,    
     obtenerVendedores,
     obtenerCamposSector,
+<<<<<<< HEAD
     trae_usuario_idproducto,
     obtenerTransacciones,
     obtenerNotificaciones
+=======
+    obtenerTransacciones
+>>>>>>> e70cecc0baf5ffcc713dad373755f59e4f200b32
 
 };
 
