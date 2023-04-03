@@ -64,8 +64,49 @@ async function trae_usuario(email, password_encriptada) {
     return result.rows[0];
 }
 
-///////////////////////PRODUCTOS///////////////////////////////
+//trae al usuario desde la base de datos por id
+async function trae_usuario_id(id) {
+    const consulta = {
+        text: 'SELECT * FROM usuarios WHERE id = $1',
+        values: [id]
+    };
+    const usuario = await pool.query(consulta);
+    // console.log(consulta);
+//  console.log(usuario);
+    return usuario.rows[0];
+}
 
+//actualiza usuario (busca por email en base de datos TIRA UNDEFINE)
+async function actualizar_usuario(datos) {
+    const { email, telefono } = datos;
+  
+    // Aquí va tu código para conectar a la base de datos y actualizar el usuario
+    // Ejemplo:
+    const query = "UPDATE usuarios SET telefono = $1 WHERE email = $2";
+    const values = [telefono, email];
+  
+    try {
+      const result = await pool.query(query, values);
+      console.log(result);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+//desactiva usuario (busca por id en base de datos)
+async function desactivar(desactivado, id) {
+    const consulta = {
+        text: 'UPDATE usuarios SET is_active = $1 WHERE id = $2 RETURNING *',        
+        values: [desactivado, id]
+    }
+    const resultado = await pool.query(consulta);   
+    // const desactivar = resultado.rows[0];
+    // console.log(desactivar);
+    return resultado;        
+};
+
+///////////////////////PRODUCTOS MARCE///////////////////////////////
+
+//agrega nuevo producto a la base de datos
 const nuevo_producto = async (usuario, codigo, cantidad,id_estado, marca, nombrep, precio, tipo_cliente, foto_producto) => {    
     const consulta = {
         text: 'INSERT INTO inventario (usuario, codigo, cantidad, id_estado, marca, nombrep, precio, tipo_cliente, foto ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
@@ -75,6 +116,18 @@ const nuevo_producto = async (usuario, codigo, cantidad,id_estado, marca, nombre
     const producto = resultado.rows[0];
     return producto;
 }
+
+//elimina el usuario solo para el front (realmente lo desactiva)
+async function elimina_producto(id) {
+    const consulta = {
+        text: 'DELETE FROM inventario WHERE id = $1 RETURNING *',
+        values: [id]
+    }
+    const resultado = await pool.query(consulta);   
+    const producto = resultado.rows[0];
+    return producto;
+    
+}
 //DESDE AQUI LAS CONSULTAS PARA VER DATOS DE BASE DE DATOS (SOLAMENTE PARA PRUEBAS)/////////////////
 const getDate = async () => {
     const result = await pool.query("SELECT NOW()");
@@ -82,9 +135,9 @@ const getDate = async () => {
 }
 
 async function muestra_usuarios() {
-    const resultado = await pool.query(`SELECT * FROM usuarios`);
-  // console.log(resultado);
-    return resultado.rows;
+    const usuarios = await pool.query(`SELECT * FROM usuarios`);
+    // console.log(usuarios);
+    return usuarios.rows;
 }
 
 async function muestra_inventario() {
@@ -93,27 +146,39 @@ async function muestra_inventario() {
     return resultado.rows;
 }
 
+//busca productos en la base de datos (buscador)
 async function encuentra_producto(busquedaInput) {
     const consulta = {
-        text: 'SELECT * FROM inventario WHERE nombrep = $1',
+        text: "SELECT * FROM inventario WHERE LOWER(nombrep) LIKE '%' || LOWER($1) || '%'",
         values: [busquedaInput]
     };
     const result = await pool.query(consulta);
     return result.rows[0];
 }
-/////////////////////////////////////////////HASTA ACA CONSULTAS DE PRUEBA//////////////////////////
 
+/////////////////////////////////////////////AUTORIZAR USUARIOS MARCE//////////////////////////
+//trae usuarios por id producto
+async function trae_usuario_idproducto(idproducto) {
+    const consulta = {
+        text: 'SELECT * FROM usuarios WHERE id = $1',
+        values: [idproducto]
+    };
+    const usuario = await pool.query(consulta);
+    // console.log(consulta);
+//  console.log(usuario);
+    return usuario.rows[0];
+}
 
+async function cambiar_estado(is_active, email) {
+    const consulta = {
+        text: 'UPDATE usuarios SET is_active = $1 WHERE email = $2 RETURNING *',
+        values: [is_active, email]
+    };
+    const resultado = await pool.query(consulta);
+    const usuario = resultado.rows[0];
+    return usuario;
+}
 
-//AUN NO SE PUEDE ACTIVAR////////
-// async function trae_contrasena_encriptada(email) {
-//     const consulta = {
-//         text: 'SELECT * FROM usuario WHERE email = $1',
-//         values: [email]
-//     };
-//     const result = await pool.query(consulta);
-//     return result.rows[0];
-// }
 
 ////////////////////LISTA DE PRODUCTOS////////////////////////////////////////////////////////////////
 async function obtenerProductosPorUsuario(idUsuario) {
@@ -132,22 +197,125 @@ async function obtenerProductosPorUsuario(idUsuario) {
 ////////////////////LISTA DE VENDEDORES////////////////////////////////////////////////////////////////
 async function obtenerVendedores(idproducto) {
     const consulta = {
-        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector
+        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector, inv.marca, inv.foto
         FROM inventario inv
         JOIN usuarios usr ON inv.usuario = usr.id
         JOIN sector sec ON usr.sector = sec.id
-        WHERE inv.codigo = $1;`,
+        WHERE inv.codigo = $1;
+        `,
         values: [idproducto]
     };
     const resultado = await pool.query(consulta);
+    // console.log(resultado);
     return resultado.rows;
 }
 
+////////////////////////////////////////TRANSACCIONES/////////////////////////////////////////////////////////////////////
 
 
+async function obtenerTransacciones(usuario) {
+    const consulta = {
+      text: `SELECT orden_compra.id,
+      orden_compra.u_solicitante,
+      usuarios_solicitante.nombre AS n_solicitante,
+      orden_compra.u_solicitado,
+      CASE
+          WHEN orden_compra.u_solicitado IS NULL THEN 'pendiente'
+          ELSE usuarios_solicitado.nombre
+      END AS n_solicitado,
+      orden_compra.cod_producto,
+      inventario.nombrep,
+      inventario.precio,
+      inventario.cantidad,
+      orden_compra.fecha_solicitud,
+      orden_compra.duracion,
+      orden_compra.estado_compra,
+      CASE
+          WHEN orden_compra.u_solicitado = 1 THEN usuarios_solicitado.nombre
+          ELSE
+              CASE
+                  WHEN orden_compra.u_solicitado IS NULL THEN 'pendiente'
+                  ELSE usuarios_solicitado.nombre
+              END
+      END AS usuario,
+      CASE
+          WHEN orden_compra.u_solicitado IS NULL THEN 'venta'
+          ELSE 'realizada'
+      END AS tipo_de_compra
+FROM orden_compra
+LEFT JOIN usuarios AS usuarios_solicitante ON orden_compra.u_solicitante = usuarios_solicitante.id
+LEFT JOIN usuarios AS usuarios_solicitado ON orden_compra.u_solicitado = usuarios_solicitado.id
+JOIN inventario ON orden_compra.cod_producto = inventario.codigo
+WHERE orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1`,
+      values: [usuario]
+    };
+  
+    const resultado = await pool.query(consulta);
+  
+    return resultado.rows;
+  };
+// crea consulta sql para eliminar campo u_solicitado de la tabla orden_compra?
 
+/////////////////////////////////NOTIFICACIONES////////////////////////////////////////////////////////////
 
+async function obtenerNotificaciones(usuario) {
+    const consulta = {
+        text: `SELECT orden_compra.id,
+        orden_compra.u_solicitante,
+        usuarios_solicitante.nombre AS n_solicitante,
+        orden_compra.u_solicitado,
+        CASE
+            WHEN orden_compra.u_solicitado IS NULL THEN 'pendiente'
+            ELSE usuarios_solicitado.nombre
+        END AS n_solicitado,
+        orden_compra.cod_producto,
+        inventario.nombrep,
+        inventario.precio,
+        inventario.cantidad,
+        orden_compra.fecha_solicitud,
+        orden_compra.duracion,
+        orden_compra.estado_compra,
+        estado_compra.e_compra,
+        CASE
+            WHEN orden_compra.u_solicitado = 1 THEN usuarios_solicitado.nombre
+            ELSE
+                CASE
+                    WHEN orden_compra.u_solicitado IS NULL THEN 'pendiente'
+                    ELSE usuarios_solicitado.nombre
+                END
+        END AS usuario,
+        CASE
+            WHEN orden_compra.u_solicitado IS NULL THEN 'venta'
+            ELSE 'realizada'
+        END AS tipo_de_compra
+FROM orden_compra
+LEFT JOIN usuarios AS usuarios_solicitante ON orden_compra.u_solicitante = usuarios_solicitante.id
+LEFT JOIN usuarios AS usuarios_solicitado ON orden_compra.u_solicitado = usuarios_solicitado.id
+JOIN inventario ON orden_compra.cod_producto = inventario.codigo
+JOIN estado_compra ON orden_compra.estado_compra = estado_compra.id
+WHERE (orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1)
+  AND orden_compra.estado_compra != 3
+  AND (
+    orden_compra.u_solicitado IS NOT NULL
+    OR (
+      orden_compra.u_solicitado IS NULL
+      AND NOT (
+          CASE
+            WHEN orden_compra.u_solicitado IS NULL THEN 'pendiente'
+            ELSE usuarios_solicitado.nombre
+          END = 'pendiente'
+        )
+    )
+  );
 
+`,
+      
+      values: [usuario]
+    };
+    const resultado = await pool.query(consulta);
+
+    return resultado.rows;
+    }
 
 
 
@@ -157,6 +325,10 @@ module.exports = {
     trae_usuario_email,
     trae_password_encriptada,
     trae_usuario,
+    trae_usuario_id,
+    actualizar_usuario,
+    elimina_producto,
+    desactivar,
     nuevo_producto, 
     getDate,
     muestra_usuarios,
@@ -164,7 +336,10 @@ module.exports = {
     encuentra_producto,    
     obtenerProductosPorUsuario,    
     obtenerVendedores,
-    obtenerCamposSector
+    obtenerCamposSector,
+    trae_usuario_idproducto,
+    obtenerTransacciones,
+    obtenerNotificaciones
 
 };
 

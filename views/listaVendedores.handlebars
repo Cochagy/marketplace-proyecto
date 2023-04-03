@@ -1,89 +1,91 @@
 <div class="container-fluid">
   <div class="biombo pb-5 px-5">
     <div class="row">
-      <h1 class="text-center mt-5">Producto seleccionado</h1>
-      <div class="container responsivo col-6 mt-5 py-5 text-center rounded-start" style="background: aliceblue;">
+     
+      <div class="col-12 col-md-6 mt-5 py-0 text-center rounded-start" style="background: aliceblue;">
         {{> cardVendedores }}
       </div>
-      <div class="container responsivo col-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
-        <div class="mt-5">
-          <h1>esika</h1>
-          <h1>Crema hidratante</h1>
-          <h1>Femenino</h1>
-          <h1>Pitanga eau de toilette 150ml.</h1>
-        </div>
-        <br>
-        <h2>Ya casi es tuyo!!</h2>
+
+      <div class="col-12 col-md-6 mt-5 py-5 rounded-end" style="background: aliceblue;">
+        <section class="mt-5">
+          {{#with productos.[0]}}
+           <h1 class="text-center w-100 mt-4">¡¡¡ALGUIEN YA LO TIENE!!!!</h1>
+           <h2 class="text-center w-150 mt-4 capitalize" style="font-size: 5rem;">{{nombrep}}</h2>
+  
+          {{/with}}
+        </section>
+        <h1 class="text-center w-100 mt-4">Ya casi es tuyo!!</h1>
       </div>
     </div>
   </div>
 
-  <section>
-    <h1 class="text-center mt-5" style="color: green;">Lista de vendedores</h1>
-    <div class="py-4">
-      <hr class="w-100" />
+ <section>
+  <h1 class="text-center mt-5" style="color: green;">Lista de vendedores</h1>
+  <div class="py-4">
+    <hr class="w-100" />
 
-      <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Imagen</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Precio producto</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Comuna/sector</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
+    <div class="table-responsive">
+      <table class="table w-100 m-auto rounded" style="background: green; height: 60px">
+   <thead>
+  <tr>
+    <th scope="col" class="d-none d-md-table-cell">Imagen</th>
+    <th scope="col">Nombre</th>
+    <th scope="col">Precio producto</th>
+    <th scope="col">Stock</th>
+    <th scope="col">Comuna/sector</th>
+    <th scope="col"></th>
+  </tr>
+</thead>
 
-        <tbody>
-          {{#each vendedores}}
-          <tr>
-            <td>
-              <div>
-                <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" width="75">
-              </div>
-            </td>
-            <td>{{this.nombre}}</td>
-            <td>{{this.nombrep}}</td>
-            <td>$ {{this.precio}}</td>
-            <td>{{this.cantidad}}</td>
-            <td>{{this.nombre_sector}}</td>
-            <td>
-              <div class="text-center mt-3">
-                <button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
-</div>
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
+<tbody>
+  {{#each vendedores}}
+  <tr>
+    <td class="d-none d-md-table-cell">
+      <div>
+       <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg"  height="55" width="75">
+
+      </div>
+    </td>
+    <td class="capitalize">{{this.nombre}}</td>
+    <td class="capitalize">$ {{this.precio}}</td>
+    <td class="capitalize">{{this.cantidad}}</td>
+    <td class="capitalize">{{this.nombre_sector}}</td>
+    <td>
+      <button class="btn btn-primary m-auto" type="button"
+        onclick="enviar('{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
+    </td>
+  </tr>
+  {{/each}}
+</tbody>
       </table>
+    </div>
 
-<script>
-function enviar(nombre, nombrep, precio, cantidad, nombre_sector) {
-  var objeto = {
-    nombre: nombre,
-    nombrep: nombrep,
-    precio: precio,
-    cantidad: cantidad,
-    nombre_sector: nombre_sector 
-  };
-  fetch('/enviar-objeto', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(objeto)
-  })
-  .then(function(response) {
-    // Hacer algo con la respuesta del servidor si lo deseas
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-}
+      <script>
+        function enviar(nombre, nombrep, precio, cantidad, nombre_sector) {
+          var objeto = {
+            nombre: nombre,
+            nombrep: nombrep,
+            precio: precio,
+            cantidad: cantidad,
+            nombre_sector: nombre_sector
+          };
+          fetch('/enviar-objeto', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(objeto)
+          })
+            .then(function (response) {
+              // Hacer algo con la respuesta del servidor si lo deseas
+            })
+            .catch(function (error) {
+              console.error(error);
+            });
+        }
 
-</script>
+      </script>
 
-        </div>
+    </div>
   </section>
+</div>

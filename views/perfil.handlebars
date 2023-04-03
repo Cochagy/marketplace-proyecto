@@ -25,34 +25,32 @@
       <h1 style="color: aliceblue;">Hola {{this.nombre}}!!</h1>
       <h2>Tu perfil</h2>
       <br>
--
-
-    <form action="/actualizar/:{{this.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+    <form action="/actualizar/{{this.email}}?_method=PUT" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
           <div class="form-group">
             <label for="nombre">Nombre</label><br>
-            <input type="text" name="nombre" placeholder="Ana Torres" class="form-control w-50 m-auto"
+            <input type="text" name="nombre" disabled placeholder="Ana Torres" class="form-control w-50 m-auto"
               value="{{this.nombre}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Cedula de identidad</label><br>
-            <input type="text" name="rut" placeholder="15123123-8" class="form-control w-50 m-auto"
+            <input type="text" name="rut" disabled placeholder="15123123-8" class="form-control w-50 m-auto"
               value="{{this.rut}}">
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Email</label><br>
-            <input type="text"  name="email" placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
+            <input type="text"  name="email"disabled placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
               value="{{this.email}}">
           </div>
-          <div class="form-group pt-4">
-            <label for="nombre">Telefono</label><br>
-            <input type="text" name="telefono" placeholder="569111111" class="form-control w-50 m-auto"
-              value="{{this.telefono}}">
-          </div>
+         <div class="form-group pt-4">
+    <label for="nombre">Telefono</label><br>
+    <input type="text" name="telefono" placeholder="569111111" class="form-control w-50 m-auto"
+      value="{{this.telefono}}">
+  </div>
           <div class="form-group py-4">
             <label for="nombre">Sector</label><br>
-            <input type="text" name="sector" placeholder="Providencia" class="form-control w-50 m-auto"
+            <input type="text" name="sector" disabled placeholder="Providencia" class="form-control w-50 m-auto"
               value="{{this.nombre_sector}}">
           </div>
           <div class="form-group pt-4">
@@ -91,35 +89,11 @@
       </form>
 
       <div>
-        <form action="/eliminar/{{id}}?_method=DELETE" method="POST">
-          <input type="hidden" name="_method" value="DELETE">
-          <input class="btn btn-danger my-3 py- w-50 m-auto" type="submit" value="eliminar" onClick="eliminar()">
-          {{!-- <button type="submit" class="btn btn-danger my-3 pt-2 w-50 m-auto">Eliminar cuenta</button>     --}}
+        <form>
+          <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar usuario</button></td> 
         </form>      
       </div>
 
-      <script>
-        function modificar() {
-          window.alert("Tus datos han sido modificados");
-        }
-        function eliminar() {
-          window.alert("Tu perfil ha sido borrado");
-        }
-      </script>
-
-      {{!-- codigo comentado corresponde a hito 2 --}}
-      
-      {{!-- <input class="btn btn-primary my-3 py- w-50 m-auto" type="submit" value="modificar" onClick="modificar()">
-      <input class="btn btn-danger my-3 py- w-50 m-auto" type="button" value="eliminar" onClick="eliminar()">
-
-      <script>
-        function modificar() {
-          window.alert("Tus datos han sido modificados");
-        }
-        function eliminar() {
-          window.alert("Tus perfil ha sido borrado");
-        }
-      </script> --}}
 
       <p><a class="nav-link" href="./inventario">Gestiona tu inventario</a></p>
 
@@ -163,13 +137,15 @@
             <td>{{this.nombrep}}</td>
             <td>{{this.precio}}</td>         
             <td>{{this.cantidad}}</td>
-            <td>{{this.cliente}}</td>
+            <td>{{this.cliente}}</td>            
+            <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar</button></td>           
+            {{!-- <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./elimina_producto/:{{this.id}}">Eliminar</a></td> --}}
           </tr>
           {{/each}} 
         </tbody>
       </table>
       <div class="text-center mt-3">
-        <th><a class="btn btn-primary" style="margin: 20px" href="./" role="button">Cerrar sesion</a></th>
+        <th><a class="btn btn-primary" style="margin: 20px" href="cerrar-sesion" role="button">Cerrar sesion</a></th>
       </div>
     </div>
   </section>
@@ -192,3 +168,70 @@
   }
 
 </script>
+
+<script>
+function enviar(id) {
+  var objeto = {
+    id: id     
+  };
+  fetch('/enviar-objeto2', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(objeto)
+  })
+  .then(function(response) {
+    // Hacer algo con la respuesta del servidor si lo deseas
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+}
+
+</script>
+
+<script>
+function enviar(id) {
+  var objeto = {
+    id: id     
+  };
+  fetch('/enviar-objeto3', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(objeto)
+  })
+  .then(function(response) {
+    // Hacer algo con la respuesta del servidor si lo deseas
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+}
+
+</script>
+
+{{!-- <script>
+function enviar(id) {
+  var objeto = {
+    id: id     
+  };
+  fetch('/enviar-objeto4', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(objeto)
+  })
+  .then(function(response) {
+    // Hacer algo con la respuesta del servidor si lo deseas
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+}
+
+</script>
+ --}}

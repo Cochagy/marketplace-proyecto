@@ -1,41 +1,59 @@
-<div class="container-fluid">     
+<div class="container-fluid">
   <section class="biombo">
     <h1 class="text-center pt-5" style="color: green;">Tu historial de transacciones</h1>
     {{> cardNotificacion }}
     {{!-- <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una solicitud de compra</h1> --}}
-    <div class="py-4">  
-      <hr class="w-100"/>
+    <div class="py-4">
+      <hr class="w-100" />
   </section>
   <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
     <thead>
       <tr>
-        <th scope="col">#</th>
+
         <th scope="col">Compra/venta</th>
-        <th scope="col">Producto</th>        
+        <th scope="col">Imagen</th>
+        <th scope="col">Producto</th>
         <th scope="col">Precio</th>
         <th scope="col">Cantidad</th>
-        <th scope="col">Vendedor</th>                     
+        <th scope="col">Quien Vendio</th>
       </tr>
     </thead>
 
-    <tbody> 
-      
+    <tbody>
+      {{#each transacciones}}
       <tr>
-        <td>{{@index}}</td>
+
+        <td>{{this.tipo_de_compra}}</td>
         <td>
-          <div>                
-            <img class="rounded-circle" src="/uploads/gasto3.jpg" height="55" Width="75">                
+          <div>
+            <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg"
+              onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';"
+              height="55" width="75">
+
+
           </div>
         </td>
-        <td>Perfume pitanga</td>
-        <td>49.900<br></td>
-        <td>1</td>             
-        <td>Catalina Sanchez</td>
-      </tr>  
-      
+
+        <td>{{this.nombrep}}</td>
+        <td>$ {{this.precio}}</td>
+        <td>{{this.cantidad}}</td>
+        <td>{{this.usuario}}</td>
+        
+
+<td>
+          {{!-- boton para confirmar contacto con vendedor--}}
+{{#if (and (ne this.u_solicitado usuarioObj.usuario))}}
+  <button class="btn btn-primary m-auto" type="button"
+    onclick="confirmaContacto('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Quiero contactarme con {{this.n_solicitado}}</button>
+{{/if}}
+       </td>
+
+      </tr>
+
+      {{/each}}
+
     </tbody>
-
-
-  </table>  
-</div> 
+  </table>
+  <br>
+</div>
 </div>
