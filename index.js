@@ -26,7 +26,10 @@ const {
   // trae_usuario,
   obtenerProductosPorUsuario,
   obtenerVendedores,
-  obtenerCamposSector
+  obtenerCamposSector,
+  trae_usuario_idproducto,
+  obtenerTransacciones,
+  obtenerNotificaciones,
 } = require("./database");
 
 const { encripta, compara } = require("./encriptador");
@@ -616,11 +619,6 @@ app.put("/administracion", async (req, res) => {
 // });
 
 ////////////////////////////////////////////////////////////////////////////////////
-
-Handlebars.registerHelper('json', function(context) {
-  return JSON.stringify(context);
-});
-
 
 //////////////////////////////////////////////////////////////////////BORRAR USUARIO HITO 2///////////////////////////////////////////////////////////////////
 

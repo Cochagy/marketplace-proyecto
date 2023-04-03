@@ -24,7 +24,6 @@
   <div class="py-4">
     <hr class="w-100" />
 
-<<<<<<< HEAD
     <div class="table-responsive">
       <table class="table w-100 m-auto rounded" style="background: green; height: 60px">
    <thead>
@@ -58,42 +57,6 @@
   </tr>
   {{/each}}
 </tbody>
-=======
-      <table class="table w-80 m-auto rounded" style="background: green; height: 60px">
-        <thead>
-          <tr>
-            <th scope="col">Imagen</th>
-            <th scope="col">Vendedor</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Precio producto</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Comuna/sector</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {{#each vendedores}}
-          <tr>
-            <td>
-              <div>
-                <img class="rounded-circle" src="/uploads/{{this.nombre}}.jpg" height="55" width="75">
-              </div>
-            </td>
-            <td>{{this.nombre}}</td>
-            <td>{{this.nombrep}}</td>
-            <td>$ {{this.precio}}</td>
-            <td>{{this.cantidad}}</td>
-            <td>{{this.nombre_sector}}</td>
-            <td>
-
-                <button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
-
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
->>>>>>> e70cecc0baf5ffcc713dad373755f59e4f200b32
       </table>
     </div>
 
