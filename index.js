@@ -30,6 +30,7 @@ const {
   trae_usuario_idproducto,
   obtenerTransacciones,
   obtenerNotificaciones,
+  insertarOrdenCompra
 } = require("./database");
 
 const { encripta, compara } = require("./encriptador");
@@ -66,9 +67,7 @@ app.get("/productosDisponibles", async (req, res) => {
   res.render("productosDisponibles");
 });
 
-app.get("/notificacion", async (req, res) => {
-  res.render("notificacion");
-});
+
 
 app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
@@ -120,7 +119,7 @@ app.post("/privado", async (req, res) => {
     const busquedaInput = req.body["busqueda-input"];
     console.log(busquedaInput);
     const productoBuscado = await encuentra_producto(busquedaInput);
-    console.log(productoBuscado);
+ 
 
     const redirectURL = `/listaVendedores/${productoBuscado.codigo}`;
 
@@ -137,7 +136,7 @@ app.post("/privado", async (req, res) => {
 
 app.get("/listaVendedores", cookie, async (req, res) => {
   try {
-    // Aquí va tu lógica para obtener los datos que necesitas.
+    
 
     res.render("listaVendedores");
   } catch (error) {
@@ -151,35 +150,74 @@ app.get("/listaVendedores", cookie, async (req, res) => {
 app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
   const { idProducto } = req.params;
   try {
+
     const vendedores = await obtenerVendedores(idProducto);
     const producto = await obtenerVendedores(idProducto);
+
+
+
     res.render("listaVendedores", {
       vendedores,
       productos: producto,
+   
     });
-    console.log(vendedores);
-    console.log(producto);
+
   } catch (error) {
-    console.error(error);
+ 
     return res.status(500).json({
       mensaje: "Error interno del servidor",
     });
   }
 });
 
-app.post("/enviar-objeto", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+//POST BOTON
 
-  res.send("Objeto recibido correctamente");
+app.post("/enviar-notificacion", cookie, async (req, res) => {
+  try {
+    const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const u_solicitante = data.id;
+    const objeto = req.body;
+    const usuario = objeto.usuario;
+
+    // Aquí se agregan los valores que deseas insertar en la tabla orden_compra
+    const cod_producto = objeto.codigo;
+   // Agrega la fecha actual
+    const duracion = 10;
+    const estado_compra = 1;
+
+    // Llama a la función insertarOrdenCompra para insertar los datos en la tabla orden_compra
+    await insertarOrdenCompra(u_solicitante, usuario, cod_producto, duracion, estado_compra);
+
+    const redirectURL2 = `/notificacion/${usuario}`;
+
+    // Enviar la URL de redireccionamiento como respuesta JSON
+    res.json({ redirectURL: redirectURL2 });
+  } catch (error) {
+    console.error('Error en la ruta "/enviar-notificacion":', error);
+    res.render("contacto");
+  }
 });
+
+
+
+
 
 ////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
 
-app.get("/notificacion/:idUsuario", async (req, res) => {
+app.get("/notificacion",cookie, async (req, res) => {
+
+
+    res.render("notificacion");
+
+});
+
+
+
+app.get("/notificacion/:idUsuario", cookie, async (req, res) => {
   const { idUsuario } = req.params;
-  try {
+  try {  
+
     const notificacion = await obtenerNotificaciones(idUsuario);
     res.render("notificacion", {
       notificacion,
