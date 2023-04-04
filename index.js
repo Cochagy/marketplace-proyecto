@@ -268,11 +268,12 @@ app.post("/enviar-confirmacion", async (req, res) => {
     cantidad_requerida
   }; 
 
+  await aceptarSolicitud(objeto.u_solicitado);
 
     // Llamar a la función rechazarSolicitud con el ID proporcionado en el cuerpo de la solicitud
     await enviar(datos);
     console.log("Datos recibidos:", datos);
-    await aceptarSolicitud(objeto.u_solicitado);
+
 
     
 
@@ -463,7 +464,7 @@ app.post("/registro", async (req, res) => {
 
   const nombreImagen = `foto_${nombree}_${Date.now()}.${file_extension}`;
 
-  const foto_usuario = `https://marketplace-proyecto-production.up.railway.app/uploads/${nombreImagen}`;
+  const foto_usuario = `${nombreImagen}`;
 
   const usuario = await nuevo_usuario(
     sectorId,

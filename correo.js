@@ -21,20 +21,39 @@ const enviar = async (datos) => {
     const cantidad_requerida = datos.cantidad 
     console.log(email_comprador, email_vendedor)  
    
-    let mailOptions = {
-        from: [process.env.NMUSER],                                                                   
-        to: [email_comprador, email_vendedor],
+    let mailOptionsComprador = {
+        from: process.env.NMUSER,                                                                  
+        to: email_comprador,
+        subject: `Solicitud de compra producto: ${producto}`,                                               
+        html: `<h3>Hola ${nombre_comprador}!!<br><br>Tu solicitud de compra ha sido enviada a ${nombre_vendedor} para el siguiente producto:<br> ${producto}</p>
+        <p>Quedo atento(a) a su confirmacion</p><br>
+        ${nombre_comprador}`         
+    };
+
+    let mailOptionsVendedor = {
+        from: process.env.NMUSER,                                                                  
+        to: email_vendedor,
         subject: `Solicitud de compra producto: ${producto}`,                                               
         html: `<h3>Hola ${nombre_vendedor}!!<br><br>Mi nombre es ${nombre_comprador} y quiero comprar el siguiente producto:<br> ${producto}</p>     
 
         <p>Quedo atento(a) a tu confirmacion</p><br>
         ${nombre_comprador}`         
     };
-    await transporter.sendMail(mailOptions)
     
+    try {
+        await transporter.sendMail(mailOptionsComprador);
+      } catch (error) {
+        console.error("Error al enviar correo al comprador:", error);
+      }
+      
+      try {
+        await transporter.sendMail(mailOptionsVendedor);
+      } catch (error) {
+        console.error("Error al enviar correo al vendedor:", error);
+      }
+
     console.log(`Estimado ${nombre_comprador} su correo ha sido enviado`)
-    res.send(`Estimado ${nombre_comprador}  su correo ha sido enviado`)
-    
+    // res.send(`Estimado ${nombre_comprador}  su correo ha sido enviado`)
 };
 
 module.exports = enviar;

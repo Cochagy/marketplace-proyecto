@@ -9,15 +9,15 @@
         <h2 class="text-center py-5">Ultimos movimientos</h2>
 
 
-        <div id="movimientos" class="d-flex justify-content-between">
+        <div id="movimientos" class="text-center">
           <div>
-           <form action="/perfiltransacciones" method="GET">
+           {{!-- <form action="/perfiltransacciones" method="GET">
               <button type="submit" class="btn btn-primary mx-auto">Transacciones</button>
-            </form>
+            </form> --}}
           </div>
           <div>
             <form action="/perfilnotificacion" method="GET">
-              <button type="submit" class="btn btn-danger mx-auto">Notificaciones</button>
+              <button type="submit" class="btn btn-primary mx-auto">Transacciones</button>
             </form>
           </div>
         </div>
@@ -95,7 +95,7 @@
 
       <div>
         <form>
-          <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar
+          <td><button class="btn btn-danger my-3 py- w-50 m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar
               usuario</button></td>
         </form>
       </div>
