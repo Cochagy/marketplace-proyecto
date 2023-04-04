@@ -76,6 +76,19 @@ async function trae_usuario_id(id) {
     return usuario.rows[0];
 }
 
+//trae email vendedor
+async function trae_vendedor_id(idv) {
+    const consulta = {
+        text: 'SELECT * FROM usuarios WHERE id = $1',
+        values: [idv]
+    };
+    const usuario = await pool.query(consulta);
+    // console.log(consulta);
+//  console.log(usuario);
+    return usuario.rows[0];
+}
+
+
 //actualiza usuario (busca por email en base de datos TIRA UNDEFINE)
 async function actualizar_usuario(datos) {
     const { email, telefono } = datos;
@@ -335,7 +348,7 @@ WHERE (orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1)
 
         async function rechazarSolicitud(id) {
         const consulta = {
-            text: `UPDATE orden_compra SET estado_compra = 3 WHERE id = $1`,
+            text: `UPDATE orden_compra SET estado_compra = 3 WHERE u_solicitado = $1`,
             values: [id],
             };
             const resultado = await pool.query(consulta);
@@ -348,8 +361,8 @@ WHERE (orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1)
 
         async function aceptarSolicitud(id) {
             const consulta = {
-                text: `UPDATE orden_compra SET estado_compra = 4 WHERE u_solicitado = $1`,
-                values: [id],
+            text: `UPDATE orden_compra SET estado_compra = 4 WHERE u_solicitado = $1`,
+            values: [id],
                 };
                 const resultado = await pool.query(consulta);
                 const usuario = resultado.rows[0];
@@ -365,6 +378,7 @@ module.exports = {
     trae_password_encriptada,
     trae_usuario,
     trae_usuario_id,
+    trae_vendedor_id,
     actualizar_usuario,
     elimina_producto,
     desactivar,

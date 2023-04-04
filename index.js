@@ -15,6 +15,7 @@ const {
   trae_password_encriptada,
   trae_usuario,
   trae_usuario_id,
+  trae_vendedor_id,
   nuevo_producto,
   actualizar_usuario,
   elimina_producto,
@@ -38,7 +39,7 @@ const {
 const { encripta, compara } = require("./encriptador");
 const { genera_token, verifica_token } = require("./verificadorToken");
 const { cookie } = require("./cookie");
-
+const enviar = require('./correo');
 Object.keys(helpers).forEach(function (key) {
   handlebars.registerHelper(key, helpers[key]);
 });
@@ -149,6 +150,7 @@ app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
   try {
     const vendedores = await obtenerVendedores(idProducto);
     const producto = await obtenerVendedores(idProducto);
+    console.log(vendedores)
 
     res.render("listaVendedores", {
       vendedores,
@@ -213,7 +215,8 @@ app.get("/notificacion/:idUsuario", cookie, async (req, res) => {
     const data = token.data;
     const u_solicita = data.nombre;
    const i = data.id
-   console.log(i)
+   const foto = data.foto
+   console.log(data)
     const { idUsuario } = req.params;
 
 
@@ -224,6 +227,7 @@ app.get("/notificacion/:idUsuario", cookie, async (req, res) => {
       usuarioObj: {
         usuario: idUsuario,
       },
+      foto,
       i,
       u_solicita, // Agregamos u_solicitante al objeto que se pasa a res.render
     });
@@ -234,14 +238,43 @@ app.get("/notificacion/:idUsuario", cookie, async (req, res) => {
 
 
 app.post("/enviar-confirmacion", async (req, res) => {
+  try {
+    
   const objeto = req.body;
   const u_solicitado = objeto.u_solicitado;
+  const cod_producto = objeto.cod_producto
   console.log(u_solicitado);
+  ///
+  const nombre_comprador = objeto.n_solicitante
+  const nombre_vendedor = objeto.n_solicitado
+  const producto = objeto.nombrep;
+  // //cambiar cantidad total por unidades despues
+  const cantidad_requerida = objeto.cantidad;
+  const id = objeto.u_solicitante
+  const idv = objeto.u_solicitado
+  const comprador = await trae_usuario_id(id);
+  const email_comprador = comprador.email;
+  const vendedor = await trae_vendedor_id(idv);
+  const email_vendedor = vendedor.email;
+  console.log(id, nombre_comprador, email_comprador, idv, nombre_vendedor, email_vendedor, producto, cantidad_requerida);
+  const datos = {
+    id,
+    nombre_comprador,
+    email_comprador,
+    idv,
+    nombre_vendedor,
+    email_vendedor,
+    producto,
+    cantidad_requerida
+  }; 
 
-  try {
+
     // Llamar a la función rechazarSolicitud con el ID proporcionado en el cuerpo de la solicitud
+    await enviar(datos);
+    console.log("Datos recibidos:", datos);
     await aceptarSolicitud(objeto.u_solicitado);
 
+    
 
     // Enviar una respuesta al cliente si se actualiza la base de datos correctamente
     res.status(200).redirect("index");
@@ -255,9 +288,10 @@ app.post("/enviar-confirmacion", async (req, res) => {
 
 
 ////////////////////post cambiar estado a orden_compra de 1 a 3//////////
-app.post("/enviar-rechazar", async function (req, res) {
+app.post("/enviar-rechazar", async (req, res) => {
   const objeto = req.body;
   const u_solicitado = objeto.u_solicitado;
+  const cod_producto = objeto.cod_producto
   console.log(u_solicitado);
 
   try {

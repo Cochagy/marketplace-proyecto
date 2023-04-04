@@ -1,69 +1,71 @@
-<div class="container-fluid">   
+<div class="container-fluid">
   <div class="biombo pt-5 pb-5 px-5">
-    <h1 class="text-center pb-5" style="color: green;">Registra tus productos aquí</h1> 
-    <div class="row rounded px-5" style="background: aliceblue;">    
-    {{> cardInventario }}    
-    
-    <div class="responsivo col-7 mt-5 mb-5 py-5 text-center rounded" style="background: green;">      
-      <h1 style="color: #f0f8ff;">Inventario</h1><br>      
-      <form action="/tuInventario" method="POST" enctype="multipart/form-data">      
-    
-        <div class="form-group">
-             <div class="form-group pt-4">
-            <label for="nombre">Marca</label><br>         
-            <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
-          </div>
-           <div class="form-group"> 
-            <label for="nombre">Nombre producto</label><br>              
-            <input type="text"  name="nombrep" placeholder="Pitanga" class="form-control w-50 m-auto" />
-          </div>
-          <div class="form-group pt-5"> 
-             <label for="nombre">Codigo</label><br>        
-            <input type="text" name="codigo" placeholder="A666" class="form-control w-50 m-auto" />
-          </div>
-          <div class="form-group pt-5"> 
-             <label for="nombre">Stock</label><br>        
-            <input type="text" name="cantidad" placeholder="10" class="form-control w-50 m-auto" />
-          </div> 
-          <div class="form-group pt-5"> 
-             <label for="nombre">Precio</label><br>        
-            <input type="text" name="precio" placeholder="21.990" class="form-control w-50 m-auto" />
-          </div>          
-          {{!-- <div class="form-group pt-4">
-            <label for="nombre">Marca</label><br>         
-            <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
-          </div>     
-          <div class="form-group pt-4">
-            <label for="nombre">Stock</label><br>         
-            <input type="text" name="stock" placeholder="2" class="form-control w-50 m-auto"> --}}
-          </div>          
-        {{!-- </div>
-        <label class="pt-4" for="nombre">Descripción del producto</label><br>
-        <textarea class="rounded" name="textarea"  rows="4" cols="50">Descripcion</textarea> --}}
-       
-        <div class="form-group col-12 col-sm-12">
-          <p class="text-white pb-3">Sube una foto del producto</p><br>            
-          <input type="file" name="foto" onchange="previewFile()"><br>          
-        </div>
+    <h1 class="text-center pb-5" style="color: green;">Registra tus productos aquí</h1>
+    <div class="row rounded px-5" style="background: aliceblue;">
+      {{> cardInventario }}
 
-       <input class="btn btn-primary my-3 py- w-50 m-auto" type="submit" value="Agregar" onClick="agregar()">
-      <input class="btn btn-danger my-3 py- w-50 m-auto" type="submit" value="Eliminar" onClick="eliminar()">
+      <div class="responsivo col-7 mt-5 mb-5 py-5 text-center rounded" style="background: green;">
+        <h1 style="color: #f0f8ff;">Inventario</h1><br>
+        <form action="/tuInventario" method="POST" enctype="multipart/form-data">
 
-      {{!-- <script>
-        function agregar() {
-          window.alert("Tu producto ha sido agregado");
-        }
-        function eliminar() {
-          window.alert("Tu producto ha sido eliminado");
-        }
-      </script> --}}
-          
-      </form>
+          <div class="form-group">
+            <div class="form-group pt-4">
+              <label for="nombre">Marca</label><br>
+              <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
+            </div>
+            <div class="form-group">
+              <label for="nombre">Nombre producto</label><br>
+              <input type="text" name="nombrep" placeholder="Pitanga" class="form-control w-50 m-auto" />
+            </div>
+            <div class="form-group pt-5">
+              <label for="nombre">Codigo</label><br>
+              <input type="text" name="codigo" placeholder="A666" class="form-control w-50 m-auto" />
+            </div>
+            <div class="form-group pt-5">
+              <label for="nombre">Stock</label><br>
+              <input type="text" name="cantidad" placeholder="10" class="form-control w-50 m-auto" />
+            </div>
+            <div class="form-group pt-5">
+              <label for="nombre">Precio</label><br>
+              <input type="text" name="precio" placeholder="21.990" class="form-control w-50 m-auto" />
+            </div>
+            {{!-- <div class="form-group pt-4">
+              <label for="nombre">Marca</label><br>
+              <input type="text" name="marca" placeholder="Natura" class="form-control w-50 m-auto">
+            </div>
+            <div class="form-group pt-4">
+              <label for="nombre">Stock</label><br>
+              <input type="text" name="stock" placeholder="2" class="form-control w-50 m-auto"> --}}
+            </div>
+            {{!--
+          </div>
+          <label class="pt-4" for="nombre">Descripción del producto</label><br>
+          <textarea class="rounded" name="textarea" rows="4" cols="50">Descripcion</textarea> --}}
+
+          <div class="form-group col-12 col-sm-12">
+            <p class="text-white pb-3">Sube una foto del producto</p><br>
+            <input type="file" name="foto" onchange="previewFile()"><br>
+          </div>
+
+          <input class="btn btn-primary my-3 py- w-50 m-auto" type="submit" value="Agregar" onClick="agregar()">
+          <input class="btn btn-danger my-3 py- w-50 m-auto" type="submit" value="Eliminar" onClick="eliminar()">
+
+          {{!--
+          <script>
+            function agregar() {
+              window.alert("Tu producto ha sido agregado");
+            }
+            function eliminar() {
+              window.alert("Tu producto ha sido eliminado");
+            }
+          </script> --}}
+
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
- 
+
 </div>
 
 <script>
@@ -81,5 +83,5 @@
       reader.readAsDataURL(file);
     }
   }
-  
+
 </script>

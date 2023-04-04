@@ -30,17 +30,17 @@
       <form action="/contacto" method="POST" enctype="multipart/form-data">      
     
         <div class="form-group">
-          <div class="form-group"> 
-            <label for="nombre">Nombre</label><br>              
-            <input type="text"  name="nombre" placeholder="Jimena Sanchez" class="form-control w-50 m-auto" />
-          </div>          
-          <div class="form-group pt-4">
-            <label for="nombre">Email</label><br>         
-            <input type="text" name="email" placeholder="nombre@gmail.com" class="form-control w-50 m-auto">
-          </div>
-          <label class="pt-4" for="nombre">Mensaje</label><br>
-          <textarea class="rounded" name="textarea"  rows="4" cols="38">Deja tu mensaje aqui</textarea>          
-        </div><br><br>
+          <div class="form-group">
+  <label for="nombre">Nombre</label><br>         
+  <input type="text" name="nombre" placeholder="Tu nombre" class="form-control w-50 m-auto" style="text-align: center">
+</div>          
+<div class="form-group pt-4">
+  <label for="nombre">Email</label><br>         
+  <input type="text" name="email" placeholder="Tu email" class="form-control w-50 m-auto" style="text-align: center">
+</div>
+<label class="pt-4" for="nombre">Mensaje</label><br>
+<textarea class="rounded form-control w-50 m-auto" name="textarea" placeholder="Tu opinión es importante" rows="4" cols="38" style="text-align: center"></textarea>                
+        </div>
         <input class="btn btn-primary" type="button" value="Enviar" onClick="enviar()">
         
         
@@ -52,13 +52,11 @@
   </div>  
 
 </div>   
-
-      <script>           
-        function enviar() {
-          window.alert("Tu mensaje fue enviado, gracias por compartir!!!");
-        }
-      </script>    
-
-    
+<script>           
+  function enviar() {
+    window.alert("Tu mensaje fue enviado, gracias por compartir!!!");
+    location.reload();
+  };
+</script>
 
 
