@@ -4,7 +4,7 @@
     <h1 class="text-center pt-5 capitalize" style="color: green;">Hola {{u_solicita}}!!! </h1>
     {{> cardNotificacion }}
  
-    <h1 class="text-center mt-5" style="color: aliceblue;">Tienes una notificacion</h1>
+    <h1 class="text-center mt-5" style="color: aliceblue;">Tus transacciones</h1>
     <div class="py-4">
       <hr class="w-100" />
   </section>
@@ -15,7 +15,7 @@
         <th scope="col">Transaccion</th>
         <th scope="col">Vendedor</th>
         <th scope="col">Producto</th>
-        <th scope="col">Cantidad</th>
+        <th scope="col">Precio</th>
         <th scope="col">Accion</th>
       </tr>
     </thead>
@@ -33,10 +33,10 @@
    
         {{!-- boton para confirmar solicitud de envio --}}
         <button class="btn btn-primary m-auto" type="button"
-          onclick="confirmarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Confirmar</button>
+          onclick="confirmarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Enviar correo</button>
         {{!-- boton para rechazar solicitud de envio --}}
         <button class="btn btn-danger m-auto" type="button"
-          onclick="rechazarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Rechazar</button>
+          onclick="rechazarPeticion('{{this.u_solicitante}}', '{{this.n_solicitante}}', '{{this.u_solicitado}}', '{{this.n_solicitado}}', '{{this.cod_producto}}', '{{this.nombrep}}', '{{this.estado_compra}}','{{this.cantidad}}')">Desistir</button>
     
     {{/unless_eq}}
   {{/unless_eq}}
@@ -64,7 +64,7 @@
   {{!-- script para confirmar solicitud de envio --}}
   <script>
     function confirmarPeticion(u_solicitante, n_solicitante, u_solicitado, n_solicitado, cod_producto, nombrep, estado_compra, cantidad) {
-      var objeto = {
+      const objeto = {
         u_solicitante: u_solicitante,
         n_solicitante: n_solicitante,
         u_solicitado: u_solicitado,
@@ -91,7 +91,7 @@
     }
 
     function rechazarPeticion(u_solicitante, n_solicitante, u_solicitado, n_solicitado, cod_producto, nombrep, estado_compra, cantidad) {
-      var objeto = {
+      const objeto = {
         u_solicitante: u_solicitante,
         n_solicitante: n_solicitante,
         u_solicitado: u_solicitado,
