@@ -331,6 +331,32 @@ WHERE (orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1)
         return usuario;
       }
 
+      ///////////////////////////////////////////RECHAZAR SOLICITUD///////////////////////////////////////////////
+
+        async function rechazarSolicitud(id) {
+        const consulta = {
+            text: `UPDATE orden_compra SET estado_compra = 3 WHERE id = $1`,
+            values: [id],
+            };
+            const resultado = await pool.query(consulta);
+            const usuario = resultado.rows[0];
+            return usuario;
+        }
+
+
+        /////////////////////////////////////////ACEPTAR SOLICITUD de estado 1 a 4//////////////////////////////////////////////////////////////////
+
+        async function aceptarSolicitud(id) {
+            const consulta = {
+                text: `UPDATE orden_compra SET estado_compra = 4 WHERE u_solicitado = $1`,
+                values: [id],
+                };
+                const resultado = await pool.query(consulta);
+                const usuario = resultado.rows[0];
+                return usuario;
+            }
+
+
 
 module.exports = {
     // registrarUsuario,
@@ -353,7 +379,10 @@ module.exports = {
     trae_usuario_idproducto,
     obtenerTransacciones,
     obtenerNotificaciones,
-    insertarOrdenCompra
+    insertarOrdenCompra,
+    rechazarSolicitud,
+    aceptarSolicitud,
+    
 
 };
 

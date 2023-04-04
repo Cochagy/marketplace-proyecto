@@ -30,7 +30,9 @@ const {
   trae_usuario_idproducto,
   obtenerTransacciones,
   obtenerNotificaciones,
-  insertarOrdenCompra
+  insertarOrdenCompra,
+  rechazarSolicitud,
+  aceptarSolicitud
 } = require("./database");
 
 const { encripta, compara } = require("./encriptador");
@@ -66,8 +68,6 @@ app.get("/inventario", async (req, res) => {
 app.get("/productosDisponibles", async (req, res) => {
   res.render("productosDisponibles");
 });
-
-
 
 app.get("/transacciones", async (req, res) => {
   res.render("transacciones");
@@ -119,7 +119,6 @@ app.post("/privado", async (req, res) => {
     const busquedaInput = req.body["busqueda-input"];
     console.log(busquedaInput);
     const productoBuscado = await encuentra_producto(busquedaInput);
- 
 
     const redirectURL = `/listaVendedores/${productoBuscado.codigo}`;
 
@@ -136,8 +135,6 @@ app.post("/privado", async (req, res) => {
 
 app.get("/listaVendedores", cookie, async (req, res) => {
   try {
-    
-
     res.render("listaVendedores");
   } catch (error) {
     console.error(error);
@@ -150,20 +147,14 @@ app.get("/listaVendedores", cookie, async (req, res) => {
 app.get("/listaVendedores/:idProducto", cookie, async (req, res) => {
   const { idProducto } = req.params;
   try {
-
     const vendedores = await obtenerVendedores(idProducto);
     const producto = await obtenerVendedores(idProducto);
-
-
 
     res.render("listaVendedores", {
       vendedores,
       productos: producto,
-   
     });
-
   } catch (error) {
- 
     return res.status(500).json({
       mensaje: "Error interno del servidor",
     });
@@ -182,16 +173,23 @@ app.post("/enviar-notificacion", cookie, async (req, res) => {
 
     // Aquí se agregan los valores que deseas insertar en la tabla orden_compra
     const cod_producto = objeto.codigo;
-   // Agrega la fecha actual
+    // Agrega la fecha actual
     const duracion = 10;
     const estado_compra = 1;
 
     // Llama a la función insertarOrdenCompra para insertar los datos en la tabla orden_compra
-    await insertarOrdenCompra(u_solicitante, usuario, cod_producto, duracion, estado_compra);
+    await insertarOrdenCompra(
+      u_solicitante,
+      usuario,
+      cod_producto,
+      duracion,
+      estado_compra
+    );
 
     const redirectURL2 = `/notificacion/${usuario}`;
 
-    // Enviar la URL de redireccionamiento como respuesta JSON
+
+   // Enviar la URL de redireccionamiento como respuesta JSON
     res.json({ redirectURL: redirectURL2 });
   } catch (error) {
     console.error('Error en la ruta "/enviar-notificacion":', error);
@@ -201,69 +199,101 @@ app.post("/enviar-notificacion", cookie, async (req, res) => {
 
 
 
-
+    
 
 ////////////////////////////////NOTIFICACION////////////////////////////////////////////////////////
 
-app.get("/notificacion",cookie, async (req, res) => {
-
-
-    res.render("notificacion");
-
+app.get("/notificacion", cookie, async (req, res) => {
+  res.render("notificacion");
 });
 
-
-
 app.get("/notificacion/:idUsuario", cookie, async (req, res) => {
-  const { idUsuario } = req.params;
-  try {  
+  try {
+    const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const u_solicita = data.nombre;
+   const i = data.id
+   console.log(i)
+    const { idUsuario } = req.params;
+
 
     const notificacion = await obtenerNotificaciones(idUsuario);
+    console.log(notificacion)
     res.render("notificacion", {
       notificacion,
       usuarioObj: {
         usuario: idUsuario,
       },
+      i,
+      u_solicita, // Agregamos u_solicitante al objeto que se pasa a res.render
     });
-    console.log(notificacion);
   } catch (error) {
     console.error(error);
   }
 });
 
-app.post("/enviar-confirmacion", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send("Objeto recibido correctamente");
+app.post("/enviar-confirmacion", async (req, res) => {
+  const objeto = req.body;
+  const u_solicitado = objeto.u_solicitado;
+  console.log(u_solicitado);
+
+  try {
+    // Llamar a la función rechazarSolicitud con el ID proporcionado en el cuerpo de la solicitud
+    await aceptarSolicitud(objeto.u_solicitado);
+
+
+    // Enviar una respuesta al cliente si se actualiza la base de datos correctamente
+    res.status(200).redirect("index");
+  } catch (error) {
+    // Manejar cualquier error que se produzca durante la actualización de la base de datos
+    console.error(error);
+    res.status(500).send("Error al rechazar la orden de compra");
+  }
 });
 
-app.post("/enviar-rechazar", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
 
-  res.send("Objeto recibido correctamente");
-});
 
-app.post("/enviar-contacto", function (req, res) {
-  var objeto = req.body;
-  console.log(objeto);
-  // Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+////////////////////post cambiar estado a orden_compra de 1 a 3//////////
+app.post("/enviar-rechazar", async function (req, res) {
+  const objeto = req.body;
+  const u_solicitado = objeto.u_solicitado;
+  console.log(u_solicitado);
 
-  res.send("Objeto recibido correctamente");
+  try {
+    // Llamar a la función rechazarSolicitud con el ID proporcionado en el cuerpo de la solicitud
+    await rechazarSolicitud(objeto.u_solicitado);
+
+
+    // Enviar una respuesta al cliente si se actualiza la base de datos correctamente
+    res.status(200).redirect("index");
+  } catch (error) {
+    // Manejar cualquier error que se produzca durante la actualización de la base de datos
+    console.error(error);
+    res.status(500).send("Error al rechazar la orden de compra");
+  }
 });
 
 ///////////////////////////////////////////TRNSACCIONES//////////////////////////////////////////////////
 
-app.get("/transacciones/:idUsuario", async (req, res) => {
+app.get("/transacciones/:idUsuario",cookie, async (req, res) => {
+    try {
+      const token = await verifica_token(req.cookies.retoken);
+  const data = token.data;
+  const u_solicitante = data.nombre;
   const { idUsuario } = req.params;
-  try {
+
+
     const transacciones = await obtenerTransacciones(idUsuario);
     res.render("transacciones", {
       transacciones,
+      usuarioObj: {
+        usuario: idUsuario,
+      },
+      u_solicitante// Agregamos u_solicitante al objeto que se pasa a res.render
     });
+
+
     console.log(transacciones);
   } catch (error) {
     console.error(error);
@@ -283,7 +313,7 @@ app.get("/perfil", cookie, async (req, res) => {
   const { id, nombre, rut, email, telefono, sector, foto } = data;
   const productos = await obtenerProductosPorUsuario(id);
   res.render("perfil", {
-    id,
+    usuario: id,
     nombre,
     rut,
     email,
@@ -293,6 +323,40 @@ app.get("/perfil", cookie, async (req, res) => {
     productos,
   });
   console.log(foto);
+});
+
+////////////////////////////////hacer funcionar boton notificaciones del perfil/////////////////////////////////////////////////
+app.get("/perfilnotificacion", cookie, async (req, res) => {
+  try {
+    const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const u_solicitante = data.id;
+    const objeto = req.body;
+    console.log(u_solicitante)
+   
+    const redirectURL3 = `/notificacion/${u_solicitante}`;
+    res.redirect(redirectURL3);
+  } catch (error) {
+    console.error('Error en la ruta "/perfilnotificacion":', error);
+    res.render("contacto");
+  }
+});
+
+//////////////////////////////hacer funcionar boton transacciones//////////////////////////////////////////////////////////////////////////////////////////////
+app.get("/perfiltransacciones", cookie, async (req, res) => {
+  try {
+    const token = await verifica_token(req.cookies.retoken);
+    const data = token.data;
+    const u_solicitante = data.id;
+    const objeto = req.body;
+    console.log(u_solicitante)
+   
+    const redirectURL3 = `/transacciones/${u_solicitante}`;
+    res.redirect(redirectURL3);
+  } catch (error) {
+    console.error('Error en la ruta "/perfiltransacciones":', error);
+    res.render("contacto");
+  }
 });
 ////////////////////////////////////////////////////////////REGISTRO DE USUARIOS////////////////////
 
@@ -973,4 +1037,12 @@ app.put("/administracion", async (req, res) => {
 //     console.error(error);
 //     return res.status(500).json({ mensaje: 'Error interno del servidor' });
 //   }
+// });
+
+// app.post("/enviar-contacto", function (req, res) {
+//   var objeto = req.body;
+//   console.log(objeto);
+// Hacer algo con el objeto que recibiste, como guardarlo en una base de datos
+
+//   res.send("Objeto recibido correctamente");
 // });
