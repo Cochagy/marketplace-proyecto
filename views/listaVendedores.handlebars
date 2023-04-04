@@ -11,8 +11,9 @@
           {{#with productos.[0]}}
            <h1 class="text-center w-100 mt-4">¡¡¡ALGUIEN YA LO TIENE!!!!</h1>
            <h2 class="text-center w-150 mt-4 capitalize" style="font-size: 5rem;">{{nombrep}}</h2>
-  
           {{/with}}
+    
+       
         </section>
         <h1 class="text-center w-100 mt-4">Ya casi es tuyo!!</h1>
       </div>
@@ -52,7 +53,7 @@
     <td class="capitalize">{{this.nombre_sector}}</td>
     <td>
       <button class="btn btn-primary m-auto" type="button"
-        onclick="enviar('{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
+        onclick="enviar('{{this.codigo}}','{{this.usuario}}','{{this.nombre}}', '{{this.nombrep}}', '{{this.precio}}', '{{this.cantidad}}', '{{this.nombre_sector}}')">Enviar</button>
     </td>
   </tr>
   {{/each}}
@@ -61,28 +62,37 @@
     </div>
 
       <script>
-        function enviar(nombre, nombrep, precio, cantidad, nombre_sector) {
-          var objeto = {
-            nombre: nombre,
-            nombrep: nombrep,
-            precio: precio,
-            cantidad: cantidad,
-            nombre_sector: nombre_sector
-          };
-          fetch('/enviar-objeto', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(objeto)
-          })
-            .then(function (response) {
-              // Hacer algo con la respuesta del servidor si lo deseas
-            })
-            .catch(function (error) {
-              console.error(error);
-            });
-        }
+function enviar(codigo, usuario, nombre, nombrep, precio, cantidad, nombre_sector) {
+  var objeto = {
+    codigo: codigo,
+    usuario: usuario,
+    nombre: nombre,
+    nombrep: nombrep,
+    precio: precio,
+    cantidad: cantidad,
+    nombre_sector: nombre_sector
+  };
+  fetch('/enviar-notificacion', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(objeto)
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('Error en la respuesta del servidor: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      // Redirigir al navegador a la URL recibida
+      window.location.href = data.redirectURL;
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
 
       </script>
 
