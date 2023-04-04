@@ -197,7 +197,7 @@ async function obtenerProductosPorUsuario(idUsuario) {
 ////////////////////LISTA DE VENDEDORES////////////////////////////////////////////////////////////////
 async function obtenerVendedores(idproducto) {
     const consulta = {
-        text: `SELECT usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector, inv.marca, inv.foto
+        text: `SELECT inv.codigo, usr.nombre, inv.nombrep, inv.cantidad, inv.precio, sec.nombre_sector, inv.marca, inv.foto, inv.usuario
         FROM inventario inv
         JOIN usuarios usr ON inv.usuario = usr.id
         JOIN sector sec ON usr.sector = sec.id
@@ -317,6 +317,45 @@ WHERE (orden_compra.u_solicitante = $1 OR orden_compra.u_solicitado = $1)
     return resultado.rows;
     }
 
+    ///////////////////////////////////////////////////// insertar orden compra////////////////////////////////////////////////////////////////////////
+
+    async function insertarOrdenCompra(u_solicitante, u_solicitado, cod_producto, duracion, estado_compra) {
+        const consulta = {
+          text: `INSERT INTO orden_compra (u_solicitante, u_solicitado, cod_producto, duracion, estado_compra)
+                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+          values: [u_solicitante, u_solicitado, cod_producto, duracion, estado_compra],
+        };
+        
+        const resultado = await pool.query(consulta);
+        const usuario = resultado.rows[0];
+        return usuario;
+      }
+
+      ///////////////////////////////////////////RECHAZAR SOLICITUD///////////////////////////////////////////////
+
+        async function rechazarSolicitud(id) {
+        const consulta = {
+            text: `UPDATE orden_compra SET estado_compra = 3 WHERE id = $1`,
+            values: [id],
+            };
+            const resultado = await pool.query(consulta);
+            const usuario = resultado.rows[0];
+            return usuario;
+        }
+
+
+        /////////////////////////////////////////ACEPTAR SOLICITUD de estado 1 a 4//////////////////////////////////////////////////////////////////
+
+        async function aceptarSolicitud(id) {
+            const consulta = {
+                text: `UPDATE orden_compra SET estado_compra = 4 WHERE u_solicitado = $1`,
+                values: [id],
+                };
+                const resultado = await pool.query(consulta);
+                const usuario = resultado.rows[0];
+                return usuario;
+            }
+
 
 
 module.exports = {
@@ -339,7 +378,11 @@ module.exports = {
     obtenerCamposSector,
     trae_usuario_idproducto,
     obtenerTransacciones,
-    obtenerNotificaciones
+    obtenerNotificaciones,
+    insertarOrdenCompra,
+    rechazarSolicitud,
+    aceptarSolicitud,
+    
 
 };
 
