@@ -5,15 +5,20 @@
 
       {{> cardUsuario }}
       <div class="container col-5 text-center">
+        <p class="d-none">{{usuario}}</p>
         <h2 class="text-center py-5">Ultimos movimientos</h2>
 
 
         <div id="movimientos" class="d-flex justify-content-between">
           <div>
-            <a class="btn btn-primary mx-auto" href="./transacciones">Transacciones</a>
+           <form action="/perfiltransacciones" method="GET">
+              <button type="submit" class="btn btn-primary mx-auto">Transacciones</button>
+            </form>
           </div>
           <div>
-            <a class="btn btn-danger mx-auto" href="./notificacion">Notificaciones</a>
+            <form action="/perfilnotificacion" method="GET">
+              <button type="submit" class="btn btn-danger mx-auto">Notificaciones</button>
+            </form>
           </div>
         </div>
 
@@ -25,8 +30,8 @@
       <h1 style="color: aliceblue;">Hola {{this.nombre}}!!</h1>
       <h2>Tu perfil</h2>
       <br>
-    <form action="/actualizar/{{this.email}}?_method=PUT" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="_method" value="PUT">
+      <form action="/actualizar/{{this.email}}?_method=PUT" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
           <div class="form-group">
             <label for="nombre">Nombre</label><br>
@@ -40,14 +45,14 @@
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Email</label><br>
-            <input type="text"  name="email"disabled placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
+            <input type="text" name="email" disabled placeholder="ejemplo@gmail.com" class="form-control w-50 m-auto"
               value="{{this.email}}">
           </div>
-         <div class="form-group pt-4">
-    <label for="nombre">Telefono</label><br>
-    <input type="text" name="telefono" placeholder="569111111" class="form-control w-50 m-auto"
-      value="{{this.telefono}}">
-  </div>
+          <div class="form-group pt-4">
+            <label for="nombre">Telefono</label><br>
+            <input type="text" name="telefono" placeholder="569111111" class="form-control w-50 m-auto"
+              value="{{this.telefono}}">
+          </div>
           <div class="form-group py-4">
             <label for="nombre">Sector</label><br>
             <input type="text" name="sector" disabled placeholder="Providencia" class="form-control w-50 m-auto"
@@ -60,12 +65,12 @@
           </div>
           <div class="form-group pt-4">
             <label for="nombre">Repite password</label><br>
-            <input type="password" disabled name="repite_pasword" placeholder="***********" class="form-control w-50 m-auto"
-              value="{{this.repite_password}}">
-          </div>                    
+            <input type="password" disabled name="repite_pasword" placeholder="***********"
+              class="form-control w-50 m-auto" value="{{this.repite_password}}">
+          </div>
         </div>
 
-          {{!-- comentado por mientras --}}
+        {{!-- comentado por mientras --}}
 
         {{!-- <label for="comuna">Comuna/Sector</label><br>
         <select class="form-select mb-3 w-50 m-auto" name="sector" aria-label="Default select example">
@@ -83,15 +88,16 @@
         </div>
         <div>
           <input class="btn btn-primary my-3 py- w-50 m-auto" type="submit" value="modificar" onClick="modificar()">
-          
-          {{!-- <button type="submit" class="btn btn-primary my-3 pt-2 w-50 m-auto" >Modificar</button><br> --}}
+
+          {{!-- <button type="submit" class="btn btn-primary my-3 pt-2 w-50 m-auto">Modificar</button><br> --}}
         </div>
       </form>
 
       <div>
         <form>
-          <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar usuario</button></td> 
-        </form>      
+          <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar
+              usuario</button></td>
+        </form>
       </div>
 
 
@@ -124,7 +130,9 @@
             {{!-- <td>{{@index}}</td> --}}
             <td>
               <div>
-                <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';" height="55" width="75">
+                <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg"
+                  onerror="this.onerror=null;this.parentNode.innerHTML='<a href=\'https://www.google.com/search?q={{this.nombrep}} {{this.marca}}&source=lnms&tbm=isch\' target=\'_blank\'>Intenta verlo por acá</a>';"
+                  height="55" width="75">
                 {{!-- <img class="rounded-circle" src="/uploads/{{this.nombrep}}.jpg" height="55" Width="75"> --}}
               </div>
             </td>
@@ -135,13 +143,15 @@
             <td>Masculino</td> --}}
             <td>{{this.marca}}</td>
             <td>{{this.nombrep}}</td>
-            <td>{{this.precio}}</td>         
+            <td>{{this.precio}}</td>
             <td>{{this.cantidad}}</td>
-            <td>{{this.cliente}}</td>            
-            <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar</button></td>           
-            {{!-- <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto" href="./elimina_producto/:{{this.id}}">Eliminar</a></td> --}}
+            <td>{{this.cliente}}</td>
+            <td><button class="btn btn-primary m-auto" type="button" onclick="enviar('{{this.id}}')">Eliminar</button>
+            </td>
+            {{!-- <td><a class="btn btn-primary mb-4 py-2 w-40 m-auto"
+                href="./elimina_producto/:{{this.id}}">Eliminar</a></td> --}}
           </tr>
-          {{/each}} 
+          {{/each}}
         </tbody>
       </table>
       <div class="text-center mt-3">
@@ -170,68 +180,69 @@
 </script>
 
 <script>
-function enviar(id) {
-  var objeto = {
-    id: id     
-  };
-  fetch('/enviar-objeto2', {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(objeto)
-  })
-  .then(function(response) {
-    // Hacer algo con la respuesta del servidor si lo deseas
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-}
+  function enviar(id) {
+    var objeto = {
+      id: id
+    };
+    fetch('/enviar-objeto2', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(objeto)
+    })
+      .then(function (response) {
+        // Hacer algo con la respuesta del servidor si lo deseas
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
 
 </script>
 
 <script>
-function enviar(id) {
-  var objeto = {
-    id: id     
-  };
-  fetch('/enviar-objeto3', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(objeto)
-  })
-  .then(function(response) {
-    // Hacer algo con la respuesta del servidor si lo deseas
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-}
+  function enviar(id) {
+    var objeto = {
+      id: id
+    };
+    fetch('/enviar-objeto3', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(objeto)
+    })
+      .then(function (response) {
+        // Hacer algo con la respuesta del servidor si lo deseas
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
 
 </script>
 
-{{!-- <script>
-function enviar(id) {
-  var objeto = {
-    id: id     
-  };
-  fetch('/enviar-objeto4', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(objeto)
-  })
-  .then(function(response) {
-    // Hacer algo con la respuesta del servidor si lo deseas
-  })
-  .catch(function(error) {
-    console.error(error);
-  });
-}
+{{!--
+<script>
+  function enviar(id) {
+    var objeto = {
+      id: id
+    };
+    fetch('/enviar-objeto4', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(objeto)
+    })
+      .then(function (response) {
+        // Hacer algo con la respuesta del servidor si lo deseas
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  }
 
 </script>
- --}}
+--}}
