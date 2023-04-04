@@ -29,17 +29,16 @@
         </li>  --}}
         {{!-- solo para desarrollo termina aqui --}}
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">                         
-            {{!-- <img class="rounded-circle" src='/uploads/{{this.foto}}.jpg'  height="55" Width="55">           --}}
-          </a>
-          <div class="dropdown-menu" style="background: rgb(243, 214, 202)">
-            <a class="dropdown-item" href="/perfil">perfil</a>
-            {{!-- <a class="dropdown-item" href="/administracion">Administración</a>           --}}
-            <div class="dropdown-divider"></div>              
-              <a class="dropdown-item" href="/cerrar-sesion">Cerrar sesión</a>
-          </div>
-        </li>  
+      <li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+  </a>
+  <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background: rgb(243, 214, 202);">
+    <a class="dropdown-item" href="/perfil">Perfil</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="/cerrar-sesion">Cerrar sesión</a>
+  </div>
+</li>
               
         {{!-- {{else}} --}}
 

@@ -245,3 +245,20 @@ td {
   .capitalize {
     text-transform: capitalize;
   }
+
+
+  .dropdown-menu {
+    background-color: rgba(243, 214, 202, 0.9);
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    color: #333;
+  }
+
+  .dropdown-item:hover {
+    color: #fff;
+    background-color: rgba(255, 100, 50, 0.7);
+  }
+
